@@ -1,36 +1,22 @@
 
 // Глобальные сервисы
-import сoreDBSys from '../../../System/CoreDBSys';
-import * as redisSys  from '../../../System/RedisSys';
 
 // Системные сервисы
-import {ErrorSys} from '../../../System/ErrorSys';
 import MainRequest from '../../../System/MainRequest';
-
-import {ModelValidatorSys} from '../../../System/ModelValidatorSys';
 
 // Сущьности и правила валидации
 import {CtrlAccessE} from '../Entity/CtrlAccessE';
+import BaseSQL from '../../../System/BaseSQL';
 
 /**
  * Здесь методы для SQL запросов
  * - Группы пользователей
  */
-export class CtrlAccessSQL
+export class CtrlAccessSQL extends BaseSQL
 {
-    private db:any;
-    private redisSys:any;
-
-    private modelValidatorSys:ModelValidatorSys;
-    private errorSys: ErrorSys;
 
     constructor(req:MainRequest) {
-
-        this.db = сoreDBSys;
-        this.redisSys = redisSys;
-
-        this.modelValidatorSys = new ModelValidatorSys(req);
-        this.errorSys = req.sys.errorSys;
+        super(req);
     }
 
     // ========================================
@@ -66,7 +52,7 @@ export class CtrlAccessSQL
         `;
 
         try{
-            resp = (await сoreDBSys.raw(sql, {
+            resp = (await this.db.raw(sql, {
                 'alias': aliasCtrlAccess
             }))[0];
 
@@ -112,7 +98,7 @@ export class CtrlAccessSQL
         `;
 
         try{
-            resp = (await сoreDBSys.raw(sql, {
+            resp = (await this.db.raw(sql, {
                 'id_ctrl_access': idCtrlAccess
             }))[0];
 
@@ -175,7 +161,7 @@ export class CtrlAccessSQL
             `;
 
             try{
-                ctrlAccessList = (await сoreDBSys.raw(sql))[0];
+                ctrlAccessList = (await this.db.raw(sql))[0];
             } catch (e){
                 ok = false;
                 this.errorSys.error('get_list_ctrl_access', 'Не удалось получить группы пользователя');
@@ -221,7 +207,7 @@ export class CtrlAccessSQL
 
             let resp = null;
             try{
-                resp = await сoreDBSys('ctrl_access')
+                resp = await this.db('ctrl_access')
                     .where({
                         id: idCtrlAccess
                     })
@@ -265,7 +251,7 @@ export class CtrlAccessSQL
 
 
             try{
-                resp = await сoreDBSys('ctrl_access')
+                resp = await this.db('ctrl_access')
                 .returning('id')
                     .insert(this.modelValidatorSys.getResult());
                     if(resp){
@@ -309,7 +295,7 @@ export class CtrlAccessSQL
 
         let resp = null;
         try{
-            resp = await сoreDBSys('ctrl_access')
+            resp = await this.db('ctrl_access')
                 .where({
                     alias: aliasCtrlAccess,
                 })
@@ -362,7 +348,7 @@ export class CtrlAccessSQL
             `;
 
             try{
-                resp = (await сoreDBSys.raw(sql, {
+                resp = (await this.db.raw(sql, {
                     'alias': aliasCtrlAccess
                 }))[0];
 

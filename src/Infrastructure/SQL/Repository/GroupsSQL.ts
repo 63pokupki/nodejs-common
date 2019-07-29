@@ -1,6 +1,5 @@
 
 // Глобальные сервисы
-import сoreDBSys from '../../../System/CoreDBSys';
 import * as redisSys  from '../../../System/RedisSys';
 
 // Системные сервисы
@@ -11,26 +10,17 @@ import {ModelValidatorSys} from '../../../System/ModelValidatorSys';
 
 // Сущьности и правила валидации
 import {GroupsE} from '../Entity/GroupsE';
+import BaseSQL from '../../../System/BaseSQL';
 
 /**
  * Здесь методы для SQL запросов
  * - Группы пользователей
  */
-export class GroupsSQL
+export class GroupsSQL extends BaseSQL
 {
-    private db:any;
-    private redisSys:any;
-
-    private modelValidatorSys:ModelValidatorSys;
-    private errorSys: ErrorSys;
 
     constructor(req:MainRequest) {
-
-        this.db = сoreDBSys;
-        this.redisSys = redisSys;
-
-        this.modelValidatorSys = new ModelValidatorSys(req);
-        this.errorSys = req.sys.errorSys;
+        super(req);
     }
 
     // ========================================
@@ -67,7 +57,7 @@ export class GroupsSQL
         `;
 
         try{
-            resp = (await сoreDBSys.raw(sql, {
+            resp = (await this.db.raw(sql, {
                 id_group: idGroup
             }))[0];
 
@@ -106,7 +96,7 @@ export class GroupsSQL
 
         let sCache = null;
         if( ok ){ // Пробуем получить данные из кеша
-            sCache = await redisSys.get("GroupsSQL.getAllGroups()");
+            sCache = await this.redisSys.get("GroupsSQL.getAllGroups()");
 
             if( sCache ){
                 bCache = true;
@@ -130,7 +120,7 @@ export class GroupsSQL
             `;
 
             try{
-                groupList = (await сoreDBSys.raw(sql))[0];
+                groupList = (await this.db.raw(sql))[0];
             } catch (e){
                 ok = false;
                 this.errorSys.error('get_roles', 'Не удалось получить группы пользователя');
@@ -177,7 +167,7 @@ export class GroupsSQL
 
             let resp = null;
             try{
-                resp = await сoreDBSys('phpbb_groups')
+                resp = await this.db('phpbb_groups')
                     .where({
                         group_id: idGroup
                     })

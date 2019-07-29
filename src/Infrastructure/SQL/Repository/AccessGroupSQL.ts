@@ -3,7 +3,6 @@
 import * as _ from 'lodash';
 
 // Глобальные сервисы
-import сoreDBSys from '../../../System/CoreDBSys';
 import * as redisSys  from '../../../System/RedisSys';
 
 // Системные сервисы
@@ -14,26 +13,17 @@ import {ModelValidatorSys} from '../../../System/ModelValidatorSys';
 
 // Сущьности и правила валидации
 import {AccessGroupE} from '../Entity/AccessGroupE';
+import BaseSQL from '../../../System/BaseSQL';
 
 /**
  * Здесь методы для SQL запросов
  * - Связка Групп пользователей с модулями
  */
-export class AccessGroupSQL
+export class AccessGroupSQL extends BaseSQL
 {
-    private db:any;
-    private redisSys:any;
-
-    private modelValidatorSys:ModelValidatorSys;
-    private errorSys: ErrorSys;
 
     constructor(req:MainRequest) {
-
-        this.db = сoreDBSys;
-        this.redisSys = redisSys;
-
-        this.modelValidatorSys = new ModelValidatorSys(req);
-        this.errorSys = req.sys.errorSys;
+        super(req);
     }
 
     // ==================================
@@ -76,7 +66,7 @@ export class AccessGroupSQL
             `;
 
             try{
-                resp = (await сoreDBSys.raw(sql, {
+                resp = (await this.db.raw(sql, {
                     'id_group': idGroup
                 }))[0];
             } catch (e){
@@ -134,7 +124,7 @@ export class AccessGroupSQL
 
 
             try{
-                aAccessCRUD = (await сoreDBSys.raw(sql, {
+                aAccessCRUD = (await this.db.raw(sql, {
                     'ctrl_access_id': idCtrlAccess
                 }))[0];
 
@@ -201,7 +191,7 @@ export class AccessGroupSQL
 
             let resp = [];
             try{
-                resp = (await сoreDBSys.raw(sql, {
+                resp = (await this.db.raw(sql, {
                     'ctrl_access_id': idCtrlAccess
                 }))[0];
 
@@ -241,7 +231,7 @@ export class AccessGroupSQL
 
             let resp = null;
             try{
-                resp = await сoreDBSys('access_group')
+                resp = await this.db('access_group')
                     .returning('id')
                     .insert({
                         group_id: idGroup,
@@ -290,7 +280,7 @@ export class AccessGroupSQL
 
             let resp = null;
             try{
-                resp = await сoreDBSys('access_group')
+                resp = await this.db('access_group')
                     .where({
                         id: idAccessGroup
                     })
@@ -305,7 +295,7 @@ export class AccessGroupSQL
 
         let aRelatedKeyRedis = [];
         if( ok ){ // Удалить связанный кеш
-            aRelatedKeyRedis = await redisSys.keys('AccessGroupSQL*');
+            aRelatedKeyRedis = await this.redisSys.keys('AccessGroupSQL*');
             this.redisSys.del(aRelatedKeyRedis);
         }
 
@@ -334,7 +324,7 @@ export class AccessGroupSQL
         if( ok ){
             let resp = null;
             try{
-                resp = await сoreDBSys('access_group')
+                resp = await this.db('access_group')
                     .where({
                         group_id: idGroup,
                         ctrl_access_id: idCtrlAccess,
@@ -396,7 +386,7 @@ export class AccessGroupSQL
             `;
 
             try{
-                resp = (await сoreDBSys.raw(sql, {
+                resp = (await this.db.raw(sql, {
                     'group_id': idGroup,
                     'ctrl_access_id': idCtrlAccess
                 }))[0];

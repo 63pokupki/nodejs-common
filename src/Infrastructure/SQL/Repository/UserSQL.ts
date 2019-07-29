@@ -5,34 +5,20 @@ const uniqid = require('uniqid');
 var md5 = require('md5');
 
 // Глобальные сервисы
-import сoreDBSys from '../../../System/CoreDBSys';
-import * as redisSys  from '../../../System/RedisSys';
 
 // Системные сервисы
-import {ErrorSys} from '../../../System/ErrorSys';
 import MainRequest from '../../../System/MainRequest';
-
-import {ModelValidatorSys} from '../../../System/ModelValidatorSys';
+import BaseSQL from '../../../System/BaseSQL';
 
 
 /**
  * Здесь методы для SQL запросов
  */
-export class UserSQL
+export class UserSQL extends BaseSQL
 {
-    private db:any;
-    private redisSys:any;
-
-    private modelValidatorSys:ModelValidatorSys;
-    private errorSys: ErrorSys;
 
     constructor(req:MainRequest) {
-
-        this.db = сoreDBSys;
-        this.redisSys = redisSys;
-
-        this.modelValidatorSys = new ModelValidatorSys(req);
-        this.errorSys = req.sys.errorSys;
+        super(req);
     }
 
 
@@ -90,7 +76,7 @@ export class UserSQL
         `;
 
         try{
-            resp = (await сoreDBSys.raw(sql, {
+            resp = (await this.db.raw(sql, {
                 'offset': iOffset,
                 'limit': iLimit,
                 'search_username': '%'+sSearchUserName+'%',
@@ -142,7 +128,7 @@ export class UserSQL
         `;
 
         try{
-            resp = (await сoreDBSys.raw(sql, {
+            resp = (await this.db.raw(sql, {
                 'user_id': idUser
             }))[0];
 
@@ -195,7 +181,7 @@ export class UserSQL
             `;
 
             try{
-                resp = (await сoreDBSys.raw(sql,{
+                resp = (await this.db.raw(sql,{
                     'token': apikey
                 }))[0];
 
@@ -233,7 +219,7 @@ export class UserSQL
         /* если ключ больше 4 */
         if( apikey.length > 4) {
 
-            if ( await redisSys.get('is_auth_' + apikey)  ) {
+            if ( await this.redisSys.get('is_auth_' + apikey)  ) {
                 bResp = true;
                 this.errorSys.devNotice(`cache:UserSQL.isAuth(${apikey})`, 'Взято из кеша');
             } else {
@@ -247,14 +233,14 @@ export class UserSQL
                 `;
 
                 try{
-                    resp = (await сoreDBSys.raw(sql, {
+                    resp = (await this.db.raw(sql, {
                         'token': apikey
                     }))[0];
 
 
                     if (resp.length > 0) {
                         bResp = true;
-                        redisSys.set('is_auth_' + apikey, 1, 3600);
+                        this.redisSys.set('is_auth_' + apikey, 1, 3600);
                     }
 
                 } catch (e){
@@ -294,7 +280,7 @@ export class UserSQL
         `;
 
         try{
-            resp = (await сoreDBSys.raw(sql, {
+            resp = (await this.db.raw(sql, {
                 'phone': phone,
                 'sms': sms
             }))[0];
@@ -335,7 +321,7 @@ export class UserSQL
             `;
 
             try{
-                resp = (await сoreDBSys.raw(sql, {
+                resp = (await this.db.raw(sql, {
                     'username': utf8.encode(username),
                 }))[0];
 
@@ -376,7 +362,7 @@ export class UserSQL
             `;
 
             try{
-                resp = (await сoreDBSys.raw(sql, {
+                resp = (await this.db.raw(sql, {
                     'user_id': user_id,
                 }))[0];
 
@@ -413,7 +399,7 @@ export class UserSQL
 
         let resp = null;
         try{
-            resp = await сoreDBSys('user_token').insert({
+            resp = await this.db('user_token').insert({
                 api_key: apikey,
                 user_id: user_id,
             });
@@ -459,7 +445,7 @@ export class UserSQL
         `;
 
         try{
-            resp = (await сoreDBSys.raw(sql, {
+            resp = (await this.db.raw(sql, {
                 'user_id': userId,
             }))[0];
 
