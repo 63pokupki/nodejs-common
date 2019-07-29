@@ -1,6 +1,4 @@
 
-import configSys from './ConfigSys';
-
 import {ErrorSys} from './ErrorSys';
 import MainRequest from './MainRequest';
 
@@ -16,7 +14,7 @@ export class ResponseSys
 
 	constructor(req:MainRequest){
 
-		this.env = configSys.getEnvType();
+		this.env = req.conf.common.env;
 		if( this.env == 'local' || this.env == 'dev' ){
 			this.ifDevMode = true;
 		} else {
