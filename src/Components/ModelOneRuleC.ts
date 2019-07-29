@@ -66,7 +66,20 @@ class ModelOneRuleC {
     public error(sError: string): ModelOneRuleC {
         this.aRule['error'] = sError;
         return this;
-    }
+	}
+
+	/**
+	 * [клич ошибки, сообшение ошибки] - Ключ и сообщение ошибки в случае если проверка не прошла
+	 *
+	 * @param string sError
+	 * @return ModelOneRuleC
+	 */
+	public errorEx(sKey:string, sError:string): ModelOneRuleC{
+		this.aRule['error_key'] = {key:sKey, msg:sError};
+
+		this.error(sError); // Вывод стандартных ошибок
+		return this;
+	}
 
 	/**
 	 * Значение по умолчанию
