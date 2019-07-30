@@ -18,12 +18,7 @@ export default {
 	},
 	// All the used libs needs to be here
 	external: [
-		'react',
-		'react-proptypes',
-		'antd',
-		'draft-js',
-		'react-draft-wysiwyg',
-		'react-is'
+
 	],
 	plugins: [
 		postcss({

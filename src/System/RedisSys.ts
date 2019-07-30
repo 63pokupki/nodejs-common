@@ -6,7 +6,7 @@ var redis = require("redis");
  */
 export class RedisSys{
 
-    public redisClient;
+    public redisClient:any;
 
     constructor(conf:any){
         this.redisClient = redis.createClient(conf);
