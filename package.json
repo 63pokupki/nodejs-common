@@ -1,6 +1,6 @@
 {
 	"name": "nodejs-common",
-	"version": "2.2.1",
+	"version": "0.0.1",
 	"description": "common nodejs functionality",
 	"main": "dist/index.js",
 	"repository": {
