@@ -1,3 +1,5 @@
+#Install
+npm i 63pokupki-nodejs-common
 #Publishing
 npm init --scope=<your_org_name>
 
