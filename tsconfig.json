@@ -6,7 +6,7 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
-        "outDir": "build/src",
+        "outDir": "./lib",
         "rootDir": "src",
         "resolveJsonModule": true
     },
