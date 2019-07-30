@@ -1,46 +1,46 @@
 {
-	"name": "nodejs-common",
-	"version": "0.0.2",
-	"description": "common nodejs functionality",
-	"main": "dist/index.js",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/63pokupki/nodejs-common.git"
-	},
-	"keywords": [
-		"react",
-		"components",
-		"crud"
-	],
-	"author": "63pokupki",
-	"license": "BSD-3-Clause",
-	"bugs": {
-		"url": "https://github.com/63pokupki/nodejs-common/issues"
-	},
-	"homepage": "https://github.com/63pokupki/nodejs-common#readme",
-	"peerDependencies": {},
-	"devDependencies": {
-		"cross-env": "^5.2.0",
-		"html-loader": "^0.5.5",
-		"rollup": "^0.58.2",
-		"rollup-plugin-babel": "^4.3.2",
-		"rollup-plugin-commonjs": "^9.3.4",
-		"rollup-plugin-json": "^3.1.0",
-		"rollup-plugin-node-resolve": "^3.4.0",
-		"rollup-plugin-postcss": "^1.6.2",
-		"rollup-plugin-replace": "^2.0.0",
-		"@types/lodash": "^4.14.123"
-	},
-	"scripts": {
-		"release": "npm run build:dev && npm run build:prod",
-		"build": "tsc"
-	},
-	"dependencies": {
-		"regenerator-runtime": "^0.12.1",
-		"rollup-plugin-image": "^1.0.2",
-		"rollup-plugin-uglify": "^6.0.0",
-		"redis": "^2.8.0",
-		"lodash": "^4.17.11",
-		"knex": "^0.16.3"
-	}
+  "name": "@63pokupki/63pokupki-nodejs-common",
+  "version": "0.0.2",
+  "description": "common nodejs functionality",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/63pokupki/nodejs-common.git"
+  },
+  "keywords": [
+    "react",
+    "components",
+    "crud"
+  ],
+  "author": "63pokupki",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/63pokupki/nodejs-common/issues"
+  },
+  "homepage": "https://github.com/63pokupki/nodejs-common#readme",
+  "peerDependencies": {},
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "html-loader": "^0.5.5",
+    "rollup": "^0.58.2",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-commonjs": "^9.3.4",
+    "rollup-plugin-json": "^3.1.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-postcss": "^1.6.2",
+    "rollup-plugin-replace": "^2.0.0",
+    "@types/lodash": "^4.14.123"
+  },
+  "scripts": {
+    "release": "npm run build:dev && npm run build:prod",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "regenerator-runtime": "^0.12.1",
+    "rollup-plugin-image": "^1.0.2",
+    "rollup-plugin-uglify": "^6.0.0",
+    "redis": "^2.8.0",
+    "lodash": "^4.17.11",
+    "knex": "^0.16.3"
+  }
 }
