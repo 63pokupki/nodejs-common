@@ -17,7 +17,7 @@ import { UserSys } from './UserSys';
 export default class BaseSQL {
 
     protected db: any;
-    protected redisSys: any;
+    protected redisSys: RedisSys;
 
     protected modelValidatorSys: ModelValidatorSys;
     protected errorSys: ErrorSys;
