@@ -1,6 +1,6 @@
-#Install
+# Install
 npm i 63pokupki-nodejs-common
-#Publishing
+# Publishing
 npm init --scope=<your_org_name>
 
 жмешь Enter до конца...
