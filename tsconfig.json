@@ -7,11 +7,10 @@
         "preserveConstEnums": true,
         "sourceMap": true,
         "outDir": "./lib",
-        "rootDir": "src",
         "resolveJsonModule": true
     },
     "include": [
-        "src/**/*.ts"
+        "src"
     ],
     "exclude": [
         "node_modules"
