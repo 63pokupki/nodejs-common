@@ -1,19 +1,35 @@
-export { BaseCtrl } from './src/System/BaseCtrl'
-export * from './src/System/BaseSQL'
-export * from './src/System/BaseM'
-export { ModelValidatorSys } from './src/System/ModelValidatorSys'
+import { BaseCtrl } from './src/System/BaseCtrl'
+import BaseSQL from './src/System/BaseSQL'
+import BaseM from './src/System/BaseM'
+import { ModelValidatorSys } from './src/System/ModelValidatorSys'
 
-export { ModelOneRuleC } from './src/Components/ModelOneRuleC'
-export { ModelRulesC } from './src/Components/ModelRulesC'
+import { ModelOneRuleC } from './src/Components/ModelOneRuleC'
+import { ModelRulesC } from './src/Components/ModelRulesC'
 
 // /* LEGO ошибок */
-export * from './src/System/Middleware/ErrorSysMiddleware'
+import ErrorSysMiddleware from './src/System/Middleware/ErrorSysMiddleware'
 
 /* Создает объект запроса */
-export * from './src/System/Middleware/RequestSysMiddleware'
+import RequestSysMiddleware from './src/System/Middleware/RequestSysMiddleware'
 
 /* Создает объект ответа */
-export * from './src/System/Middleware/ResponseSysMiddleware'
+import ResponseSysMiddleware from './src/System/Middleware/ResponseSysMiddleware'
 
 // /* проверка авторизации на уровне приложения */
-export * from './src/System/Middleware/AuthSysMiddleware'
+import AuthSysMiddleware from './src/System/Middleware/AuthSysMiddleware'
+
+
+export default {
+    BaseCtrl,
+    BaseSQL,
+    BaseM,
+    ModelValidatorSys,
+    ModelOneRuleC,
+    ModelRulesC,
+    Middleware: {
+        ErrorSysMiddleware,
+        RequestSysMiddleware,
+        ResponseSysMiddleware,
+        AuthSysMiddleware
+    }
+}
