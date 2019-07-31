@@ -7,7 +7,7 @@ import { UserSys } from './System/UserSys';
 import { ResponseSys } from './System/ResponseSys';
 import MainRequest from './System/MainRequest';
 import { ModelOneRuleC } from './Components/ModelOneRuleC';
-import { ModelRulesC } from './Components/ModelRulesC';
+import { ModelRulesC, ModelRulesT } from './Components/ModelRulesC';
 import ErrorSysMiddleware from './System/Middleware/ErrorSysMiddleware';
 import RequestSysMiddleware from './System/Middleware/RequestSysMiddleware';
 import ResponseSysMiddleware from './System/Middleware/ResponseSysMiddleware';
@@ -19,4 +19,4 @@ declare const Middleware: {
     ResponseSysMiddleware: typeof ResponseSysMiddleware;
     AuthSysMiddleware: typeof AuthSysMiddleware;
 };
-export { BaseCtrl, BaseSQL, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ErrorSys, UserSys, ResponseSys, RedisSys, Middleware, MainRequest };
+export { BaseCtrl, BaseSQL, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ModelRulesT, ErrorSys, UserSys, ResponseSys, RedisSys, Middleware, MainRequest };
