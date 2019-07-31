@@ -29,7 +29,8 @@
     "@types/mocha": "^5.2.6",
     "@types/node": "^11.11.5",
     "@typescript-eslint/eslint-plugin": "^1.9.0",
-    "@typescript-eslint/parser": "^1.9.0"
+    "@typescript-eslint/parser": "^1.9.0",
+    "typescript": "^3.3.4000"
   },
   "scripts": {
     "release": "npm run build:dev && npm run build:prod",
@@ -39,6 +40,7 @@
     "typescript-require": "^0.2.10",
     "ts-mocha": "^2.0.0",
     "ts-node": "^8.0.3",
+
     "regenerator-runtime": "^0.12.1",
     "rollup-plugin-image": "^1.0.2",
     "rollup-plugin-uglify": "^6.0.0",
