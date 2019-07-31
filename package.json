@@ -2,8 +2,8 @@
   "name": "@63pokupki/nodejs-common",
   "version": "0.0.26",
   "description": "common nodejs functionality",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "main": "index.js",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/63pokupki/nodejs-common.git"
