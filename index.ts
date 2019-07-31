@@ -21,6 +21,7 @@ import MainRequest from './src/System/MainRequest'
 // export { MainRequest as MainRequest };
 
 import { ModelOneRuleC } from './src/Components/ModelOneRuleC'
+
 import { ModelRulesC } from './src/Components/ModelRulesC'
 
 // /* LEGO ошибок */
@@ -54,5 +55,6 @@ export {
     UserSys,
     ResponseSys,
     RedisSys,
-    Middleware
+    Middleware,
+    MainRequest
 }
