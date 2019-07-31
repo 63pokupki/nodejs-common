@@ -1,4 +1,4 @@
-import { BaseCtrl } from './src/System/BaseCtrl'
+import BaseCtrl from './src/System/BaseCtrl'
 import BaseSQL from './src/System/BaseSQL'
 import BaseM from './src/System/BaseM'
 import { ModelValidatorSys } from './src/System/ModelValidatorSys'
