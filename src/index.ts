@@ -22,7 +22,7 @@ import MainRequest from './System/MainRequest'
 
 import { ModelOneRuleC } from './Components/ModelOneRuleC'
 
-import { ModelRulesC } from './Components/ModelRulesC'
+import { ModelRulesC, ModelRulesT } from './Components/ModelRulesC'
 
 // /* LEGO ошибок */
 import ErrorSysMiddleware from './System/Middleware/ErrorSysMiddleware'
@@ -52,6 +52,7 @@ export {
     ModelValidatorSys,
     ModelOneRuleC,
     ModelRulesC,
+    ModelRulesT,
     ErrorSys,
     UserSys,
     ResponseSys,
