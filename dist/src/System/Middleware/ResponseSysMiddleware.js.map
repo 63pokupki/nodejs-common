@@ -1,1 +1,0 @@
-{"version":3,"file":"ResponseSysMiddleware.js","sourceRoot":"","sources":["../../../../src/System/Middleware/ResponseSysMiddleware.ts"],"names":[],"mappings":";AAEA,8BAA4B,gBAAgB,CAAC,CAAA;AAI7C,+BAA8C,OAAoB,EAAE,QAAa,EAAE,IAAS;IAExF,MAAM,WAAW,GAAG,IAAI,yBAAW,CAAC,OAAO,CAAC,CAAC;IAC7C,OAAO,CAAC,GAAG,CAAC,WAAW,GAAG,WAAW,CAAC;IAEtC,IAAI,EAAE,CAAC;AACX,CAAC;AAND;uCAMC,CAAA"}
