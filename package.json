@@ -20,17 +20,17 @@
   "homepage": "https://github.com/63pokupki/nodejs-common#readme",
   "peerDependencies": {},
   "devDependencies": {
-    "cross-env": "^5.2.0",
-    "html-loader": "^0.5.5",
-    "@types/lodash": "^4.14.123",
     "@trongnd/ts-nodemon": "^1.0.3",
     "@types/expect": "^1.20.4",
+    "@types/lodash": "^4.14.123",
     "@types/md5": "^2.1.33",
     "@types/mocha": "^5.2.6",
     "@types/node": "^11.11.5",
     "@typescript-eslint/eslint-plugin": "^1.9.0",
     "@typescript-eslint/parser": "^1.9.0",
-    "typescript": "^3.3.4000"
+    "cross-env": "^5.2.0",
+    "html-loader": "^0.5.5",
+    "typescript": "^3.5.3"
   },
   "scripts": {
     "release": "npm run build:dev && npm run build:prod",
