@@ -6,7 +6,7 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
-        "outDir": "./lib",
+        "outDir": "./dist",
         "declaration": true,
         "strict": true
     },
