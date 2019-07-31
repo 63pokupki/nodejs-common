@@ -35,6 +35,7 @@ import ResponseSysMiddleware from './src/System/Middleware/ResponseSysMiddleware
 
 // /* проверка авторизации на уровне приложения */
 import AuthSysMiddleware from './src/System/Middleware/AuthSysMiddleware'
+
 import { RedisSys } from './src/System/RedisSys';
 
 const Middleware =  {
