@@ -56,5 +56,6 @@ export {
     UserSys,
     ResponseSys,
     RedisSys,
-    Middleware
+    Middleware,
+    MainRequest
 }
