@@ -1,6 +1,6 @@
 {
   "name": "@63pokupki/nodejs-common",
-  "version": "0.0.8",
+  "version": "0.0.11",
   "description": "common nodejs functionality",
   "main": "dist/index.js",
   "repository": {
@@ -22,25 +22,29 @@
   "devDependencies": {
     "cross-env": "^5.2.0",
     "html-loader": "^0.5.5",
-    "rollup": "^0.58.2",
-    "rollup-plugin-babel": "^4.3.2",
-    "rollup-plugin-commonjs": "^9.3.4",
-    "rollup-plugin-json": "^3.1.0",
-    "rollup-plugin-node-resolve": "^3.4.0",
-    "rollup-plugin-postcss": "^1.6.2",
-    "rollup-plugin-replace": "^2.0.0",
-    "@types/lodash": "^4.14.123"
+    "@types/lodash": "^4.14.123",
+    "@trongnd/ts-nodemon": "^1.0.3",
+    "@types/expect": "^1.20.4",
+    "@types/md5": "^2.1.33",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^11.11.5",
+    "@typescript-eslint/eslint-plugin": "^1.9.0",
+    "@typescript-eslint/parser": "^1.9.0"
   },
   "scripts": {
     "release": "npm run build:dev && npm run build:prod",
     "build": "tsc"
   },
   "dependencies": {
+    "typescript-require": "^0.2.10",
+    "ts-mocha": "^2.0.0",
+    "ts-node": "^8.0.3",
     "regenerator-runtime": "^0.12.1",
     "rollup-plugin-image": "^1.0.2",
     "rollup-plugin-uglify": "^6.0.0",
     "redis": "^2.8.0",
     "lodash": "^4.17.11",
     "knex": "^0.16.3"
-  }
+  },
+  "types": "dist/index.d.ts"
 }
