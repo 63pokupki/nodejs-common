@@ -6,12 +6,12 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
-        "outDir": "./dist",
+        "outDir": "./lib",
         "declaration": true,
         "strict": true
     },
     "include": [
-        "src/**/*.ts",
+        "src/**/*.ts"
     ],
     "exclude": [
         "node_modules"

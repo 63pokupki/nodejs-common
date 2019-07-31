@@ -43,7 +43,7 @@ const Middleware =  {
     RequestSysMiddleware,
     ResponseSysMiddleware,
     AuthSysMiddleware
-}
+};
 
 export {
     BaseCtrl,
@@ -56,6 +56,5 @@ export {
     UserSys,
     ResponseSys,
     RedisSys,
-    Middleware,
-    MainRequest
+    Middleware
 }
