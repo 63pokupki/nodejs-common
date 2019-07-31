@@ -45,7 +45,6 @@ const Middleware =  {
     AuthSysMiddleware
 }
 
-
 export {
     BaseCtrl,
     BaseSQL,
