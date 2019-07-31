@@ -11,7 +11,7 @@ import { UserSys } from './UserSys';
 /**
  * SQL Запросы
  */
-export class BaseCtrl {
+export default class BaseCtrl {
 
     public req: MainRequest;
     public errorSys: ErrorSys;
