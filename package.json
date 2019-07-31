@@ -1,6 +1,6 @@
 {
   "name": "@63pokupki/nodejs-common",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "common nodejs functionality",
   "main": "dist/index.js",
   "repository": {
