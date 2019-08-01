@@ -7,6 +7,7 @@ const should = require('chai').should();
 const expect = require('chai').expect;
 
 import { S3, S3confI, S3objectParamsI } from "../src/System/S3";
+import {devReq} from '../src/System/MainRequest';
 
 
 function getRandomInt(min: any, max: any) {
@@ -14,11 +15,14 @@ function getRandomInt(min: any, max: any) {
 }
 
 const S3conf: S3confI = {
-    endpoint: 'test',
-    bucket: 'test',
-    baseUrl: 'test'
+    endpoint: 'http://10.1.100.76:8000',
+    bucket: 'devbucket',
+    baseUrl: 'http://localhost:8000/',
+    access: 'accessKey1',
+    secret: 'verySecretKey1',
 }
 
+devReq.conf.S3 = S3conf;
 
 /**
  * обертка для чтения файла
@@ -45,16 +49,16 @@ const run = async () => {
 
         it('upload', async () => {
 
-            let s3 = new S3(S3conf);
-            let data: any = await readFile(__dirname + '/S3.ts');
+            let s3 = new S3(devReq);
+            let data: any = await readFile(__dirname + '/S3.test.ts');
 
-            console.log('Upload file ' ,__dirname + '/S3.ts');
+            console.log('Upload file ', __dirname + '/S3.test.ts');
 
             ;
-            
+
             let object: S3objectParamsI = {
                 Bucket: S3conf.bucket,
-                Key: 'media/S3.ts',
+                Key: 'media//S3.test.ts',
                 ContentType: 'text/html',
                 ContentLength: data.length,
                 Body: data // buffer
@@ -71,7 +75,7 @@ const run = async () => {
 
         }).timeout(10000);
 
-        
+
 
     });
 

@@ -8,17 +8,27 @@ export interface S3confI {
     endpoint: string;
     bucket: string;
     baseUrl: string;
+    access: string;
+    secret: string;
 }
 
 /**
  * Параметры объекта для заливки
+ * https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property
  */
 export interface S3objectParamsI {
-    Bucket: any,
-    Key: string,
-    ContentType: string,
-    ContentLength: number,
-    Body: any // buffer
+    Bucket: any;
+    Key: string;
+    ContentType: string;
+    ContentLength: number;
+    Body: any; // Buffer.from
+    GrantFullControl?: string;
+    ACL?: string; // private | public-read | public-read-write | authenticated-read | aws-exec-read | bucket-owner-read | bucket-owner-full-control
+    GrantRead?: string;
+    GrantReadACP?: string;
+    GrantWriteACP?: string;
+    CacheControl?: string;
+    Metadata?: { [key: string]: string };
 }
 
 
@@ -41,7 +51,11 @@ export class S3 {
      */
     upload(object: S3objectParamsI): Promise<string> {
         return new Promise((resolve, reject) => {
-            new AWS.S3({ endpoint: new AWS.Endpoint(this.conf.endpoint) })
+            new AWS.S3({
+                endpoint: new AWS.Endpoint(this.conf.endpoint),
+                accessKeyId: this.conf.access,
+                secretAccessKey: this.conf.secret,
+            })
                 .putObject(object)
                 .promise()
                 .then((data: any) => {

@@ -35,14 +35,17 @@
   },
   "scripts": {
     "release": "npm run build:dev && npm run build:prod",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "./node_modules/.bin/ts-mocha"
   },
   "dependencies": {
     "@types/amqplib": "^0.5.13",
     "amqplib": "^0.5.5",
     "aws-sdk": "^2.503.0",
+    "chai": "^4.2.0",
     "knex": "^0.16.3",
     "lodash": "^4.17.11",
+    "mocha": "^6.2.0",
     "redis": "^2.8.0",
     "regenerator-runtime": "^0.12.1",
     "rollup-plugin-image": "^1.0.2",
