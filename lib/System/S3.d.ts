@@ -3,6 +3,8 @@ export interface S3confI {
     endpoint: string;
     bucket: string;
     baseUrl: string;
+    access: string;
+    secret: string;
 }
 export interface S3objectParamsI {
     Bucket: any;
@@ -10,6 +12,15 @@ export interface S3objectParamsI {
     ContentType: string;
     ContentLength: number;
     Body: any;
+    GrantFullControl?: string;
+    ACL?: string;
+    GrantRead?: string;
+    GrantReadACP?: string;
+    GrantWriteACP?: string;
+    CacheControl?: string;
+    Metadata?: {
+        [key: string]: string;
+    };
 }
 export declare class S3 {
     private conf;

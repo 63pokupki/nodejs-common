@@ -64,3 +64,4 @@ export default interface MainRequest {
         };
     };
 }
+export declare const devReq: MainRequest;
