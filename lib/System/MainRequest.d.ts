@@ -65,4 +65,4 @@ export default interface MainRequest {
     };
 }
 export declare const devReq: MainRequest;
-export declare function initMainRequest(conf: any): Promise<MainRequest>;
+export declare function initMainRequest(conf: any): MainRequest;
