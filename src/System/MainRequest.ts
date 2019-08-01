@@ -2,6 +2,8 @@ import { ErrorSys } from './ErrorSys';
 import { UserSys } from './UserSys';
 import { ResponseSys } from './ResponseSys';
 
+import { RedisSys } from './RedisSys';
+
 export default interface MainRequest {
     headers: { [key: string]: any };
     body: any;
@@ -135,5 +137,31 @@ export const devReq: MainRequest = {
             secret: '',
         }
     }
+
+}
+
+
+
+/**
+ * Инициализация MainRequest для консольных запросов
+ */
+export async function initMainRequest(conf: any) {
+
+    let mainRequest: MainRequest;
+
+    mainRequest = devReq;
+    mainRequest.conf = conf;
+
+    mainRequest.sys.errorSys = new ErrorSys(mainRequest);
+
+    /* юзерь не авторизован */
+    const userSys = new UserSys(mainRequest);
+
+    // Инициализируем систему для пользователей
+    await userSys.init();
+
+    mainRequest.sys.userSys;
+
+    return mainRequest;
 
 }
