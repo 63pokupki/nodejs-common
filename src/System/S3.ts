@@ -55,11 +55,12 @@ export class S3 {
                 endpoint: new AWS.Endpoint(this.conf.endpoint),
                 accessKeyId: this.conf.access,
                 secretAccessKey: this.conf.secret,
+                s3ForcePathStyle: true
             })
                 .putObject(object)
                 .promise()
                 .then((data: any) => {
-                    resolve(this.conf.baseUrl + object.Key);
+                    resolve(this.conf.baseUrl + this.conf.bucket + '/' + object.Key);
                 })
                 .catch((e: any) => reject(e));
         })

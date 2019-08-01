@@ -17,7 +17,7 @@ function getRandomInt(min: any, max: any) {
 const S3conf: S3confI = {
     endpoint: 'http://10.1.100.76:8000',
     bucket: 'devbucket',
-    baseUrl: 'http://localhost:8000/',
+    baseUrl: 'http://10.1.100.76:8000/',
     access: 'accessKey1',
     secret: 'verySecretKey1',
 }
@@ -58,10 +58,11 @@ const run = async () => {
 
             let object: S3objectParamsI = {
                 Bucket: S3conf.bucket,
-                Key: 'media//S3.test.ts',
+                Key: 'media/S3r3.test.ts',
                 ContentType: 'text/html',
                 ContentLength: data.length,
-                Body: data // buffer
+                Body: data,
+                ACL:'public-read'
             }
 
             console.log(object);
