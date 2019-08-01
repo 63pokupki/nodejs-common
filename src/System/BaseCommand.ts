@@ -16,10 +16,10 @@ import { UserSys } from './UserSys';
  */
 export default class BaseCommand {
 
-    protected db: any;
+    public db: any;
 
-    protected errorSys: ErrorSys;
-    protected userSys: UserSys;
+    public errorSys: ErrorSys;
+    public userSys: UserSys;
 
     constructor(req: MainRequest) {
 

@@ -14,10 +14,10 @@ import { UserSys } from './UserSys';
  */
 export default class BaseTest {
 
-    protected db: any; // База данных основного сайта
+    public db: any; // База данных основного сайта
 
-    protected errorSys: ErrorSys;
-    protected userSys: UserSys;
+    public errorSys: ErrorSys;
+    public userSys: UserSys;
 
     constructor(req: MainRequest) {
 

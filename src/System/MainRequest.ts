@@ -145,7 +145,7 @@ export const devReq: MainRequest = {
 /**
  * Инициализация MainRequest для консольных запросов
  */
-export async function initMainRequest(conf: any) {
+export async function initMainRequest(conf: any): Promise<MainRequest> {
 
     let mainRequest: MainRequest;
 
@@ -163,5 +163,4 @@ export async function initMainRequest(conf: any) {
     mainRequest.sys.userSys;
 
     return mainRequest;
-
 }
