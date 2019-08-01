@@ -52,5 +52,15 @@ export default interface MainRequest {
             env: string;
             oldCoreURL: string;
         };
+        rabbit: {
+            connection: string;
+        };
+        S3: {
+            endpoint: string;
+            bucket: string;
+            baseUrl: string;
+            access: string;
+            secret: string;
+        };
     };
 }

@@ -13,10 +13,12 @@ import RequestSysMiddleware from './System/Middleware/RequestSysMiddleware';
 import ResponseSysMiddleware from './System/Middleware/ResponseSysMiddleware';
 import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware';
 import { RedisSys } from './System/RedisSys';
+import { S3objectParamsI, S3 } from './System/S3';
+import { RabbitSender } from './System/RabbitSender';
 declare const Middleware: {
     ErrorSysMiddleware: typeof ErrorSysMiddleware;
     RequestSysMiddleware: typeof RequestSysMiddleware;
     ResponseSysMiddleware: typeof ResponseSysMiddleware;
     AuthSysMiddleware: typeof AuthSysMiddleware;
 };
-export { BaseCtrl, BaseSQL, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ModelRulesT, ErrorSys, UserSys, ResponseSys, RedisSys, Middleware, MainRequest };
+export { BaseCtrl, BaseSQL, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ModelRulesT, ErrorSys, UserSys, ResponseSys, RedisSys, Middleware, MainRequest, S3, S3objectParamsI, RabbitSender, };
