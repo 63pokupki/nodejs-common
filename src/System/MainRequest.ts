@@ -145,7 +145,7 @@ export const devReq: MainRequest = {
 /**
  * Инициализация MainRequest для консольных запросов
  */
-export async function initMainRequest(conf: any): Promise<MainRequest> {
+export function initMainRequest(conf: any): MainRequest {
 
     let mainRequest: MainRequest;
 
@@ -155,12 +155,7 @@ export async function initMainRequest(conf: any): Promise<MainRequest> {
     mainRequest.sys.errorSys = new ErrorSys(mainRequest);
 
     /* юзерь не авторизован */
-    const userSys = new UserSys(mainRequest);
-
-    // Инициализируем систему для пользователей
-    await userSys.init();
-
-    mainRequest.sys.userSys;
+    mainRequest.sys.userSys = new UserSys(mainRequest);
 
     return mainRequest;
 }
