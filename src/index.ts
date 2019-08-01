@@ -18,6 +18,7 @@ import { UserSys } from './System/UserSys'
 import { ResponseSys } from './System/ResponseSys'
 
 import MainRequest from './System/MainRequest'
+import { devReq } from './System/MainRequest'
 // export { MainRequest as MainRequest };
 
 import { ModelOneRuleC } from './Components/ModelOneRuleC'
@@ -46,7 +47,7 @@ import { RabbitSender } from './System/RabbitSender';
 
 
 
-const Middleware =  {
+const Middleware = {
     ErrorSysMiddleware,
     RequestSysMiddleware,
     ResponseSysMiddleware,
@@ -67,8 +68,10 @@ export {
     RedisSys,
     Middleware,
     MainRequest,
+    devReq,
     S3,
     S3objectParamsI,
     S3confI,
     RabbitSender,
+
 }
