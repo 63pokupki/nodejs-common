@@ -38,6 +38,14 @@ import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware'
 
 import { RedisSys } from './System/RedisSys';
 
+/* Класс для работы с S3 */
+import { S3objectParamsI, S3 } from './System/S3';
+
+/* Отправлятор сообщений в Rabbit */
+import { RabbitSender } from './System/RabbitSender';
+
+
+
 const Middleware =  {
     ErrorSysMiddleware,
     RequestSysMiddleware,
@@ -58,5 +66,8 @@ export {
     ResponseSys,
     RedisSys,
     Middleware,
-    MainRequest
+    MainRequest,
+    S3,
+    S3objectParamsI,
+    RabbitSender,
 }
