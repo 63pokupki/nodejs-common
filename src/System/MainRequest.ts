@@ -1,6 +1,6 @@
-import {ErrorSys} from './ErrorSys';
-import {UserSys} from './UserSys';
-import {ResponseSys} from './ResponseSys';
+import { ErrorSys } from './ErrorSys';
+import { UserSys } from './UserSys';
+import { ResponseSys } from './ResponseSys';
 
 export default interface MainRequest {
     headers: { [key: string]: any };
@@ -24,7 +24,7 @@ export default interface MainRequest {
                 password: string; // Пароль
                 database: string; // Имя базы данных
             },
-            pool: {min: number, max: number}, // Количество соединений
+            pool: { min: number, max: number }, // Количество соединений
             migrations: {
                 tableName: string; // "knex_migrations",
                 directory: string; // "./src/Infrastructure/SQL/Migrations"
@@ -45,13 +45,27 @@ export default interface MainRequest {
             }
         };
         // ================================
-        redis:{ // Конфиг для редиса
+        redis: { // Конфиг для редиса
             url: string; // "redis://127.0.0.1:6379"
         };
         // ================================
         common: { // Общее
-            env:string; // Тип окружения
-            oldCoreURL:string; // URL адрес основного сайта
+            env: string; // Тип окружения
+            oldCoreURL: string; // URL адрес основного сайта
+        };
+
+        rabbit: {
+            connection: string;
+        };
+
+        S3: {
+            endpoint: string;
+            bucket: string;
+            baseUrl: string;
+            access: string;
+            secret: string;
         }
     }
+
+
 }

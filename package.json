@@ -38,15 +38,20 @@
     "build": "tsc"
   },
   "dependencies": {
-    "typescript-require": "^0.2.10",
-    "ts-mocha": "^2.0.0",
-    "ts-node": "^8.0.3",
+    "amqplib": "^0.5.5",
+    "aws-sdk": "^2.503.0",
+    "knex": "^0.16.3",
+    "lodash": "^4.17.11",
+    "redis": "^2.8.0",
     "regenerator-runtime": "^0.12.1",
     "rollup-plugin-image": "^1.0.2",
     "rollup-plugin-uglify": "^6.0.0",
-    "redis": "^2.8.0",
-    "lodash": "^4.17.11",
-    "knex": "^0.16.3",
+    "ts-mocha": "^2.0.0",
+    "ts-node": "^8.0.3",
+    "typescript-require": "^0.2.10",
     "utf8": "^3.0.0"
+  },
+  "directories": {
+    "lib": "lib"
   }
 }
