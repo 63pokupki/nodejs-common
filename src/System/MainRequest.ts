@@ -2,10 +2,13 @@ import { ErrorSys } from './ErrorSys';
 import { UserSys } from './UserSys';
 import { ResponseSys } from './ResponseSys';
 
-export default interface MainRequest {
+import { Request } from 'express';
+
+export default interface MainRequest extends Request {
     headers: { [key: string]: any };
     body: any;
     method: string;
+
     sys: {
         apikey: string,
         bAuth: boolean, /* флаг авторизации */
@@ -70,70 +73,27 @@ export default interface MainRequest {
 
 }
 
+const Req: any = {};
 
-export const devReq: MainRequest = {
-    headers: {  },
-    body: null,
-    method: null,
-    sys: {
-        apikey: null,
-        bAuth: null,
+Req['S3'] = {
+    endpoint: '',
+    bucket: '',
+    baseUrl: '',
+    access: '',
+    secret: ''
+};
 
-        errorSys: null,
-        userSys: null,
-        responseSys: null,
-    },
-    conf: { // Конфигурация
-        // ================================
-        mysql: { // Конфиг для MySql
-            client: '', // mysql
-            connection: { // Параметры соединения
-                host: '', // "127.0.0.1"
-                user: '', // Пользователь
-                password: '', // Пароль
-                database: '', // Имя базы данных
-            },
-            pool: { min: 0, max: 0 }, // Количество соединений
-            migrations: {
-                tableName: '', // "knex_migrations",
-                directory: '', // "./src/Infrastructure/SQL/Migrations"
-            },
-            acquireConnectionTimeout: 0, // таймоут 60000
-        },
-        // ================================
-        pgsql: { // Конфиг для Postgress
-            dialect: '', // "postgres",
-            username: '', // Имя пользователя,
-            password: '', // Пароль
-            host: '', // "127.0.0.1",
-            port: 0, // 5432,
-            database: '', // Имя базы данных
-            dialectOptions: {
-                supportBigNumbers: true,
-                decimalNumbers: true,
-            }
-        },
-        // ================================
-        redis: { // Конфиг для редиса
-            url: '', // "redis://127.0.0.1:6379"
-        },
-        // ================================
-        common: { // Общее
-            env: '', // Тип окружения
-            oldCoreURL: '', // URL адрес основного сайта
-        },
+Req['headers'] = null;
 
-        rabbit: {
-            connection: '',
-        },
+Req['sys'] =  {
+    apikey: '',
+    bAuth: false, /* флаг авторизации */
 
-        S3: {
-            endpoint: '',
-            bucket: '',
-            baseUrl: '',
-            access: '',
-            secret: '',
-        }
-    }
+    errorSys: null,
+    userSys: null,
+    responseSys: null
+};
 
-}
+Req['conf'] = null;
+
+export const devReq = <MainRequest> Req;
