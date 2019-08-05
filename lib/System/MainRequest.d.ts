@@ -1,7 +1,8 @@
 import { ErrorSys } from './ErrorSys';
 import { UserSys } from './UserSys';
 import { ResponseSys } from './ResponseSys';
-export default interface MainRequest {
+import { Request } from 'express';
+export default interface MainRequest extends Request {
     headers: {
         [key: string]: any;
     };
