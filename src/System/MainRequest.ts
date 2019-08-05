@@ -97,3 +97,21 @@ Req['sys'] =  {
 Req['conf'] = null;
 
 export const devReq = <MainRequest> Req;
+
+/**
+ * Инициализация MainRequest для консольных запросов
+ */
+export function initMainRequest(conf: any): MainRequest {
+
+    let mainRequest: MainRequest;
+
+    mainRequest = devReq;
+    mainRequest.conf = conf;
+
+    mainRequest.sys.errorSys = new ErrorSys(mainRequest);
+
+    /* юзерь не авторизован */
+    mainRequest.sys.userSys = new UserSys(mainRequest);
+
+    return mainRequest;
+}

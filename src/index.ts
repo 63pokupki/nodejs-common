@@ -19,6 +19,7 @@ import { ResponseSys } from './System/ResponseSys'
 
 import MainRequest from './System/MainRequest'
 import { devReq } from './System/MainRequest'
+import { initMainRequest } from './System/MainRequest'
 // export { MainRequest as MainRequest };
 
 import { ModelOneRuleC } from './Components/ModelOneRuleC'
@@ -45,6 +46,11 @@ import { S3objectParamsI, S3confI, S3 } from './System/S3';
 /* Отправлятор сообщений в Rabbit */
 import { RabbitSender } from './System/RabbitSender';
 
+/* Конструктор Консольной команды */
+import BaseCommand from './System/BaseCommand';
+
+/* Конструктор теста */
+import BaseTest from './System/BaseTest';
 
 
 const Middleware = {
@@ -67,11 +73,13 @@ export {
     ResponseSys,
     RedisSys,
     Middleware,
-    MainRequest,
-    devReq,
+    MainRequest, // interface MainRequest
+    devReq, // Пример MainRequest
     S3,
     S3objectParamsI,
     S3confI,
     RabbitSender,
-
+    initMainRequest, // Инициализация Main Request для тестов
+    BaseCommand, // Конструктор консольных комманд
+    BaseTest // Конструктор тестов
 }
