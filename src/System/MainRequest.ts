@@ -3,6 +3,7 @@ import { UserSys } from './UserSys';
 import { ResponseSys } from './ResponseSys';
 
 import { Request } from 'express';
+import { SeoBase } from '../Components/Seo';
 
 export default interface MainRequest extends Request {
     headers: { [key: string]: any };
@@ -16,6 +17,7 @@ export default interface MainRequest extends Request {
         errorSys: ErrorSys,
         userSys: UserSys,
         responseSys: ResponseSys,
+        seo?: SeoBase;
     };
     conf: { // Конфигурация
         // ================================
