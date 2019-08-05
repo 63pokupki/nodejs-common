@@ -6,12 +6,16 @@ npm init --scope=63pokupki
 
 # Patch version
 
+npm run build
 
 git stage .
 git commit
-git push
 
 npm version patch
+
+git push
+
+
 
 жмешь Enter до конца...
 
