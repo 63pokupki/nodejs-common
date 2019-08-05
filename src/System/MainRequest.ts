@@ -4,6 +4,7 @@ import { ResponseSys } from './ResponseSys';
 
 import { Request } from 'express';
 import { SeoBase } from '../Components/Seo';
+import { SeoConfigI } from '../Components/Seo';
 
 export default interface MainRequest extends Request {
     headers: { [key: string]: any };
@@ -69,7 +70,10 @@ export default interface MainRequest extends Request {
             baseUrl: string;
             access: string;
             secret: string;
-        }
+        },
+
+        SeoConfig?: SeoConfigI
+
     }
 
 
