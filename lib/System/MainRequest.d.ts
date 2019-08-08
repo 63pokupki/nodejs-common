@@ -68,6 +68,10 @@ export default interface MainRequest extends Request {
         };
         SeoConfig?: SeoConfigI;
     };
+    infrastructure: {
+        mysql: any;
+        redis: any;
+    };
 }
 export declare const devReq: MainRequest;
 export declare function initMainRequest(conf: any): MainRequest;
