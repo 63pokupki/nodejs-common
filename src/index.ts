@@ -52,6 +52,8 @@ import BaseCommand from './System/BaseCommand';
 /* Конструктор теста */
 import BaseTest from './System/BaseTest';
 
+import * as Seo from './Components/Seo';
+
 
 const Middleware = {
     ErrorSysMiddleware,
@@ -81,5 +83,6 @@ export {
     RabbitSender,
     initMainRequest, // Инициализация Main Request для тестов
     BaseCommand, // Конструктор консольных комманд
-    BaseTest // Конструктор тестов
+    BaseTest, // Конструктор тестов
+    Seo // сео собственно
 }

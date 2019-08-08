@@ -1,7 +1,10 @@
 import { ErrorSys } from './ErrorSys';
 import { UserSys } from './UserSys';
 import { ResponseSys } from './ResponseSys';
-export default interface MainRequest {
+import { Request } from 'express';
+import { SeoBase } from '../Components/Seo';
+import { SeoConfigI } from '../Components/Seo';
+export default interface MainRequest extends Request {
     headers: {
         [key: string]: any;
     };
@@ -13,6 +16,7 @@ export default interface MainRequest {
         errorSys: ErrorSys;
         userSys: UserSys;
         responseSys: ResponseSys;
+        seo?: SeoBase;
     };
     conf: {
         mysql: {
@@ -62,6 +66,7 @@ export default interface MainRequest {
             access: string;
             secret: string;
         };
+        SeoConfig?: SeoConfigI;
     };
 }
 export declare const devReq: MainRequest;
