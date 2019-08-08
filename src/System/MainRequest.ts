@@ -67,6 +67,10 @@ export default interface MainRequest {
             access: string;
             secret: string;
         }
+    },
+    infrastructure:{
+        mysql:any,
+        redis:any
     }
 
 
@@ -136,8 +140,11 @@ export const devReq: MainRequest = {
             access: '',
             secret: '',
         }
+    },
+    infrastructure:{
+        mysql:null,
+        redis:null
     }
-
 }
 
 
