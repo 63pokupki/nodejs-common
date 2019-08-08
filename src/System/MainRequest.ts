@@ -74,34 +74,33 @@ export default interface MainRequest extends Request {
 
         SeoConfig?: SeoConfigI
 
+    },
+    infrastructure:{
+        mysql:any;
+        redis:any;
     }
-
-
 }
 
-const Req: any = {};
+const Req: any = {
+    headers: null,
+    common: { // Общее
+        env: 'dev', // Тип окружения
+        oldCoreURL: null, // URL адрес основного сайта
+    },
+    sys: {
+        apikey: '',
+        bAuth: false, /* флаг авторизации */
 
-Req['S3'] = {
-    endpoint: '',
-    bucket: '',
-    baseUrl: '',
-    access: '',
-    secret: ''
+        errorSys: null,
+        userSys: null,
+        responseSys: null
+    },
+    conf:null,
+    infrastructure:{
+        mysql:null,
+        redis:null
+    }
 };
-
-Req['headers'] = null;
-
-Req['sys'] =  {
-    apikey: '',
-    bAuth: false, /* флаг авторизации */
-
-    errorSys: null,
-    userSys: null,
-    responseSys: null
-};
-
-Req['conf'] = null;
-
 
 
 export const devReq = <MainRequest> Req;
