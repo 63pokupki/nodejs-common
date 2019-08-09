@@ -8,7 +8,7 @@ export class RabbitSender {
 
 
     protected connection:any;
-    protected aQuery:{[key:string]:RabbitQueue};
+    public aQuery:{[key:string]:RabbitQueue};
 
     constructor(connection: any) {
         this.connection = connection;
@@ -36,12 +36,12 @@ export class RabbitSender {
      * Асинхронный конструктор
      * @param query
      */
-    static Init(confConnect:string, queryList: string[]): Promise<RabbitSender> {
+    static async Init(confConnect:string, queryList: string[]): Promise<RabbitSender> {
         return new Promise((resolve, reject) => {
 
             try {
                 /* подключаемся к серверу */
-                amqp.connect(confConnect, function (error0: any, connection: any) {
+                amqp.connect(confConnect, async function (error0: any, connection: any) {
                     if (error0) {
                         throw error0;
                     }
@@ -50,7 +50,7 @@ export class RabbitSender {
                     for(let kQuery in queryList){
                         let sQuery = queryList[kQuery];
 
-                        rabbitSender.aQuery[sQuery] = RabbitQueue.init(connection, sQuery);
+                        rabbitSender.aQuery[sQuery] = await RabbitQueue.init(connection, sQuery);
 
                         resolve(rabbitSender);
                     }
@@ -82,24 +82,32 @@ class RabbitQueue {
         this.channel = channel;
     }
 
-    static init(conn:any, sQuery:any):RabbitQueue{
-        let vQuery = null;
+    static async init(conn:any, sQuery:any):Promise<RabbitQueue>{
+        return new Promise((resolve, reject) => {
 
-        /* подключаемся к каналу */
-        conn.createChannel(function (error1: any, channel: any) {
-            if (error1) {
-                throw error1;
+            try {
+
+                /* подключаемся к каналу */
+                conn.createChannel(function (error1: any, channel: any) {
+                    if (error1) {
+                        throw error1;
+                    }
+
+                    channel.assertQueue(sQuery, {
+                        durable: false
+                    });
+
+                    /* отдаем новый экземпляр класса */
+
+                    resolve(new RabbitQueue(sQuery, conn, channel));
+                });
+
+            } catch (e) {
+                reject(e);
             }
-
-            channel.assertQueue(sQuery, {
-                durable: false
-            });
-
-            /* отдаем новый экземпляр класса */
-            vQuery = new RabbitQueue(sQuery, conn, channel);
         });
 
-        return vQuery;
+        // return vQuery;
     }
 
     public sendToQueue(msg: any) {

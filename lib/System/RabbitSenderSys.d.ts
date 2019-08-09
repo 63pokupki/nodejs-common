@@ -1,6 +1,6 @@
 export declare class RabbitSender {
     protected connection: any;
-    protected aQuery: {
+    aQuery: {
         [key: string]: RabbitQueue;
     };
     constructor(connection: any);
@@ -13,7 +13,7 @@ declare class RabbitQueue {
     conn: any;
     channel: any;
     constructor(sQuery: any, conn: any, channel: any);
-    static init(conn: any, sQuery: any): RabbitQueue;
+    static init(conn: any, sQuery: any): Promise<RabbitQueue>;
     sendToQueue(msg: any): void;
 }
 export {};
