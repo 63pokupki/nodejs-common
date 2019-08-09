@@ -71,7 +71,7 @@ export class RabbitSender {
 /**
  * Очередь
  */
-export class RabbitQueue {
+class RabbitQueue {
     public sQuery: string; // имя очереди
     public conn: any; // соединение
     public channel: any; // канал
