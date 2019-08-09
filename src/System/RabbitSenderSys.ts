@@ -1,7 +1,6 @@
 import * as amqp from 'amqplib/callback_api';
 import MainRequest from './MainRequest';
 
-
 /**
  * Отправщик сообщений в очередь
  */
@@ -36,12 +35,12 @@ export class RabbitSender {
      * Асинхронный конструктор
      * @param query
      */
-    static Init(req: MainRequest, queryList: string[]): Promise<RabbitSender> {
+    static Init(confConnect:string, queryList: string[]): Promise<RabbitSender> {
         return new Promise((resolve, reject) => {
 
             try {
                 /* подключаемся к серверу */
-                amqp.connect(req.conf.rabbit.connection, function (error0: any, connection: any) {
+                amqp.connect(confConnect, function (error0: any, connection: any) {
                     if (error0) {
                         throw error0;
                     }
@@ -84,6 +83,7 @@ class RabbitQueue {
 
     static init(conn:any, sQuery:any):RabbitQueue{
         let vQuery = null;
+
         /* подключаемся к каналу */
         conn.createChannel(function (error1: any, channel: any) {
             if (error1) {
