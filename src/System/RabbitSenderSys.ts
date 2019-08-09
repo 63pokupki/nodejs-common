@@ -2,11 +2,6 @@ import * as amqp from 'amqplib/callback_api';
 import MainRequest from './MainRequest';
 
 
-export interface RabbitSenderI{
-    filename:string,
-    source_url:string
-}
-
 /**
  * Отправщик сообщений в очередь
  */

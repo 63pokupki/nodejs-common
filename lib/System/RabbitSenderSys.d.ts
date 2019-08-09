@@ -1,7 +1,3 @@
-export interface RabbitSenderI {
-    filename: string;
-    source_url: string;
-}
 export declare class RabbitSenderSys {
     protected connection: any;
     aQuery: {
