@@ -44,7 +44,7 @@ import { RedisSys } from './System/RedisSys';
 import { S3objectParamsI, S3confI, S3 } from './System/S3';
 
 /* Отправлятор сообщений в Rabbit */
-import { RabbitSender } from './System/RabbitSender';
+import { RabbitSender } from './System/RabbitSenderSys';
 
 /* Конструктор Консольной команды */
 import BaseCommand from './System/BaseCommand';
