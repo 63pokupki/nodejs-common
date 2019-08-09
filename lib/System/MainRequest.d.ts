@@ -71,6 +71,7 @@ export default interface MainRequest extends Request {
     infrastructure: {
         mysql: any;
         redis: any;
+        rabbit: any;
     };
 }
 export declare const devReq: MainRequest;

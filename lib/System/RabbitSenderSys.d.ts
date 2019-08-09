@@ -1,4 +1,3 @@
-import MainRequest from './MainRequest';
 export declare class RabbitSender {
     protected connection: any;
     protected aQuery: {
@@ -7,7 +6,7 @@ export declare class RabbitSender {
     constructor(connection: any);
     sendToQueue(sQueue: string, msg: any): void;
     close(): void;
-    static Init(req: MainRequest, queryList: string[]): Promise<RabbitSender>;
+    static Init(confConnect: string, queryList: string[]): Promise<RabbitSender>;
 }
 declare class RabbitQueue {
     sQuery: string;
