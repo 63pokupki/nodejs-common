@@ -1,9 +1,9 @@
 
-import { RabbitSender } from '../src/System/RabbitSenderSys';
+import { RabbitSenderSys } from '../src/System/RabbitSenderSys';
 const config = require('./config.js');
 
 async function run(){
-    const rabbitSenderSys = await RabbitSender.Init(config.rabbit.connection, config.rabbit.queryList); // Отправщик картинок в очередь
+    const rabbitSenderSys = await RabbitSenderSys.Init(config.rabbit.connection, config.rabbit.queryList); // Отправщик картинок в очередь
 
     rabbitSenderSys.sendToQueue(
         'query1', {

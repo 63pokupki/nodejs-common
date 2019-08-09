@@ -1,10 +1,16 @@
 import * as amqp from 'amqplib/callback_api';
 import MainRequest from './MainRequest';
 
+
+export interface RabbitSenderI{
+    filename:string,
+    source_url:string
+}
+
 /**
  * Отправщик сообщений в очередь
  */
-export class RabbitSender {
+export class RabbitSenderSys {
 
 
     protected connection:any;
@@ -37,7 +43,7 @@ export class RabbitSender {
      * Асинхронный конструктор
      * @param query
      */
-    static async Init(confConnect:string, queryList: string[]): Promise<RabbitSender> {
+    static async Init(confConnect:string, queryList: string[]): Promise<RabbitSenderSys> {
         return new Promise((resolve, reject) => {
 
             try {
@@ -47,7 +53,7 @@ export class RabbitSender {
                         throw error0;
                     }
 
-                    let rabbitSender = new RabbitSender(connection);
+                    let rabbitSender = new RabbitSenderSys(connection);
                     for(let kQuery in queryList){
                         let sQuery = queryList[kQuery];
 

@@ -1,4 +1,8 @@
-export declare class RabbitSender {
+export interface RabbitSenderI {
+    filename: string;
+    source_url: string;
+}
+export declare class RabbitSenderSys {
     protected connection: any;
     aQuery: {
         [key: string]: RabbitQueue;
@@ -6,7 +10,7 @@ export declare class RabbitSender {
     constructor(connection: any);
     sendToQueue(sQueue: string, msg: any): void;
     close(): void;
-    static Init(confConnect: string, queryList: string[]): Promise<RabbitSender>;
+    static Init(confConnect: string, queryList: string[]): Promise<RabbitSenderSys>;
 }
 declare class RabbitQueue {
     sQuery: string;
