@@ -11,9 +11,9 @@ export declare class RabbitSender {
 declare class RabbitQueue {
     sQuery: string;
     conn: any;
+    sendToQueue(msg: any): void;
     channel: any;
     constructor(sQuery: any, conn: any, channel: any);
     static init(conn: any, sQuery: any): Promise<RabbitQueue>;
-    sendToQueue(msg: any): void;
 }
 export {};

@@ -20,7 +20,8 @@ export class RabbitSender {
      * @param msg
      */
     public sendToQueue(sQueue:string, msg: any) {
-        this.aQuery[sQueue].sendToQueue(Buffer.from(msg));
+
+        this.aQuery[sQueue].sendToQueue(JSON.stringify(msg));
     }
 
     /**
@@ -74,6 +75,14 @@ export class RabbitSender {
 class RabbitQueue {
     public sQuery: string; // имя очереди
     public conn: any; // соединение
+
+    public sendToQueue(msg: any) {
+        // console.log(this.sQuery, Buffer.from(msg));
+        this.channel.sendToQueue(this.sQuery, Buffer.from(msg), {
+            persistent: true
+        });
+    }
+
     public channel: any; // канал
 
     constructor(sQuery: any, conn:any, channel:any) {
@@ -81,6 +90,8 @@ class RabbitQueue {
         this.sQuery = sQuery;
         this.channel = channel;
     }
+
+
 
     static async init(conn:any, sQuery:any):Promise<RabbitQueue>{
         return new Promise((resolve, reject) => {
@@ -110,11 +121,7 @@ class RabbitQueue {
         // return vQuery;
     }
 
-    public sendToQueue(msg: any) {
-        this.channel.sendToQueue(this.sQuery, Buffer.from(msg), {
-            persistent: true
-        });
-    }
+
 
 
 }
