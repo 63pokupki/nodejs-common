@@ -12,6 +12,7 @@ export class RabbitSender {
 
     constructor(connection: any) {
         this.connection = connection;
+        this.aQuery = <any>[];
     }
 
     /**

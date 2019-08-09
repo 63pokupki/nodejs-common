@@ -1,5 +1,5 @@
 # Install
-npm i 63pokupki-nodejs-common
+npm i --save @63pokupki-nodejs-common
 # Publish
 npm init --scope=63pokupki
 
