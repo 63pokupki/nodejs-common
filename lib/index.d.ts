@@ -20,10 +20,11 @@ import { RabbitSenderSys } from './System/RabbitSenderSys';
 import BaseCommand from './System/BaseCommand';
 import BaseTest from './System/BaseTest';
 import * as Seo from './Components/Seo';
+import * as HelperSys from './System/HelperSys';
 declare const Middleware: {
     ErrorSysMiddleware: typeof ErrorSysMiddleware;
     RequestSysMiddleware: typeof RequestSysMiddleware;
     ResponseSysMiddleware: typeof ResponseSysMiddleware;
     AuthSysMiddleware: typeof AuthSysMiddleware;
 };
-export { BaseCtrl, BaseSQL, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ModelRulesT, ErrorSys, UserSys, ResponseSys, RedisSys, Middleware, MainRequest, devReq, S3, S3objectParamsI, S3confI, RabbitSenderSys, initMainRequest, BaseCommand, BaseTest, Seo };
+export { BaseCtrl, BaseSQL, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ModelRulesT, ErrorSys, UserSys, ResponseSys, RedisSys, Middleware, MainRequest, devReq, S3, S3objectParamsI, S3confI, RabbitSenderSys, initMainRequest, BaseCommand, BaseTest, Seo, HelperSys };

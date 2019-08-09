@@ -54,6 +54,9 @@ import BaseTest from './System/BaseTest';
 
 import * as Seo from './Components/Seo';
 
+/* Хелпер полезных функций */
+import * as HelperSys from './System/HelperSys';
+
 
 const Middleware = {
     ErrorSysMiddleware,
@@ -84,5 +87,6 @@ export {
     initMainRequest, // Инициализация Main Request для тестов
     BaseCommand, // Конструктор консольных комманд
     BaseTest, // Конструктор тестов
-    Seo // сео собственно
+    Seo, // сео собственно
+    HelperSys // Вспомогательные функцие которые никчему не привязаны
 }
