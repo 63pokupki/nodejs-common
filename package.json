@@ -36,7 +36,7 @@
   "scripts": {
     "release": "npm run build:dev && npm run build:prod",
     "build": "tsc",
-    "test": "./node_modules/.bin/ts-mocha"
+    "test": "ts-mocha"
   },
   "dependencies": {
     "@types/amqplib": "^0.5.13",
@@ -58,6 +58,6 @@
     "utf8": "^3.0.0"
   },
   "directories": {
-    "lib": "lib"
+    "test": "tests"
   }
 }
