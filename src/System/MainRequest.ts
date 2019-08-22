@@ -118,8 +118,5 @@ export function initMainRequest(conf: any): MainRequest {
 
     mainRequest.sys.errorSys = new ErrorSys(mainRequest);
 
-    /* юзерь не авторизован */
-    mainRequest.sys.userSys = new UserSys(mainRequest);
-
     return mainRequest;
 }
