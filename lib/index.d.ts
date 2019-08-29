@@ -27,4 +27,10 @@ declare const Middleware: {
     ResponseSysMiddleware: typeof ResponseSysMiddleware;
     AuthSysMiddleware: typeof AuthSysMiddleware;
 };
-export { BaseCtrl, BaseSQL, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ModelRulesT, ErrorSys, UserSys, ResponseSys, RedisSys, Middleware, MainRequest, devReq, S3, S3objectParamsI, S3confI, RabbitSenderSys, initMainRequest, BaseCommand, BaseTest, Seo, HelperSys };
+export { BaseCtrl, BaseSQL, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ModelRulesT, ErrorSys, UserSys, ResponseSys, RedisSys, Middleware, MainRequest, // interface MainRequest
+devReq, // Пример MainRequest
+S3, S3objectParamsI, S3confI, RabbitSenderSys, initMainRequest, // Инициализация Main Request для тестов
+BaseCommand, // Конструктор консольных комманд
+BaseTest, // Конструктор тестов
+Seo, // сео собственно
+HelperSys };

@@ -75,4 +75,7 @@ export default interface MainRequest extends Request {
     };
 }
 export declare const devReq: MainRequest;
+/**
+ * Инициализация MainRequest для консольных запросов
+ */
 export declare function initMainRequest(conf: any): MainRequest;

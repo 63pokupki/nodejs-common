@@ -1,4 +1,5 @@
 import { ModelOneRuleC } from "./ModelOneRuleC";
+/** Типы валидации */
 declare enum ModelRulesT {
     str = "str",
     text = "text",
@@ -10,6 +11,9 @@ declare enum ModelRulesT {
     object = "object",
     array = "array"
 }
+/**
+ * Конструктор правил валидации
+ */
 declare class ModelRulesC {
     private aRules;
     constructor();
