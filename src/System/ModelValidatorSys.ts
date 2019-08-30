@@ -46,7 +46,7 @@ export class ModelValidatorSys {
         let bSuccess = false;
         let s = String(this.data[sKey]).trim();
 
-        if (s) {
+        if ( s || s === '' ) {
 
             s = utf8.encode(s);
 
@@ -77,12 +77,12 @@ export class ModelValidatorSys {
         let bSuccess = false;
         let s = String(this.data[sKey]).trim();
 
-        if (s) {
+        if ( s || s === '' ) {
 
             this.aResult[sKey] = s;
             bSuccess = true;
 
-        }
+		}
 
         return bSuccess;
     }
