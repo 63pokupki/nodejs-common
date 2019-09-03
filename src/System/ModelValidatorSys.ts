@@ -354,7 +354,25 @@ export class ModelValidatorSys {
         }
 
         return false;
-    }
+	}
+
+	/**
+	 * Проверить существование значения
+	 * @param val - Значение
+	 */
+	private checkExist(val: any): boolean {
+		let resp = true;
+
+		if (val == undefined) {
+			resp = false;
+		}
+
+		if (val == null) {
+			resp = false;
+		}
+
+		return resp;
+	}
 
     // ================================================================
 
@@ -401,10 +419,7 @@ export class ModelValidatorSys {
 			}
 
 			//Проверка существования данных
-			let bExist = true;
-			if( !this.data[k] ){
-				bExist = false;
-			}
+			let bExist = this.checkExist(this.data[k]);
 
 			//Проверка зависимостей
 			let bDpend = true;

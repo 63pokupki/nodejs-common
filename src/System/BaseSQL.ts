@@ -56,7 +56,7 @@ export default class BaseSQL {
         let bCache = false; // Наличие кеша
 
         let sCache = null;
-        let out:any;
+        let out:any = null;
         if( ok ){ // Пробуем получить данные из кеша
             sCache = await this.redisSys.get(sKey);
 
@@ -69,9 +69,10 @@ export default class BaseSQL {
         }
 
         if( ok && !bCache ){ // Если значения нет в кеше - добавляем его в кеш
+            out = await callback();
             this.redisSys.set(
                 sKey,
-                JSON.stringify(await callback()),
+                JSON.stringify(out),
                 iTimeSec
             );
         }

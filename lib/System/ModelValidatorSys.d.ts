@@ -117,6 +117,11 @@ export declare class ModelValidatorSys {
      */
     protected fValidMinLen(stringKey: string, checkValue: number): boolean;
     /**
+     * Проверить существование значения
+     * @param val - Значение
+     */
+    private checkExist;
+    /**
      * Получить проверенные отфильтрованные данные в качестве массива
      *
      * @return array|null
