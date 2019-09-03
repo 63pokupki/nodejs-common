@@ -444,7 +444,7 @@ export class ModelValidatorSys {
 			if( v['require'] ){
 				this.errorSys.decl('valid_'+k+'_require', k+' - поле обязательно для заполнения');
 
-				if( !this.data[k] ){
+				if( this.checkExist(this.data[k]) ){
 					this.okResult = false;
 					this.abValidOK[k] = false;
 					this.errorSys.error('valid_'+k+'_require', k+' - поле обязательно для заполнения');
