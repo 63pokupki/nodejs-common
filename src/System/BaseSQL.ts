@@ -84,4 +84,14 @@ export default class BaseSQL {
         return out;
 
     }
+
+    /**
+     * Очистить кеш редиса
+     * @param sKey
+     */
+    async clearCache(sKey:string){
+        let aKeyList = await this.redisSys.keys(sKey);
+        this.redisSys.del(aKeyList);
+    }
+
 }

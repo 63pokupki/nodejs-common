@@ -20,4 +20,9 @@ export default class BaseSQL {
      * @param callback - функция получающая данные из БД
      */
     autoCache(sKey: string, iTimeSec: number, callback: any): Promise<any>;
+    /**
+     * Очистить кеш редиса
+     * @param sKey
+     */
+    clearCache(sKey: string): Promise<void>;
 }
