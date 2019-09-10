@@ -73,10 +73,20 @@ declare class ModelOneRuleC {
      */
     more(iVal: number): ModelOneRuleC;
     /**
+     * Больше или равно
+     * @param iVal - Числовое сравнение [больше или равно]
+     */
+    moreOrEq(iVal: number): ModelOneRuleC;
+    /**
      * Меньше
      * @param iVal - Числовое сравнение [меньше]
      */
     less(iVal: number): ModelOneRuleC;
+    /**
+     * Меньше или равно
+     * @param iVal - Числовое сравнение [меньше или равно]
+     */
+    lessOrEq(iVal: number): ModelOneRuleC;
     /**
      * Получить правило
      *

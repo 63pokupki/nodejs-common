@@ -281,7 +281,29 @@ export class ModelValidatorSys {
         }
 
         return bSuccess;
-    }
+	}
+
+	/**
+	 * Проверяет на больше или равно
+	 *
+	 * @param string sKey
+	 * @param string sTpl
+	 * @return boolean
+	 */
+	protected fValidMoreOrEqual(sKey: string, iVal: number): boolean {
+
+		let bSuccess = false;
+		let i = Number(this.aResult[sKey])
+
+		if (!isNaN(i)) {
+			if (i >= iVal) { // Если значение больше - все хорошо
+				this.aResult[sKey] = i;
+				bSuccess = true;
+			}
+		}
+
+		return bSuccess;
+	}
 
 	/**
 	 * Проверяет на меньше
@@ -303,7 +325,29 @@ export class ModelValidatorSys {
         }
 
         return bSuccess;
-    }
+	}
+
+	/**
+	 * Проверяет на меньше или равно
+	 *
+	 * @param string sKey
+	 * @param string sTpl
+	 * @return boolean
+	 */
+	protected fValidLessOrEqual(sKey: string, iVal: number): boolean {
+
+		let bSuccess = false;
+		let i = Number(this.aResult[sKey]);
+
+		if ( !isNaN(i) ) {
+			if (i <= iVal) { // Если значение меньше - все хорошо
+				this.aResult[sKey] = i;
+				bSuccess = true;
+			}
+		}
+
+		return bSuccess;
+	}
 
 	/**
 	 * Проверяет на макс количесво символов
@@ -569,6 +613,21 @@ export class ModelValidatorSys {
 				}
 			}
 
+			// Обработка [more_or_equal] значений - Проверка на больше или равно
+			if (bExist && 'more_or_equal' in v) {
+				this.errorSys.decl('valid_' + k + '_more_or_equal', 'errorValidate');
+
+				if (v['type'] == 'int' || v['type'] == 'decimal') {
+					if( !this.fValidMoreOrEqual(k, v['more_or_equal']) ){
+						this.abValidOK[k] = false;
+						this.okResult = false;
+						this.errorSys.error('valid_' + k + '_more_or_equal', v['error'] + ' Число слишком маленькое = ' + this.data[k]);
+					}
+				} else {
+					this.errorSys.error('valid_' + k + '_more_or_equal_no_number', v['error'] + ' Поле не является числом');
+				}
+			}
+
 			// Обработка [less] значений - Проверка на меньше
 			if( bExist && 'less' in v ){
 				this.errorSys.decl('valid_'+k+'_less');
@@ -582,6 +641,22 @@ export class ModelValidatorSys {
 					}
 				} else {
 					this.errorSys.error('valid_'+k+'_less_no_number', v['error']+' Поле не является числом');
+				}
+			}
+
+			// Обработка [less_or_equal] значений - Проверка на меньше или равно
+			if (bExist && 'less_or_equal' in v) {
+				this.errorSys.decl('valid_' + k + '_less_or_equal', 'errorValidate');
+
+				if (v['type'] == 'int' || v['type'] == 'decimal') {
+
+					if ( !this.fValidLessOrEqual(k, v['less_or_equal']) ){
+						this.abValidOK[k] = false;
+						this.okResult = false;
+						this.errorSys.error('valid_' + k + '_less_or_equal', v['error'] + ' Число слишком большое = ' + this.data[k]);
+					}
+				} else {
+					this.errorSys.error('valid_' + k + '_less_or_equal_no_number', v['error'] + ' Поле не является числом');
 				}
 			}
 
