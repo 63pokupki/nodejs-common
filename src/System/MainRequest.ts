@@ -58,6 +58,7 @@ export default interface MainRequest extends Request {
         common: { // Общее
             env: string; // Тип окружения
             oldCoreURL: string; // URL адрес основного сайта
+            errorMute:boolean;
         };
 
         rabbit: {
@@ -87,6 +88,7 @@ const Req: any = {
     common: { // Общее
         env: 'dev', // Тип окружения
         oldCoreURL: null, // URL адрес основного сайта
+        errorMute:true,
     },
     sys: {
         apikey: '',

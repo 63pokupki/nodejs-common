@@ -17,11 +17,21 @@ export class ErrorSys
 	private devNoticeList:any; // Уведомления для разработки и тестирования
 	private noticeList:any; // Уведомления для пользователя
 	private devLogList:any; // Массив для логирования тестовой информации
+	private bMute:boolean; // Режим тишины
 
 	constructor(req:MainRequest){
 
 		this.ok = true;
 		this.env = req.conf.common.env;
+
+		if( this.env == 'local' || this.env == 'dev' ){
+			this.ifDevMode = true;
+		} else {
+			this.ifDevMode = false;
+		}
+
+		this.bMute = false;
+		this.bMute = req.conf.common.errorMute;
 
 		if( this.env == 'local' || this.env == 'dev' ){
 			this.ifDevMode = true;
@@ -94,16 +104,18 @@ export class ErrorSys
 	 * @return void
 	 */
 	public error(kError:string, sError:string ): void{
-		this.ok = false; // При любой одной ошибке приложение отдает отрицательный ответ
-		this.errorList[kError] = sError;
+		if(!this.bMute){
+			this.ok = false; // При любой одной ошибке приложение отдает отрицательный ответ
+			this.errorList[kError] = sError;
 
-		if( this.ifDevMode ){
-			this.devLogList.push('E:['+kError+'] - '+sError);
-			console.log('E:['+kError+'] - '+sError);
+			if( this.ifDevMode ){
+				this.devLogList.push('E:['+kError+'] - '+sError);
+				console.log('E:['+kError+'] - '+sError);
 
-			// Проверка на декларацию ошибок
-			if( !(kError in this.errorDeclareList) ){
-				this.devWarning(kError, 'Отсутствует декларация ошибки');
+				// Проверка на декларацию ошибок
+				if( !(kError in this.errorDeclareList) ){
+					this.devWarning(kError, 'Отсутствует декларация ошибки');
+				}
 			}
 		}
 	}
@@ -116,11 +128,13 @@ export class ErrorSys
 	 * @return void
 	 */
 	public err( kError:string ): void{
-		if( this.errorDeclareList[kError] ){
-			this.error(kError, this.errorDeclareList[kError]);
-		} else {
-			this.error(kError, 'Неизвестная ошибка');
-			this.devWarning(kError, 'Отсутствует декларация ошибки');
+		if(!this.bMute){
+			if( this.errorDeclareList[kError] ){
+				this.error(kError, this.errorDeclareList[kError]);
+			} else {
+				this.error(kError, 'Неизвестная ошибка');
+				this.devWarning(kError, 'Отсутствует декларация ошибки');
+			}
 		}
 
 	}
@@ -134,17 +148,19 @@ export class ErrorSys
 	 * @param sError // Сообщение об ошибке
 	 */
 	public errorEx(e:any, kError:string, sError:string ): void{
-		this.ok = false; // При любой одной ошибке приложение отдает отрицательный ответ
-		this.errorList[kError] = sError;
+		if(!this.bMute){
+			this.ok = false; // При любой одной ошибке приложение отдает отрицательный ответ
+			this.errorList[kError] = sError;
 
-		if( this.ifDevMode ){
-			this.devLogList.push('E:['+kError+'] - '+sError);
-			console.log('E:['+kError+'] - '+sError);
-			console.log('Ошибка - ' + e.name , e.message, e.stack);
+			if( this.ifDevMode ){
+				this.devLogList.push('E:['+kError+'] - '+sError);
+				console.log('E:['+kError+'] - '+sError);
+				console.log('Ошибка - ' + e.name , e.message, e.stack);
 
-			// Проверка на декларацию ошибок
-			if( !(kError in this.errorDeclareList) ){
-				this.devWarning(kError, 'Отсутствует декларация ошибки');
+				// Проверка на декларацию ошибок
+				if( !(kError in this.errorDeclareList) ){
+					this.devWarning(kError, 'Отсутствует декларация ошибки');
+				}
 			}
 		}
 	}
