@@ -13,6 +13,7 @@ export declare class ErrorSys {
     private devNoticeList;
     private noticeList;
     private devLogList;
+    private bMute;
     constructor(req: MainRequest);
     /**
      * Получить глобальный статус выполнения
