@@ -22,7 +22,6 @@ export class RabbitSenderSys {
      */
     public sendToQueue(sQueue:string, msg: any) {
 
-        console.log('==>sendToQueue:',sQueue, JSON.stringify(msg));
         this.aQuery[sQueue].sendToQueue(JSON.stringify(msg));
     }
 
@@ -61,7 +60,6 @@ export class RabbitSenderSys {
                 });
 
             } catch (e) {
-                console.log('==>ERROR Init:',e);
                 reject(e);
             }
         });
@@ -80,8 +78,7 @@ class RabbitQueue {
     public conn: any; // соединение
 
     public sendToQueue(msg: any) {
-        console.log(this.sQuery, Buffer.from(msg));
-        console.log(this.channel);
+        // console.log(this.sQuery, Buffer.from(msg));
         this.channel.sendToQueue(this.sQuery, Buffer.from(msg), {
             persistent: true
         });
@@ -118,7 +115,6 @@ class RabbitQueue {
                 });
 
             } catch (e) {
-                console.log('ERROR:',e);
                 reject(e);
             }
         });
