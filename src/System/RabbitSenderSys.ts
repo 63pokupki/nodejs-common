@@ -22,6 +22,7 @@ export class RabbitSenderSys {
      */
     public sendToQueue(sQueue:string, msg: any) {
 
+        console.log('==>sendToQueue:',sQueue, JSON.stringify(msg));
         this.aQuery[sQueue].sendToQueue(JSON.stringify(msg));
     }
 
@@ -60,6 +61,7 @@ export class RabbitSenderSys {
                 });
 
             } catch (e) {
+                console.log('==>ERROR Init:',e);
                 reject(e);
             }
         });
