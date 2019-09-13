@@ -80,7 +80,8 @@ class RabbitQueue {
     public conn: any; // соединение
 
     public sendToQueue(msg: any) {
-        // console.log(this.sQuery, Buffer.from(msg));
+        console.log(this.sQuery, Buffer.from(msg));
+        console.log(this.channel);
         this.channel.sendToQueue(this.sQuery, Buffer.from(msg), {
             persistent: true
         });
@@ -117,6 +118,7 @@ class RabbitQueue {
                 });
 
             } catch (e) {
+                console.log('ERROR:',e);
                 reject(e);
             }
         });
