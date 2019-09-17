@@ -86,6 +86,53 @@ export default class BaseSQL {
     }
 
     /**
+     * Авто кеширование int переменной для встраивания в функцию
+     * @param sKey - Ключ кеша
+     * @param iTimeSec - Время кеширования
+     * @param callback - функция получающая данные из БД
+     */
+    async autoCacheInt(sKey:string, iTimeSec:number, callback:any):Promise<number>{
+
+        let ok = this.errorSys.isOk();
+
+        let bCache = false; // Наличие кеша
+
+        let sCache = null;
+        let out:number = null;
+        if( ok ){ // Пробуем получить данные из кеша
+            sCache = await this.redisSys.get(sKey);
+
+            if( sCache ){
+                bCache = true;
+                this.errorSys.devNotice(
+                    sKey, 'Значение взято из кеша'
+                );
+            }
+        }
+
+        if( ok && !bCache ){ // Если значения нет в кеше - добавляем его в кеш
+            out = await callback();
+            if(out || out === 0){
+                this.redisSys.set(
+                    sKey,
+                    String(out),
+                    iTimeSec
+                );
+            } else {
+                this.errorSys.devWarning(
+                    sKey, 'Неверный тип, должен быть number => ' + out
+                );
+            }
+        }
+
+        if( ok && bCache ){ // Если значение взято из кеша - отдаем его в ответ
+            out = Number(sCache);
+        }
+
+        return out;
+    }
+
+    /**
      * Очистить кеш редиса
      * @param sKey
      */
