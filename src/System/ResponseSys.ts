@@ -2,18 +2,22 @@
 import {ErrorSys} from './ErrorSys';
 import MainRequest from './MainRequest';
 
+import axios from "axios";
+
 /**
  * Системный сервис формирования ответа
  */
 export class ResponseSys
 {
 	private env:string;
+	private req:MainRequest;
 	private ifDevMode:boolean;
 
 	private errorSys:ErrorSys;
 
 	constructor(req:MainRequest){
 
+		this.req = req;
 		this.env = req.conf.common.env;
 		if( this.env == 'local' || this.env == 'dev' ){
 			this.ifDevMode = true;
@@ -44,6 +48,11 @@ export class ResponseSys
 			// 'notice' : this.errorSys.getNotice(), // Временно убраны пользовательские предупреждения
 			'msg' : sMsg,
 		};
+
+		// Отправка ошибок в матермост
+		axios.post(this.req.conf.common.hook_url, {
+			text: "Hello, this error:"+JSON.stringify(this.errorSys.getErrors())
+		});
 
 		if( this.ifDevMode ){ // Выводит информацию для разработчиков и тестрировщиков
 			out['dev_warning'] = this.errorSys.getDevWarning();
