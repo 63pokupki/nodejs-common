@@ -40,8 +40,8 @@ export class MattermostSys {
 			  {
 				"fallback": "test",
 				"color": "#FF8000",
-				"text": "This is the text of the attachment. It should appear just above an image of the Mattermost logo. The left border of the attachment should be colored orange, and below the image it should include additional fields that are formatted in columns. At the top of the attachment, there should be an author name followed by a bolded title. Both the author name and the title should be hyperlinks.",
-				"title": "Example Attachment",
+				"text": this.req.originalUrl,
+				"title": "Ошибка",
 				"fields": [
 				],
 			  }
