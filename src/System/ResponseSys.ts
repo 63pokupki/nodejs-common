@@ -1,8 +1,8 @@
 
 import {ErrorSys} from './ErrorSys';
 import MainRequest from './MainRequest';
+import { MattermostSys } from './MattermostSys';
 
-import axios from "axios";
 
 /**
  * Системный сервис формирования ответа
@@ -14,6 +14,7 @@ export class ResponseSys
 	private ifDevMode:boolean;
 
 	private errorSys:ErrorSys;
+	private mattermostSys:MattermostSys;
 
 	constructor(req:MainRequest){
 
@@ -26,6 +27,8 @@ export class ResponseSys
 		}
 
 		this.errorSys = req.sys.errorSys;
+
+		this.mattermostSys = new MattermostSys(req);
 
 	}
 
@@ -50,13 +53,7 @@ export class ResponseSys
 		};
 
 		// Отправка ошибок в матермост
-		axios.post(this.req.conf.common.hook_url, {
-			text: "Hello, this error:"+JSON.stringify(this.errorSys.getErrors())
-		}).then((res:any) => {
-			console.log('Я отправил в матермост:',res);
-		}).catch((e) => {
-			console.log('Я не отправил в матермост:', e);
-		});
+		this.mattermostSys.sendMsg();
 
 		if( this.ifDevMode ){ // Выводит информацию для разработчиков и тестрировщиков
 			out['dev_warning'] = this.errorSys.getDevWarning();

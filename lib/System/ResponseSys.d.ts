@@ -7,6 +7,7 @@ export declare class ResponseSys {
     private req;
     private ifDevMode;
     private errorSys;
+    private mattermostSys;
     constructor(req: MainRequest);
     /**
      * Формирование ответа клиенту

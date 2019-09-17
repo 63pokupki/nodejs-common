@@ -90,7 +90,7 @@ const Req: any = {
         env: 'dev', // Тип окружения
         oldCoreURL: null, // URL адрес основного сайта
         errorMute:true,
-        hook_url:'https://mm.63pokupki.ru:8443/hooks/un1jemjyxjfz9ecqeqjrgde5sw', // Сообщения об ошибках matermost
+        hook_url:'https://', // Сообщения об ошибках matermost
     },
     sys: {
         apikey: '',
