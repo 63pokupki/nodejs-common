@@ -47,7 +47,7 @@ export class S3 {
 
     /**
      * Залить объект на s3
-     * @param object 
+     * @param object
      */
     upload(object: S3objectParamsI): Promise<string> {
         return new Promise((resolve, reject) => {
@@ -58,6 +58,27 @@ export class S3 {
                 s3ForcePathStyle: true
             })
                 .putObject(object)
+                .promise()
+                .then((data: any) => {
+                    resolve(this.conf.baseUrl + this.conf.bucket + '/' + object.Key);
+                })
+                .catch((e: any) => reject(e));
+        })
+    }
+
+    /**
+     * Получить объект
+     * @param object
+     */
+    get(object: S3objectParamsI): Promise<string> {
+        return new Promise((resolve, reject) => {
+            new AWS.S3({
+                endpoint: new AWS.Endpoint(this.conf.endpoint),
+                accessKeyId: this.conf.access,
+                secretAccessKey: this.conf.secret,
+                s3ForcePathStyle: true
+            })
+                .getObject(object)
                 .promise()
                 .then((data: any) => {
                     resolve(this.conf.baseUrl + this.conf.bucket + '/' + object.Key);

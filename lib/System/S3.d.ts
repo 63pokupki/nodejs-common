@@ -41,4 +41,9 @@ export declare class S3 {
      * @param object
      */
     upload(object: S3objectParamsI): Promise<string>;
+    /**
+     * Получить объект
+     * @param object
+     */
+    get(object: S3objectParamsI): Promise<string>;
 }
