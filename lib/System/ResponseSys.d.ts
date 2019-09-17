@@ -4,6 +4,7 @@ import MainRequest from './MainRequest';
  */
 export declare class ResponseSys {
     private env;
+    private req;
     private ifDevMode;
     private errorSys;
     constructor(req: MainRequest);

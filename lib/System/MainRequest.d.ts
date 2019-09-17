@@ -56,6 +56,7 @@ export default interface MainRequest extends Request {
             env: string;
             oldCoreURL: string;
             errorMute: boolean;
+            hook_url: string;
         };
         rabbit: {
             connection: string;
