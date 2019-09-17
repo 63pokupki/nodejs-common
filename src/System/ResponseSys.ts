@@ -53,7 +53,9 @@ export class ResponseSys
 		};
 
 		// Отправка ошибок в матермост
-		this.mattermostSys.sendMsg();
+		if( !this.errorSys.isOk() ){
+			this.mattermostSys.sendMsg();
+		}
 
 		if( this.ifDevMode ){ // Выводит информацию для разработчиков и тестрировщиков
 			out['dev_warning'] = this.errorSys.getDevWarning();
