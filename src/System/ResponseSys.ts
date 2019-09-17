@@ -52,6 +52,10 @@ export class ResponseSys
 		// Отправка ошибок в матермост
 		axios.post(this.req.conf.common.hook_url, {
 			text: "Hello, this error:"+JSON.stringify(this.errorSys.getErrors())
+		}).then((res:any) => {
+			console.log('Я отправил в матермост:',res);
+		}).catch((e) => {
+			console.log('Я не отправил в матермост:', e);
 		});
 
 		if( this.ifDevMode ){ // Выводит информацию для разработчиков и тестрировщиков
