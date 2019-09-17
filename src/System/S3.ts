@@ -32,6 +32,12 @@ export interface S3objectParamsI {
 }
 
 
+export interface getS3objectParamsI {
+    Bucket: any;
+    Key: string;
+}
+
+
 /**
  * Класс для роботы с S3 like
  */
@@ -70,7 +76,7 @@ export class S3 {
      * Получить объект
      * @param object
      */
-    get(object: S3objectParamsI): Promise<string> {
+    getObject(object: getS3objectParamsI): Promise<string> {
         return new Promise((resolve, reject) => {
             new AWS.S3({
                 endpoint: new AWS.Endpoint(this.conf.endpoint),

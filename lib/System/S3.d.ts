@@ -29,6 +29,10 @@ export interface S3objectParamsI {
         [key: string]: string;
     };
 }
+export interface getS3objectParamsI {
+    Bucket: any;
+    Key: string;
+}
 /**
  * Класс для роботы с S3 like
  */
@@ -45,5 +49,5 @@ export declare class S3 {
      * Получить объект
      * @param object
      */
-    get(object: S3objectParamsI): Promise<string>;
+    getObject(object: getS3objectParamsI): Promise<string>;
 }
