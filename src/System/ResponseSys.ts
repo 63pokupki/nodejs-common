@@ -20,7 +20,7 @@ export class ResponseSys
 
 		this.req = req;
 		this.env = req.conf.common.env;
-		if( this.env == 'local' || this.env == 'dev' ){
+		if( this.env == 'local' || this.env == 'dev' || this.env == 'test' ){
 			this.ifDevMode = true;
 		} else {
 			this.ifDevMode = false;
