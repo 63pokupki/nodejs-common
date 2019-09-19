@@ -61,6 +61,7 @@ export default interface MainRequest extends Request {
         };
         rabbit: {
             connection: string;
+            queryList: string[];
         };
         S3: {
             endpoint: string;
