@@ -1,10 +1,10 @@
-import { ErrorSys } from './ErrorSys';
-import { UserSys } from './UserSys';
-import { ResponseSys } from './ResponseSys';
+import {ErrorSys} from './ErrorSys';
+import {UserSys} from './UserSys';
+import {ResponseSys} from './ResponseSys';
 
-import { Request } from 'express';
-import { SeoBase } from '../Components/Seo';
-import { SeoConfigI } from '../Components/Seo';
+import {Request} from 'express';
+import {SeoBase} from '../Components/Seo';
+import {SeoConfigI} from '../Components/Seo';
 
 export default interface MainRequest extends Request {
     headers: { [key: string]: any };
@@ -58,8 +58,9 @@ export default interface MainRequest extends Request {
         common: { // Общее
             env: string; // Тип окружения
             oldCoreURL: string; // URL адрес основного сайта
-            errorMute:boolean;
-            hook_url:string; // Сообщения об ошибках matermost
+            errorMute: boolean;
+            hook_url: string; // Сообщения об ошибках matermost
+            port: number; // порт на котором будет работать экземпляр ноды
         };
 
         rabbit: {
@@ -77,9 +78,9 @@ export default interface MainRequest extends Request {
         SeoConfig?: SeoConfigI
 
     },
-    infrastructure:{
-        mysql:any;
-        redis:any;
+    infrastructure: {
+        mysql: any;
+        redis: any;
         rabbit: any;
     }
 }
@@ -89,8 +90,9 @@ const Req: any = {
     common: { // Общее
         env: 'dev', // Тип окружения
         oldCoreURL: null, // URL адрес основного сайта
-        errorMute:true,
-        hook_url:'https://', // Сообщения об ошибках matermost
+        errorMute: true,
+        hook_url: 'https://', // Сообщения об ошибках matermost
+        port: 3005, // порт на котором будет работать нода
     },
     sys: {
         apikey: '',
@@ -100,15 +102,15 @@ const Req: any = {
         userSys: null,
         responseSys: null
     },
-    conf:null,
-    infrastructure:{
-        mysql:null,
-        redis:null
+    conf: null,
+    infrastructure: {
+        mysql: null,
+        redis: null
     }
 };
 
 
-export const devReq = <MainRequest> Req;
+export const devReq = <MainRequest>Req;
 
 /**
  * Инициализация MainRequest для консольных запросов
