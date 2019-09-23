@@ -21,6 +21,7 @@ import BaseCommand from './System/BaseCommand';
 import BaseTest from './System/BaseTest';
 import * as Seo from './Components/Seo';
 import * as HelperSys from './System/HelperSys';
+import { FieldValidator } from './System/FieldValidator';
 declare const Middleware: {
     ErrorSysMiddleware: typeof ErrorSysMiddleware;
     RequestSysMiddleware: typeof RequestSysMiddleware;
@@ -33,4 +34,5 @@ S3, S3objectParamsI, S3confI, RabbitSenderSys, initMainRequest, // Инициа�
 BaseCommand, // Конструктор консольных комманд
 BaseTest, // Конструктор тестов
 Seo, // сео собственно
-HelperSys };
+HelperSys, // Вспомогательные функцие которые никчему не привязаны
+FieldValidator, };

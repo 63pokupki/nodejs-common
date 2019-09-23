@@ -56,6 +56,7 @@ import * as Seo from './Components/Seo';
 
 /* Хелпер полезных функций */
 import * as HelperSys from './System/HelperSys';
+import { FieldValidator } from './System/FieldValidator';
 
 
 const Middleware = {
@@ -88,5 +89,6 @@ export {
     BaseCommand, // Конструктор консольных комманд
     BaseTest, // Конструктор тестов
     Seo, // сео собственно
-    HelperSys // Вспомогательные функцие которые никчему не привязаны
+    HelperSys, // Вспомогательные функцие которые никчему не привязаны
+    FieldValidator, // 
 }

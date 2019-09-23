@@ -14,7 +14,12 @@ export declare class ErrorSys {
     private noticeList;
     private devLogList;
     private bMute;
+    private errorCount;
     constructor(req: MainRequest);
+    /**
+     * очистка стека
+     */
+    clear(): void;
     /**
      * Получить глобальный статус выполнения
      *

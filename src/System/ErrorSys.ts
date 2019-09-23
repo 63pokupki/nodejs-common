@@ -18,7 +18,8 @@ export class ErrorSys
 	private noticeList:any; // Уведомления для пользователя
 	private devLogList:any; // Массив для логирования тестовой информации
 	private bMute:boolean; // Режим тишины
-
+	private errorCount: number = 0;
+	
 	constructor(req:MainRequest){
 
 		this.ok = true;
@@ -39,6 +40,21 @@ export class ErrorSys
 		this.devNoticeList = {};
 		this.noticeList = {};
 		this.devLogList = [];
+
+	}
+
+	/**
+	 * очистка стека
+	 */
+	public clear(): void {
+		this.ok = true;
+		this.errorList = {};
+		this.devWarningList = {};
+		this.warningList = {};
+		this.devNoticeList = {};
+		this.noticeList = {};
+		this.devLogList = [];
+		this.errorCount = 0;
 
 	}
 
