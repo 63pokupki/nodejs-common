@@ -360,15 +360,14 @@ export class ModelValidatorSys {
 
         let bSuccess = false;
 
-
-        if (this.aResult[sKey]) {
+        if (this.aResult[sKey] || this.aResult[sKey] == '') {
             let s = String(this.aResult[sKey]);
 
             if (s.length <= iLen) { // Если значение меньше - все хорошо
                 this.aResult[sKey] = s;
                 bSuccess = true;
             }
-        }
+		}
 
         if (bSuccess) {
             return true;
