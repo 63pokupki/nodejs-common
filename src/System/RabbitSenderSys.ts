@@ -1,5 +1,7 @@
 import * as amqp from 'amqplib/callback_api';
 import MainRequest from './MainRequest';
+import { resolve, reject } from 'bluebird';
+import { Replies } from 'amqplib/callback_api';
 
 
 /**
@@ -8,8 +10,8 @@ import MainRequest from './MainRequest';
 export class RabbitSenderSys {
 
 
-    protected connection:any;
-    public aQuery:{[key:string]:RabbitQueue};
+    protected connection: any;
+    public aQuery: { [key: string]: RabbitQueue };
 
     constructor(connection: any) {
         this.connection = connection;
@@ -20,9 +22,22 @@ export class RabbitSenderSys {
      * Отправить сообщение в очередь
      * @param msg
      */
-    public sendToQueue(sQueue:string, msg: any) {
+    public sendToQueue(sQueue: string, msg: any) {
 
         this.aQuery[sQueue].sendToQueue(JSON.stringify(msg));
+    }
+
+    /**
+     * Получает данные по очереди
+     * @param sQueue 
+     */
+    public checkQueue(sQueue: string): Promise<Replies.AssertQueue> {
+        return new Promise((resolve, reject) => {
+            this.aQuery[sQueue].channel.checkQueue(sQueue, (err: any, ok: Replies.AssertQueue) => {
+                if (err) reject(err);
+                resolve(ok);
+            });
+        });
     }
 
     /**
@@ -38,7 +53,7 @@ export class RabbitSenderSys {
      * Асинхронный конструктор
      * @param query
      */
-    static async Init(confConnect:string, queryList: string[]): Promise<RabbitSenderSys> {
+    static async Init(confConnect: string, queryList: string[]): Promise<RabbitSenderSys> {
         return new Promise((resolve, reject) => {
 
             try {
@@ -49,7 +64,7 @@ export class RabbitSenderSys {
                     }
 
                     let rabbitSender = new RabbitSenderSys(connection);
-                    for(let kQuery in queryList){
+                    for (let kQuery in queryList) {
                         let sQuery = queryList[kQuery];
 
                         rabbitSender.aQuery[sQuery] = await RabbitQueue.init(connection, sQuery);
@@ -84,9 +99,19 @@ class RabbitQueue {
         });
     }
 
+    public checkQueue() {
+        return new Promise((resolve, reject) => {
+            // console.log(this.sQuery, Buffer.from(msg));
+            this.channel.checkQueue(this.sQuery, (data: any) => {
+                resolve(data);
+            });
+        })
+
+    }
+
     public channel: any; // канал
 
-    constructor(sQuery: any, conn:any, channel:any) {
+    constructor(sQuery: any, conn: any, channel: any) {
         this.conn = conn;
         this.sQuery = sQuery;
         this.channel = channel;
@@ -94,7 +119,7 @@ class RabbitQueue {
 
 
 
-    static async init(conn:any, sQuery:any):Promise<RabbitQueue>{
+    static async init(conn: any, sQuery: any): Promise<RabbitQueue> {
         return new Promise((resolve, reject) => {
 
             try {

@@ -22,6 +22,7 @@ import BaseTest from './System/BaseTest';
 import * as Seo from './Components/Seo';
 import * as HelperSys from './System/HelperSys';
 import { FieldValidator } from './System/FieldValidator';
+import * as Mattermost from './System/MattermostSys';
 declare const Middleware: {
     ErrorSysMiddleware: typeof ErrorSysMiddleware;
     RequestSysMiddleware: typeof RequestSysMiddleware;
@@ -35,4 +36,5 @@ BaseCommand, // Конструктор консольных комманд
 BaseTest, // Конструктор тестов
 Seo, // сео собственно
 HelperSys, // Вспомогательные функцие которые никчему не привязаны
-FieldValidator, };
+FieldValidator, // 
+Mattermost, };

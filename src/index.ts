@@ -58,6 +58,8 @@ import * as Seo from './Components/Seo';
 import * as HelperSys from './System/HelperSys';
 import { FieldValidator } from './System/FieldValidator';
 
+import *  as Mattermost from './System/MattermostSys';
+
 
 const Middleware = {
     ErrorSysMiddleware,
@@ -91,4 +93,5 @@ export {
     Seo, // сео собственно
     HelperSys, // Вспомогательные функцие которые никчему не привязаны
     FieldValidator, // 
+    Mattermost,
 }

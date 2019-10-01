@@ -3,20 +3,20 @@ import MainRequest from './MainRequest';
 import axios from "axios";
 import { ErrorSys } from './ErrorSys';
 
-interface MattermostField{
-    short:boolean,
-    title:string,
-    value:string,
+interface MattermostField {
+    short: boolean,
+    title: string,
+    value: string,
 }
-interface MattermostMsg{
+interface MattermostMsg {
     attachments: {
         fallback: string,
         color: string,
         text: string,
         title: string,
         fields: MattermostField[];
-      }[];
-  };
+    }[];
+};
 
 /**
  * Класс для роботы с S3 like
@@ -32,33 +32,86 @@ export class MattermostSys {
         this.errorSys = req.sys.errorSys;
     }
 
-    public sendMsg(){
+    public sendMsg() {
 
-        let arrError:any = this.errorSys.getErrors();
-        let msg:MattermostMsg = {
-			attachments: [
-			  {
-				"fallback": "test",
-				"color": "#FF8000",
-				"text": this.req.originalUrl,
-				"title": "Ошибка",
-				"fields": [
-				],
-			  }
-			]
+        let arrError: any = this.errorSys.getErrors();
+        let msg: MattermostMsg = {
+            attachments: [
+                {
+                    "fallback": "test",
+                    "color": "#FF8000",
+                    "text": this.req.originalUrl,
+                    "title": "Ошибка",
+                    "fields": [
+                    ],
+                }
+            ]
         };
 
-        for(let k in arrError){
+        for (let k in arrError) {
             let v = arrError[k];
 
             msg.attachments[0].fields.push({
-                short:false,
-                title:k,
-                value:v,
+                short: false,
+                title: k,
+                value: v,
             })
         }
 
-        axios.post(this.req.conf.common.hook_url, msg);
+        this.send(msg);
     }
 
+    /**
+     * Отправить ошибку
+     * @param errorSys 
+     * @param err 
+     * @param addMessage 
+     */
+    public sendErrorMsg(errorSys: ErrorSys, err: Error, addMessage: string) {
+
+        let arrError: any = errorSys.getErrors();
+
+        let msg: MattermostMsg = {
+            attachments: [
+                {
+                    "fallback": "test",
+                    "color": "#FF8000",
+                    "text": this.req.originalUrl,
+                    "title": "Ошибка",
+                    "fields": [
+                        {
+                            short: false,
+                            title: 'addMessage',
+                            value: addMessage,
+                        },
+                        {
+                            short: false,
+                            title: 'stack',
+                            value: err.stack,
+                        }
+                    ],
+                }
+            ]
+        };
+
+        for (let k in arrError) {
+            let v = arrError[k];
+
+            msg.attachments[0].fields.push({
+                short: false,
+                title: k,
+                value: v,
+            })
+        }
+
+        this.send(msg);
+    }
+
+    /**
+     * отправить сообщение
+     * @param msg 
+     */
+    public send(msg: MattermostMsg) {
+        axios.post(this.req.conf.common.hook_url, msg);
+    }
 }

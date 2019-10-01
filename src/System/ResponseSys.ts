@@ -14,7 +14,7 @@ export class ResponseSys
 	private ifDevMode:boolean;
 
 	private errorSys:ErrorSys;
-	private mattermostSys:MattermostSys;
+	//private mattermostSys:MattermostSys;
 
 	constructor(req:MainRequest){
 
@@ -28,8 +28,8 @@ export class ResponseSys
 
 		this.errorSys = req.sys.errorSys;
 
-		this.mattermostSys = new MattermostSys(req);
-
+		/* this.mattermostSys = new MattermostSys(req);
+ */
 	}
 
 	/**
@@ -52,10 +52,10 @@ export class ResponseSys
 			'msg' : sMsg,
 		};
 
-		// Отправка ошибок в матермост
+	/* 	// Отправка ошибок в матермост
 		if( !this.errorSys.isOk() ){
 			this.mattermostSys.sendMsg();
-		}
+		} */
 
 		if( this.ifDevMode ){ // Выводит информацию для разработчиков и тестрировщиков
 			out['dev_warning'] = this.errorSys.getDevWarning();
