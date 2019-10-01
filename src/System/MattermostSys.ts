@@ -75,20 +75,25 @@ export class MattermostSys {
             attachments: [
                 {
                     "fallback": "test",
-                    "color": "#FF8000",
-                    "text": this.req.originalUrl,
+                    "color": "danger",
+                    "text": '',
                     "title": "Ошибка",
                     "fields": [
                         {
-                            short: false,
-                            title: 'addMessage',
+                            short: true,
+                            title: '',
+                            value: this.req.originalUrl,
+                        },
+                        {
+                            short: true,
+                            title: '',
                             value: addMessage,
                         },
                         {
                             short: false,
                             title: 'stack',
                             value: err.stack,
-                        }
+                        },
                     ],
                 }
             ]
@@ -98,7 +103,7 @@ export class MattermostSys {
             let v = arrError[k];
 
             msg.attachments[0].fields.push({
-                short: false,
+                short: true,
                 title: k,
                 value: v,
             })
