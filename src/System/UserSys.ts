@@ -412,7 +412,9 @@ export class UserSys
             this.errorSys.devNotice('is_auth', 'Вы авторизованы');
         } else {
 			ok = false;
-            this.errorSys.error('is_auth', 'Вы не авторизованы');
+			this.errorSys.error('is_auth', '');
+            this.errorSys.devNotice('is_auth', 'Вы не авторизованы');
+			
         }
 
 		return ok;
