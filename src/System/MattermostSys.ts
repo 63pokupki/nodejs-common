@@ -97,7 +97,7 @@ export class MattermostSys {
                         {
                             short: false,
                             title: 'request body',
-                            value: ':warning: ' + this.req.body,
+                            value: this.req.body,
                         },
                     ],
                 }
