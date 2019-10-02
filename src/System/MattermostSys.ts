@@ -76,28 +76,28 @@ export class MattermostSys {
                 {
                     "fallback": "test",
                     "color": "danger",
-                    "text": ':boom: Apikey: '+this.req.sys.apikey,
-                    "title": ":trollface:  Ошибка на " + this.req.conf.common.env,
+                    "text": ':boom: :trollface: Apikey: ' + this.req.sys.apikey,
+                    "title": "Ошибка на " + this.req.conf.common.env,
                     "fields": [
                         {
                             short: true,
-                            title: ':link: URL',
-                            value: this.req.originalUrl,
+                            title: 'URL',
+                            value: ':link: ' + this.req.originalUrl,
                         },
                         {
                             short: true,
-                            title: ':zap: Сообщение',
-                            value: addMessage,
+                            title: 'Сообщение',
+                            value: ':zap: ' + addMessage,
                         },
                         {
                             short: false,
-                            title: ':bangbang: stack',
-                            value: err.stack,
+                            title: 'stack',
+                            value: ':bangbang: ' + err.stack,
                         },
                         {
                             short: false,
-                            title: ':warning: request body',
-                            value: this.req.body,
+                            title: 'request body',
+                            value: ':warning: ' + this.req.body,
                         },
                     ],
                 }
