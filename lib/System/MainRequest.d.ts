@@ -3,7 +3,7 @@ import { UserSys } from './UserSys';
 import { ResponseSys } from './ResponseSys';
 import { Request } from 'express';
 import { SeoBase } from '../Components/Seo';
-import { SeoConfigI } from '../Components/Seo';
+import { MainConfig } from './MainConfig';
 export default interface MainRequest extends Request {
     headers: {
         [key: string]: any;
@@ -18,60 +18,7 @@ export default interface MainRequest extends Request {
         responseSys: ResponseSys;
         seo?: SeoBase;
     };
-    conf: {
-        mysql: {
-            client: string;
-            connection: {
-                host: string;
-                user: string;
-                password: string;
-                database: string;
-            };
-            pool: {
-                min: number;
-                max: number;
-            };
-            migrations: {
-                tableName: string;
-                directory: string;
-            };
-            acquireConnectionTimeout: number;
-        };
-        pgsql: {
-            dialect: string;
-            username: string;
-            password: string;
-            host: string;
-            port: number;
-            database: string;
-            dialectOptions: {
-                supportBigNumbers: true;
-                decimalNumbers: true;
-            };
-        };
-        redis: {
-            url: string;
-        };
-        common: {
-            env: string;
-            oldCoreURL: string;
-            errorMute: boolean;
-            hook_url: string;
-            port: number;
-        };
-        rabbit: {
-            connection: string;
-            queryList: string[];
-        };
-        S3: {
-            endpoint: string;
-            bucket: string;
-            baseUrl: string;
-            access: string;
-            secret: string;
-        };
-        SeoConfig?: SeoConfigI;
-    };
+    conf: MainConfig;
     infrastructure: {
         mysql: any;
         redis: any;
