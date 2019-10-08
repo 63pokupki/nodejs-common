@@ -59,6 +59,7 @@ import * as HelperSys from './System/HelperSys';
 import { FieldValidator } from './System/FieldValidator';
 
 import *  as Mattermost from './System/MattermostSys';
+import { MainConfig } from './System/MainConfig';
 
 
 const Middleware = {
@@ -81,7 +82,8 @@ export {
     ResponseSys,
     RedisSys,
     Middleware,
-    MainRequest, // interface MainRequest
+    MainRequest, // interface MainRequest,
+    MainConfig,
     devReq, // Пример MainRequest
     S3,
     S3objectParamsI,
