@@ -23,14 +23,15 @@ import * as Seo from './Components/Seo';
 import * as HelperSys from './System/HelperSys';
 import { FieldValidator } from './System/FieldValidator';
 import * as Mattermost from './System/MattermostSys';
+import { MainConfig } from './System/MainConfig';
 declare const Middleware: {
     ErrorSysMiddleware: typeof ErrorSysMiddleware;
     RequestSysMiddleware: typeof RequestSysMiddleware;
     ResponseSysMiddleware: typeof ResponseSysMiddleware;
     AuthSysMiddleware: typeof AuthSysMiddleware;
 };
-export { BaseCtrl, BaseSQL, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ModelRulesT, ErrorSys, UserSys, ResponseSys, RedisSys, Middleware, MainRequest, // interface MainRequest
-devReq, // Пример MainRequest
+export { BaseCtrl, BaseSQL, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ModelRulesT, ErrorSys, UserSys, ResponseSys, RedisSys, Middleware, MainRequest, // interface MainRequest,
+MainConfig, devReq, // Пример MainRequest
 S3, S3objectParamsI, S3confI, RabbitSenderSys, initMainRequest, // Инициализация Main Request для тестов
 BaseCommand, // Конструктор консольных комманд
 BaseTest, // Конструктор тестов
