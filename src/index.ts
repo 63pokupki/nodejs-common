@@ -41,7 +41,7 @@ import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware'
 import { RedisSys } from './System/RedisSys';
 
 /* Класс для работы с S3 */
-import { S3objectParamsI, S3confI, S3 } from './System/S3';
+import { S3objectParamsI, S3 } from './System/S3';
 
 /* Отправлятор сообщений в Rabbit */
 import { RabbitSenderSys } from './System/RabbitSenderSys';
@@ -59,7 +59,8 @@ import * as HelperSys from './System/HelperSys';
 import { FieldValidator } from './System/FieldValidator';
 
 import *  as Mattermost from './System/MattermostSys';
-import { MainConfig } from './System/MainConfig';
+import { MainConfig, S3confI } from './System/MainConfig';
+import * as S3DO from './System/S3DO';
 
 
 const Middleware = {
@@ -96,4 +97,5 @@ export {
     HelperSys, // Вспомогательные функцие которые никчему не привязаны
     FieldValidator, // 
     Mattermost,
+    S3DO
 }

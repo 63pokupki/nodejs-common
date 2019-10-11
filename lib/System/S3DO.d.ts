@@ -1,4 +1,4 @@
-import MainRequest from './MainRequest';
+import { S3confI } from "./MainConfig";
 /**
  * Параметры объекта для заливки
  * https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property
@@ -26,10 +26,10 @@ export interface getS3objectParamsI {
 /**
  * Класс для роботы с S3 like
  */
-export declare class S3 {
+export declare class S3DO {
     private conf;
     protected spacesEndpoint: any;
-    constructor(req: MainRequest);
+    constructor(conf: S3confI);
     /**
      * Залить объект на s3
      * @param object

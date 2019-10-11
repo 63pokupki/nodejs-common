@@ -1,6 +1,7 @@
-import MainRequest from './MainRequest';
-import { S3confI } from './MainConfig';
+import { S3confI } from "./MainConfig";
+
 const AWS = require('aws-sdk');
+
 
 
 /**
@@ -32,14 +33,14 @@ export interface getS3objectParamsI {
 /**
  * Класс для роботы с S3 like
  */
-export class S3 {
+export class S3DO {
 
     private conf: S3confI;
 
     protected spacesEndpoint: any;
 
-    constructor(req: MainRequest) {
-        this.conf = <S3confI>req.conf.S3;
+    constructor(conf: S3confI) {
+        this.conf = conf;
     }
 
     /**
@@ -57,7 +58,7 @@ export class S3 {
                 .putObject(object)
                 .promise()
                 .then((data: any) => {
-                    resolve(this.conf.baseUrl + this.conf.bucket + '/' + object.Key);
+                    resolve(this.conf.baseUrl + '/' + object.Key);
                 })
                 .catch((e: any) => reject(e));
         })
@@ -78,7 +79,7 @@ export class S3 {
                 .getObject(object)
                 .promise()
                 .then((data: any) => {
-                    resolve(this.conf.baseUrl + this.conf.bucket + '/' + object.Key);
+                    resolve(this.conf.baseUrl + '/' + object.Key);
                 })
                 .catch((e: any) => reject(e));
         })

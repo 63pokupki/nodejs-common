@@ -6,23 +6,15 @@ const assert = require('chai').assert;
 const should = require('chai').should();
 const expect = require('chai').expect;
 
-import { S3, S3confI, S3objectParamsI } from "../src/System/S3";
-import {devReq} from '../src/System/MainRequest';
+import { S3DO, S3objectParamsI } from "../src/System/S3DO";
+import { S3confDO } from "./S3DO";
 
 
 function getRandomInt(min: any, max: any) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-const S3conf: S3confI = {
-    endpoint: 'http://10.1.100.76:8000',
-    bucket: 'devbucket',
-    baseUrl: 'http://10.1.100.76:8000/',
-    access: 'accessKey1',
-    secret: 'verySecretKey1',
-}
 
-devReq.conf.S3 = S3conf;
 
 /**
  * обертка для чтения файла
@@ -49,7 +41,7 @@ const run = async () => {
 
         it('upload', async () => {
 
-            let s3 = new S3(devReq);
+            let s3 = new S3DO(S3confDO);
             let data: any = await readFile(__dirname + '/S3.test.ts');
 
             console.log('Upload file ', __dirname + '/S3.test.ts');
@@ -57,12 +49,12 @@ const run = async () => {
             ;
 
             let object: S3objectParamsI = {
-                Bucket: S3conf.bucket,
+                Bucket: S3confDO.bucket,
                 Key: 'media/S3r3.test.ts',
                 ContentType: 'text/html',
                 ContentLength: data.length,
                 Body: data,
-                ACL:'public-read'
+                ACL: 'public-read'
             }
 
             console.log(object);

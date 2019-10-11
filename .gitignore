@@ -61,3 +61,5 @@ typings/
 .next
 
 .idea
+
+tests/S3DO.ts

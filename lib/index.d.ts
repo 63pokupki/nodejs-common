@@ -15,7 +15,7 @@ import RequestSysMiddleware from './System/Middleware/RequestSysMiddleware';
 import ResponseSysMiddleware from './System/Middleware/ResponseSysMiddleware';
 import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware';
 import { RedisSys } from './System/RedisSys';
-import { S3objectParamsI, S3confI, S3 } from './System/S3';
+import { S3objectParamsI, S3 } from './System/S3';
 import { RabbitSenderSys } from './System/RabbitSenderSys';
 import BaseCommand from './System/BaseCommand';
 import BaseTest from './System/BaseTest';
@@ -23,7 +23,8 @@ import * as Seo from './Components/Seo';
 import * as HelperSys from './System/HelperSys';
 import { FieldValidator } from './System/FieldValidator';
 import * as Mattermost from './System/MattermostSys';
-import { MainConfig } from './System/MainConfig';
+import { MainConfig, S3confI } from './System/MainConfig';
+import * as S3DO from './System/S3DO';
 declare const Middleware: {
     ErrorSysMiddleware: typeof ErrorSysMiddleware;
     RequestSysMiddleware: typeof RequestSysMiddleware;
@@ -38,4 +39,4 @@ BaseTest, // Конструктор тестов
 Seo, // сео собственно
 HelperSys, // Вспомогательные функцие которые никчему не привязаны
 FieldValidator, // 
-Mattermost, };
+Mattermost, S3DO };

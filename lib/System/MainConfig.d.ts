@@ -1,4 +1,14 @@
 import { SeoConfigI } from '../Components/Seo';
+/**
+ * Подключение к S3
+ */
+export interface S3confI {
+    endpoint: string;
+    bucket: string;
+    baseUrl: string;
+    access: string;
+    secret: string;
+}
 export interface MainConfig {
     mysql: {
         client: string;
@@ -44,12 +54,7 @@ export interface MainConfig {
         connection: string;
         queryList: string[];
     };
-    S3: {
-        endpoint: string;
-        bucket: string;
-        baseUrl: string;
-        access: string;
-        secret: string;
-    };
+    S3: S3confI;
+    S3DO: S3confI;
     SeoConfig?: SeoConfigI;
 }
