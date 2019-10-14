@@ -9,6 +9,7 @@ import MainRequest from './MainRequest';
 
 import { ModelValidatorSys } from './ModelValidatorSys';
 import { UserSys } from './UserSys';
+import { isObject, isArray } from 'util';
 
 
 /**
@@ -70,11 +71,18 @@ export default class BaseSQL {
 
         if( ok && !bCache ){ // Если значения нет в кеше - добавляем его в кеш
             out = await callback();
-            this.redisSys.set(
-                sKey,
-                JSON.stringify(out),
-                iTimeSec
-            );
+
+            if( out && (isObject(out) || isArray(out)) ){
+                this.redisSys.set(
+                    sKey,
+                    JSON.stringify(out),
+                    iTimeSec
+                );
+            } else {
+                this.errorSys.devNotice(
+                    sKey, 'Не удалось посместить значение в кеш'
+                );
+            }
         }
 
         if( ok && bCache ){ // Если значение взято из кеша - отдаем его в ответ
@@ -111,7 +119,7 @@ export default class BaseSQL {
         }
 
         if( ok && !bCache ){ // Если значения нет в кеше - добавляем его в кеш
-            out = await callback();
+            out = Number(await callback());
             if(out || out === 0){
                 this.redisSys.set(
                     sKey,
