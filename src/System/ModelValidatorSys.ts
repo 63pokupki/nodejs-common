@@ -155,6 +155,24 @@ export class ModelValidatorSys {
 
         return bSuccess;
     }
+	/**
+	 * Проверяет массив чисел
+	 *
+	 * @param string sKey
+	 * @return boolean
+	 */
+    protected fValidNumbers(sKey: string): boolean {
+
+        let bSuccess = false;
+        let i = this.data[sKey];
+
+        if (!i.some(isNaN)) {
+            this.aResult[sKey] = i;
+            bSuccess = true;
+        }
+
+        return bSuccess;
+    }
 
 	/**
 	 * Проверка Enum параметров
@@ -570,7 +588,15 @@ export class ModelValidatorSys {
 					this.errorSys.error('valid_'+k+'_decimal', v['error']+' Ошибка decimal = '+this.data[k]);
 				}
 			}
-
+            // Обработка [numbers] значений
+            if (bExist && bDpend && v['type'] === 'numbers') {
+                this.errorSys.decl('valid_' + k + '_numbers', v['error'] + ' Ошибка numbers = ' + this.data[k]);
+                if (!this.fValidNumbers(k)) {
+                    this.okResult = false;
+                    this.abValidOK[k] = false;
+                    this.errorSys.error('valid_' + k + '_numbers', v['error'] + ' Ошибка numbers = ' + this.data[k]);
+                }
+            }
 			// Обработка [object] значений
 			if( bExist && bDpend && v['type'] == 'object' ){
 				this.errorSys.decl('valid_'+k+'_object', v['error']+' Ошибка object = '+this.data[k]);

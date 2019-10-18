@@ -257,8 +257,33 @@ export class FieldValidator {
 
         return this;
     }
+    /**
+     * Проверяет массив чисел
+     * @error isNotNumbers
+     * @param string sError: string = 'isNotNumbers'
+     * @return boolean
+     */
+    public fNumbers(sError: string = 'isNotNumbers'): FieldValidator {
 
+        let bSuccess = false;
+        try {
+            let i = this.data;
 
+            if (!i.some(isNaN)) {
+                this.data = i;
+                bSuccess = true;
+            }
+
+            if (!bSuccess) {
+                this.fErr('isNotNumbers', sError);
+            }
+
+        } catch (e) {
+            this.fErr('isNotNumbers', sError);
+        }
+
+        return this;
+    }
     // ================================================================
     // Логические проверки
     // ================================================================
