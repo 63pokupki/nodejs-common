@@ -61,7 +61,7 @@ export declare class ModelValidatorSys {
      * @param string sKey
      * @return boolean
      */
-    protected fValidNumbers(sKey: string): boolean;
+    protected fValidArrayNumbers(sKey: string): boolean;
     /**
      * Проверка Enum параметров
      *

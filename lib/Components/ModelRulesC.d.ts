@@ -10,7 +10,7 @@ declare enum ModelRulesT {
     decimal = "decimal",
     object = "object",
     array = "array",
-    numbers = "numbers"
+    arrayNumbers = "arrayNumbers"
 }
 /**
  * Конструктор правил валидации

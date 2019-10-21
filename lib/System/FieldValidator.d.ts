@@ -72,11 +72,11 @@ export declare class FieldValidator {
     fDecimal(sError?: string): FieldValidator;
     /**
      * Проверяет массив чисел
-     * @error isNotNumbers
-     * @param string sError: string = 'isNotNumbers'
+     * @error isNotArrayNumbers
+     * @param string sError: string = 'isNotArrayNumbers'
      * @return boolean
      */
-    fNumbers(sError?: string): FieldValidator;
+    fArrayNumbers(sError?: string): FieldValidator;
     /**
      * Проверяет на больше
      * @error isNotMoreThan
