@@ -161,10 +161,10 @@ export class ModelValidatorSys {
 	 * @param string sKey
 	 * @return boolean
 	 */
-    protected fValidNumbers(sKey: string): boolean {
+    protected fValidArrayNumbers(sKey: string): boolean {
 
         let bSuccess = false;
-        let i = this.data[sKey];
+        let i = this.data[sKey].map((item: any) => Number(item));
 
         if (!i.some(isNaN)) {
             this.aResult[sKey] = i;
@@ -588,13 +588,13 @@ export class ModelValidatorSys {
 					this.errorSys.error('valid_'+k+'_decimal', v['error']+' Ошибка decimal = '+this.data[k]);
 				}
 			}
-            // Обработка [numbers] значений
-            if (bExist && bDpend && v['type'] === 'numbers') {
-                this.errorSys.decl('valid_' + k + '_numbers', v['error'] + ' Ошибка numbers = ' + this.data[k]);
-                if (!this.fValidNumbers(k)) {
+            // Обработка [arrayNumbers] значений
+            if (bExist && bDpend && v['type'] === 'arrayNumbers') {
+                this.errorSys.decl('valid_' + k + '_arrayNumbers', v['error'] + ' Ошибка arrayNumbers = ' + this.data[k]);
+                if (!this.fValidArrayNumbers(k)) {
                     this.okResult = false;
                     this.abValidOK[k] = false;
-                    this.errorSys.error('valid_' + k + '_numbers', v['error'] + ' Ошибка numbers = ' + this.data[k]);
+                    this.errorSys.error('valid_' + k + '_arrayNumbers', v['error'] + ' Ошибка arrayNumbers = ' + this.data[k]);
                 }
             }
 			// Обработка [object] значений

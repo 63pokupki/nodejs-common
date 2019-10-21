@@ -259,15 +259,15 @@ export class FieldValidator {
     }
     /**
      * Проверяет массив чисел
-     * @error isNotNumbers
-     * @param string sError: string = 'isNotNumbers'
+     * @error isNotArrayNumbers
+     * @param string sError: string = 'isNotArrayNumbers'
      * @return boolean
      */
-    public fNumbers(sError: string = 'isNotNumbers'): FieldValidator {
+    public fArrayNumbers(sError: string = 'isNotArrayNumbers'): FieldValidator {
 
         let bSuccess = false;
         try {
-            let i = this.data;
+            let i = this.data.map((item: any) => Number(item));
 
             if (!i.some(isNaN)) {
                 this.data = i;
@@ -275,11 +275,11 @@ export class FieldValidator {
             }
 
             if (!bSuccess) {
-                this.fErr('isNotNumbers', sError);
+                this.fErr('isNotArrayNumbers', sError);
             }
 
         } catch (e) {
-            this.fErr('isNotNumbers', sError);
+            this.fErr('isNotArrayNumbers', sError);
         }
 
         return this;
