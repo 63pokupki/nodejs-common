@@ -9,7 +9,8 @@ declare enum ModelRulesT {
     json = "json",
     decimal = "decimal",
     object = "object",
-    array = "array"
+    array = "array",
+    numbers = "numbers"
 }
 /**
  * Конструктор правил валидации

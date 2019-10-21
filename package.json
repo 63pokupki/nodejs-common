@@ -58,7 +58,9 @@
     "ts-mocha": "^6.0.0",
     "ts-node": "^8.4.1",
     "typescript-require": "^0.2.10",
-    "utf8": "^3.0.0"
+    "utf8": "^3.0.0",
+    "uniqid": "^5.0.3",
+    "md5": "2.2.1"
   },
   "directories": {
     "test": "tests"

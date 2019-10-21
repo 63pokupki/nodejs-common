@@ -56,6 +56,13 @@ export declare class ModelValidatorSys {
      */
     protected fValidDecimal(sKey: string): boolean;
     /**
+     * Проверяет массив чисел
+     *
+     * @param string sKey
+     * @return boolean
+     */
+    protected fValidNumbers(sKey: string): boolean;
+    /**
      * Проверка Enum параметров
      *
      * @param sKey - ключ значения

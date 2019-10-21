@@ -155,6 +155,38 @@ export class ModelValidatorSys {
 
         return bSuccess;
     }
+	/**
+	 * Проверяет массив чисел
+	 *
+	 * @param string sKey
+	 * @return boolean
+	 */
+    protected fValidArrayNumbers(sKey: string): boolean {
+
+		let bSuccess = false;
+		let checkArray = true;
+		
+		let array = this.data[sKey];
+		if (_.isArray(array)) {
+			for(let i = 0; i < array.length; i++){
+				if (checkArray) {
+					array[i] = Number(array[i]);
+					if (!array[i]) {
+						checkArray = false;
+					}
+				}
+			}
+		} else {
+			checkArray = false;
+		}
+
+        if (checkArray) {
+            this.aResult[sKey] = array;
+            bSuccess = true;
+        }
+
+        return bSuccess;
+    }
 
 	/**
 	 * Проверка Enum параметров
@@ -570,7 +602,15 @@ export class ModelValidatorSys {
 					this.errorSys.error('valid_'+k+'_decimal', v['error']+' Ошибка decimal = '+this.data[k]);
 				}
 			}
-
+            // Обработка [arrayNumbers] значений
+            if (bExist && bDpend && v['type'] === 'arrayNumbers') {
+                this.errorSys.decl('valid_' + k + '_arrayNumbers', v['error'] + ' Ошибка arrayNumbers = ' + this.data[k]);
+                if (!this.fValidArrayNumbers(k)) {
+                    this.okResult = false;
+                    this.abValidOK[k] = false;
+                    this.errorSys.error('valid_' + k + '_arrayNumbers', v['error'] + ' Ошибка arrayNumbers = ' + this.data[k]);
+                }
+            }
 			// Обработка [object] значений
 			if( bExist && bDpend && v['type'] == 'object' ){
 				this.errorSys.decl('valid_'+k+'_object', v['error']+' Ошибка object = '+this.data[k]);

@@ -60,6 +60,10 @@ typings/
 # next.js build output
 .next
 
+#config
+tests/config.js
+
 .idea
 
 tests/S3DO.ts
+

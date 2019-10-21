@@ -12,6 +12,7 @@ enum ModelRulesT{
 	decimal = 'decimal', // float двойной точности 10.00
 	object = 'object', // js object {}
 	array = 'array', // js array []
+	arrayNumbers = "arrayNumbers", // js number[]
 }
 /**
  * Конструктор правил валидации
