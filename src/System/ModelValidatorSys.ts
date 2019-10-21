@@ -163,11 +163,25 @@ export class ModelValidatorSys {
 	 */
     protected fValidArrayNumbers(sKey: string): boolean {
 
-        let bSuccess = false;
-        let i = this.data[sKey].map((item: any) => Number(item));
+		let bSuccess = false;
+		let checkArray = true;
+		
+		let array = this.data[sKey];
+		if (_.isArray(array)) {
+			for(let i = 0; i < array.length; i++){
+				if (checkArray) {
+					array[i] = Number(array[i]);
+					if (!array[i]) {
+						checkArray = false;
+					}
+				}
+			}
+		} else {
+			checkArray = false;
+		}
 
-        if (!i.some(isNaN)) {
-            this.aResult[sKey] = i;
+        if (checkArray) {
+            this.aResult[sKey] = array;
             bSuccess = true;
         }
 

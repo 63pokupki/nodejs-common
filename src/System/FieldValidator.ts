@@ -265,15 +265,27 @@ export class FieldValidator {
      */
     public fArrayNumbers(sError: string = 'isNotArrayNumbers'): FieldValidator {
 
-        let bSuccess = false;
+		let bSuccess = false;
+		let checkArray = true;
         try {
-            let i = this.data.map((item: any) => Number(item));
-
-            if (!i.some(isNaN)) {
-                this.data = i;
-                bSuccess = true;
-            }
-
+			let array = this.data;
+			if (array.length >= 0) {
+				for(let i = 0; i < array.length; i++){
+					if (checkArray) {
+						array[i] = Number(array[i]);
+						if (!array[i]) {
+							checkArray = false;
+						}
+					}
+				}
+			} else {
+				checkArray = false;
+			}
+	
+			if (checkArray) {
+				this.data = array;
+				bSuccess = true;
+			}
             if (!bSuccess) {
                 this.fErr('isNotArrayNumbers', sError);
             }
