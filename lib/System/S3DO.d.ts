@@ -51,5 +51,9 @@ export declare class S3DO {
      * @param object
      */
     getObject(object: getS3objectParamsI): Promise<string>;
-    setObjectAcl(object: setS3objectAclParamsI): Promise<unknown>;
+    /**
+     * поменять права доступа у объекта
+     * @param object
+     */
+    setObjectAcl(object: setS3objectAclParamsI): Promise<string>;
 }

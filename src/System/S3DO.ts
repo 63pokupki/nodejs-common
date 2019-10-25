@@ -96,7 +96,11 @@ export class S3DO {
         })
     }
 
-    setObjectAcl(object: setS3objectAclParamsI){
+    /**
+     * поменять права доступа у объекта
+     * @param object
+     */
+    setObjectAcl(object: setS3objectAclParamsI): Promise<string> {
         return new Promise((resolve, reject) => {
             new AWS.S3({
                 endpoint: new AWS.Endpoint(this.conf.endpoint),

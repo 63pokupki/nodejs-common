@@ -9,6 +9,7 @@ npm init --scope=63pokupki
 npm run build
 
 git stage .
+
 git commit
 
 npm version patch
