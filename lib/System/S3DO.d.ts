@@ -19,9 +19,20 @@ export interface S3objectParamsI {
         [key: string]: string;
     };
 }
+/**
+ * Параметры объекта для получения файла
+ */
 export interface getS3objectParamsI {
     Bucket: any;
     Key: string;
+}
+/**
+ * Параметры объекта для смены типа приватности
+ */
+export interface setS3objectAclParamsI {
+    Bucket: any;
+    Key: string;
+    ACL?: string;
 }
 /**
  * Класс для роботы с S3 like
@@ -40,4 +51,5 @@ export declare class S3DO {
      * @param object
      */
     getObject(object: getS3objectParamsI): Promise<string>;
+    setObjectAcl(object: setS3objectAclParamsI): Promise<unknown>;
 }
