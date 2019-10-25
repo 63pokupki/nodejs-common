@@ -23,10 +23,21 @@ export interface S3objectParamsI {
     Metadata?: { [key: string]: string };
 }
 
-
+/**
+ * Параметры объекта для получения файла
+ */
 export interface getS3objectParamsI {
     Bucket: any;
     Key: string;
+}
+
+/**
+ * Параметры объекта для смены типа приватности
+ */
+export interface setS3objectAclParamsI {
+    Bucket: any;
+    Key: string;
+    ACL?: string; // private | public-read | public-read-write | authenticated-read | aws-exec-read | bucket-owner-read | bucket-owner-full-control
 }
 
 
@@ -82,6 +93,23 @@ export class S3DO {
                     resolve(this.conf.baseUrl + '/' + object.Key);
                 })
                 .catch((e: any) => reject(e));
+        })
+    }
+
+    setObjectAcl(object: setS3objectAclParamsI){
+        return new Promise((resolve, reject) => {
+            new AWS.S3({
+                endpoint: new AWS.Endpoint(this.conf.endpoint),
+                accessKeyId: this.conf.access,
+                secretAccessKey: this.conf.secret,
+                s3ForcePathStyle: true
+            })
+                .putObjectAcl(object)
+                .promise()
+                .then((data:any) => {
+                    resolve(this.conf.baseUrl+ '/' + object.Key);
+                })
+                .catch((e:any) => reject(e));
         })
     }
 

@@ -1,20 +1,10 @@
 // process.env.TS_CONFIG_PATHS = 'true';
-const mocha = require('ts-mocha');
 var fs = require('fs');
 
 const assert = require('chai').assert;
-const should = require('chai').should();
-const expect = require('chai').expect;
 
-import { S3DO, S3objectParamsI } from "../src/System/S3DO";
+import { S3DO, S3objectParamsI, setS3objectAclParamsI } from "../src/System/S3DO";
 import { S3confDO } from "./S3DO";
-
-
-function getRandomInt(min: any, max: any) {
-    return Math.floor(Math.random() * (max - min)) + min;
-}
-
-
 
 /**
  * обертка для чтения файла
@@ -37,16 +27,10 @@ function readFile(file: string) {
 const run = async () => {
 
     await describe('Проверка работы s3', async () => {
-
-
         it('upload', async () => {
-
             let s3 = new S3DO(S3confDO);
             let data: any = await readFile(__dirname + '/S3.test.ts');
-
             console.log('Upload file ', __dirname + '/S3.test.ts');
-
-            ;
 
             let object: S3objectParamsI = {
                 Bucket: S3confDO.bucket,
@@ -55,24 +39,25 @@ const run = async () => {
                 ContentLength: data.length,
                 Body: data,
                 ACL: 'public-read'
-            }
-
+            };
             console.log(object);
-
-
             let resp = await s3.upload(object);
-
             console.log(resp);
-
             assert.ok(true);
-
         }).timeout(10000);
 
-
-
+        it('put acl', async () => {
+            let s3 = new S3DO(S3confDO);
+            let object: setS3objectAclParamsI = {
+                Bucket: S3confDO.bucket,
+                Key: 'item/x512/17fb6a11e619328b5cdd73b4ce10815640599uhk24e3r5c.jpg',
+                ACL: 'public-read'
+            };
+            console.log(object);
+            let resp = await s3.setObjectAcl(object);
+            console.log(resp);
+            assert.ok(true);
+        }).timeout(10000);
     });
-
-
 };
-
 run();
