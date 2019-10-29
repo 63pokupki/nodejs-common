@@ -4,7 +4,7 @@
 // Системные сервисы
 import MainRequest from '../../../System/MainRequest';
 
-// Сущьности и правила валидации
+// Сущности и правила валидации
 import {CtrlAccessE} from '../Entity/CtrlAccessE';
 import BaseSQL from '../../../System/BaseSQL';
 
@@ -322,7 +322,7 @@ export class CtrlAccessSQL extends BaseSQL
 
     /**
      * Проверить наличия контроллера доступа по ALIAS
-     * Alias униакльное поле потому LIMIT 1
+     * Alias уникальное поле потому LIMIT 1
      *
      * @param string aliasCtrlAccess
      * @return integer

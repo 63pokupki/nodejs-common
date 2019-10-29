@@ -61,7 +61,7 @@ module.exports = {
 	},
 
 	/*
-    Конфиг одклчения RabbitMQ
+    Конфиг подключения RabbitMQ
     Для для запуска на локальной машине
     docker run -d --hostname 0.0.0.0 --network host rabbitmq:3
     Документация
