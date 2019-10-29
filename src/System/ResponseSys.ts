@@ -57,7 +57,7 @@ export class ResponseSys
 			this.mattermostSys.sendMsg();
 		} */
 
-		if( this.ifDevMode ){ // Выводит информацию для разработчиков и тестрировщиков
+		if( this.ifDevMode ){ // Выводит информацию для разработчиков и тестировщиков
 			out['dev_warning'] = this.errorSys.getDevWarning();
 			out['dev_notice'] = this.errorSys.getDevNotice();
 			out['dev_declare'] = this.errorSys.getDevDeclare();

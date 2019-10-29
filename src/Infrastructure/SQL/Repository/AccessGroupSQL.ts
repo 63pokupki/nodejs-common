@@ -11,7 +11,7 @@ import MainRequest from '../../../System/MainRequest';
 
 import {ModelValidatorSys} from '../../../System/ModelValidatorSys';
 
-// Сущьности и правила валидации
+// Сущности и правила валидации
 import {AccessGroupE} from '../Entity/AccessGroupE';
 import BaseSQL from '../../../System/BaseSQL';
 

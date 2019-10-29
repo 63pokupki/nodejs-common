@@ -1,7 +1,7 @@
 
 
 /**
- * Класс констроирующий правила для одного поля
+ * Класс конструирующий правила для одного поля
  */
 class ModelOneRuleC {
 
@@ -14,7 +14,7 @@ class ModelOneRuleC {
     }
 
 	/**
-	 * [str, int, enum, text] - тип приавила
+	 * [str, int, enum, text] - тип правила
 	 *
 	 * @param string sType
 	 * @return ModelOneRuleC
@@ -69,7 +69,7 @@ class ModelOneRuleC {
 	}
 
 	/**
-	 * [клич ошибки, сообшение ошибки] - Ключ и сообщение ошибки в случае если проверка не прошла
+	 * [клич ошибки, сообщение ошибки] - Ключ и сообщение ошибки в случае если проверка не прошла
 	 *
 	 * @param string sError
 	 * @return ModelOneRuleC
@@ -176,7 +176,7 @@ class ModelOneRuleC {
         // if( !this.aRule['less'] ){ // Больше
         // 	this.aRule['less'] = false;
         // }
-        if (!this.aRule['depend']) { // Зависемость от другова поля
+        if (!this.aRule['depend']) { // Зависимость от другого поля
             this.aRule['depend'] = false;
         }
         if (!this.aRule['error']) { // Текст об ошибке
