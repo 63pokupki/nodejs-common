@@ -52,7 +52,7 @@ export declare class CtrlAccessSQL extends BaseSQL {
     delCtrlAccessByAlias(aliasCtrlAccess: string): Promise<boolean>;
     /**
      * Проверить наличия контроллера доступа по ALIAS
-     * Alias униакльное поле потому LIMIT 1
+     * Alias уникальное поле потому LIMIT 1
      *
      * @param string aliasCtrlAccess
      * @return integer

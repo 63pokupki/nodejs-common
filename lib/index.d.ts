@@ -34,9 +34,9 @@ declare const Middleware: {
 export { BaseCtrl, BaseSQL, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ModelRulesT, ErrorSys, UserSys, ResponseSys, RedisSys, Middleware, MainRequest, // interface MainRequest,
 MainConfig, devReq, // Пример MainRequest
 S3, S3objectParamsI, S3confI, RabbitSenderSys, initMainRequest, // Инициализация Main Request для тестов
-BaseCommand, // Конструктор консольных комманд
+BaseCommand, // Конструктор консольных команд
 BaseTest, // Конструктор тестов
 Seo, // сео собственно
-HelperSys, // Вспомогательные функцие которые никчему не привязаны
+HelperSys, // Вспомогательные функции которые ни к чему не привязаны
 FieldValidator, // 
 Mattermost, S3DO };

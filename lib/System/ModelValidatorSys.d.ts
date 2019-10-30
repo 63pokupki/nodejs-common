@@ -18,7 +18,7 @@ export declare class ModelValidatorSys {
     protected errorSys: ErrorSys;
     constructor(req: MainRequest);
     /**
-     * Валидирует и экранирует строковое значени
+     * Валидирует и экранирует строковое значение
      *
      * @param string sKey - ключ в базе данных
      * @param string sTpl - регулярное выражение по которому проверять
@@ -124,7 +124,7 @@ export declare class ModelValidatorSys {
      */
     protected fValidLessOrEqual(sKey: string, iVal: number): boolean;
     /**
-     * Проверяет на макс количесво символов
+     * Проверяет на макс количество символов
      *
      * @param string sKey
      * @param string sTpl

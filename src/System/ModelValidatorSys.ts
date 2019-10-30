@@ -165,16 +165,22 @@ export class ModelValidatorSys {
 
 		let bSuccess = false;
 		let checkArray = true;
-		
+
 		let array = this.data[sKey];
 		if (_.isArray(array)) {
 			for(let i = 0; i < array.length; i++){
+
 				if (checkArray) {
-					array[i] = Number(array[i]);
-					if (!array[i]) {
-						checkArray = false;
-					}
-				}
+					if (!array[i] && array[i] !== 0) {
+                        checkArray = false;
+					} else {
+                        array[i] = Number(array[i]);
+
+                        if (!array[i] && array[i] !== 0) {
+                            checkArray = false;
+                        }
+                    }
+                }
 			}
 		} else {
 			checkArray = false;

@@ -14,7 +14,7 @@ export declare class FieldValidator {
      */
     fGetErrorSys(): ErrorSys;
     /**
-     * признак отсутвия ошибок
+     * признак отсутствия ошибок
      */
     fIsOk(): boolean;
     /**
@@ -104,14 +104,14 @@ export declare class FieldValidator {
      */
     fLessOrEqual(iVal: number, sError?: string): FieldValidator;
     /**
-     * Проверяет на макс количесво символов
+     * Проверяет на макс количество символов
      *
      * @param iLen: number
      * @param sError: string = 'moreThanMaxLen'
      */
     fMaxLen(iLen: number, sError?: string): FieldValidator;
     /**
-     * Проверяет на минимальное количесво символов
+     * Проверяет на минимальное количество символов
      *
      * @param iLen: number
      * @param sError: string = 'lessThanMinLen'
