@@ -437,4 +437,18 @@ export class UserSys
 		return this.idUser;
 	}
 
+	/**
+	 * Список ID групп в которых состоит пользователь
+	 */
+	public getUserGroupIds():number[] {
+		return !this.userGroupsList ? [] : Object.values(this.userGroupsList);
+	}
+
+	/**
+	 * Проверяет состоит ли пользователь в группе
+	 * @param groupAlias Алиас группы на принадлежность к которой нужно проверить пользователя
+	 */
+	public isUserInGroup(groupAlias:string): boolean {
+		return !this.userGroupsList ? false : !!this.userGroupsList[groupAlias]
+	}
 }

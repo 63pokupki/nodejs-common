@@ -92,4 +92,13 @@ export declare class UserSys {
      * Получить ID пользователя
      */
     getIdUser(): number;
+    /**
+     * Список ID групп в которых состоит пользователь
+     */
+    getUserGroupIds(): number[];
+    /**
+     * Проверяет состоит ли пользователь в группе
+     * @param groupAlias Алиас группы на принадлежность к которой нужно проверить пользователя
+     */
+    isUserInGroup(groupAlias: string): boolean;
 }
