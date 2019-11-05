@@ -1,0 +1,1 @@
+{"version":3,"file":"PromiseUtil.js","sourceRoot":"","sources":["../../src/Utils/PromiseUtil.ts"],"names":[],"mappings":";;AACA,SAAgB,SAAS,CAAI,UAA0B;IACtD,IAAI,UAAU,YAAY,OAAO,EAAE;QAClC,OAAO,UAAU,CAAC;KAClB;IACD,OAAO,OAAO,CAAC,OAAO,CAAC,UAAe,CAAC,CAAC;AACzC,CAAC;AALD,8BAKC"}
