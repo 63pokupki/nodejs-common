@@ -29,6 +29,14 @@ function valid(data: any) {
 			.type(System.ModelRulesT.arrayNumbers)
 			.require()
 			.errorEx('array_decimal', 'array_decimal')
+    );
+
+    rules.set(
+		rules
+			.rule('array_false_null')
+			.type(System.ModelRulesT.arrayNumbers)
+			.require()
+			.errorEx('array_false_null', 'array_false_null')
 	);
 
 	const validator = new System.ModelValidatorSys(req);
@@ -40,13 +48,16 @@ function valid(data: any) {
 const arrayTrue = [1, 3, 4, 5, '5'];
 const arrayFalse = [1, 3, 4, 5, 'asdasd5'];
 const arrayDecimal = [1.2, 3, 4, 5, '5.32323'];
+const arrayFalseNull = [undefined];
 
 const result = valid({
 	array_true: arrayTrue,
 	array_false: arrayFalse,
-	array_decimal: arrayDecimal,
+    array_decimal: arrayDecimal,
+    array_false_null: arrayFalseNull,
 });
 
 console.log('valid(arrayTrue) :', result.array_true);
 console.log('valid(arrayFalse) :', result.array_false);
 console.log('valid(arrayDecimal) :', result.array_decimal);
+console.log('valid(arrayFalseNull) :', result.array_false_null);

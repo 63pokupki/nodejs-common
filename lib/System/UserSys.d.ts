@@ -1,6 +1,6 @@
 import MainRequest from './MainRequest';
 /**
- * Клас который глобально знает все данные пользователя
+ * Класс который глобально знает все данные пользователя
  */
 export declare class UserSys {
     idUser: number;
@@ -20,7 +20,7 @@ export declare class UserSys {
     constructor(req: MainRequest);
     /**
      * Инициализация данных пользователя
-     * тольrо если this.isAuth() == true
+     * только если this.isAuth() == true
      *
      * @return void
      */
@@ -92,4 +92,13 @@ export declare class UserSys {
      * Получить ID пользователя
      */
     getIdUser(): number;
+    /**
+     * Список ID групп в которых состоит пользователь
+     */
+    getUserGroupIds(): number[];
+    /**
+     * Проверяет состоит ли пользователь в группе
+     * @param groupAlias Алиас группы на принадлежность к которой нужно проверить пользователя
+     */
+    isUserInGroup(groupAlias: string): boolean;
 }

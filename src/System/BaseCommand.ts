@@ -12,7 +12,7 @@ import MainRequest from './MainRequest';
 import { UserSys } from './UserSys';
 
 /**
- * Конструктор для консольных комманд
+ * Конструктор для консольных команд
  */
 export default class BaseCommand {
 

@@ -18,7 +18,7 @@ export default async function AuthSysMiddleware(request: MainRequest, response: 
 
     // if (await userSys.isAuth()) {
     //     await userSys.init();
-    //     /* проставляем аторизацию */
+    //     /* проставляем авторизацию */
     //     request.sys.bAuth = true;
 
     // }

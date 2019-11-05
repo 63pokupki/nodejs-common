@@ -35,7 +35,7 @@ export class ModelValidatorSys {
     }
 
 	/**
-	 * Валидирует и экранирует строковое значени
+	 * Валидирует и экранирует строковое значение
 	 *
 	 * @param string sKey - ключ в базе данных
 	 * @param string sTpl - регулярное выражение по которому проверять
@@ -165,16 +165,22 @@ export class ModelValidatorSys {
 
 		let bSuccess = false;
 		let checkArray = true;
-		
+
 		let array = this.data[sKey];
 		if (_.isArray(array)) {
 			for(let i = 0; i < array.length; i++){
+
 				if (checkArray) {
-					array[i] = Number(array[i]);
-					if (!array[i]) {
-						checkArray = false;
-					}
-				}
+					if (!array[i] && array[i] !== 0) {
+                        checkArray = false;
+					} else {
+                        array[i] = Number(array[i]);
+
+                        if (!array[i] && array[i] !== 0) {
+                            checkArray = false;
+                        }
+                    }
+                }
 			}
 		} else {
 			checkArray = false;
@@ -382,7 +388,7 @@ export class ModelValidatorSys {
 	}
 
 	/**
-	 * Проверяет на макс количесво символов
+	 * Проверяет на макс количество символов
 	 *
 	 * @param string sKey
 	 * @param string sTpl
@@ -459,7 +465,7 @@ export class ModelValidatorSys {
 	public getResult(): {[key:string]:any}|any{ // Получить проверенные отфильтрованные данные
 		return this.aResult;
 	}
-	public getStatus(){ // Получиь статус проверки
+	public getStatus(){ // Получить статус проверки
 		return this.okResult;
 	}
 	public getMsg(): string[]{

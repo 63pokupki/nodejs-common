@@ -32,7 +32,7 @@ export class FieldValidator {
     }
 
     /**
-     * признак отсутвия ошибок
+     * признак отсутствия ошибок
      */
     public fIsOk(): boolean {
         return this.bOk;
@@ -420,7 +420,7 @@ export class FieldValidator {
     }
 
 	/**
-	 * Проверяет на макс количесво символов
+	 * Проверяет на макс количество символов
 	 *
 	 * @param iLen: number
 	 * @param sError: string = 'moreThanMaxLen'
@@ -449,7 +449,7 @@ export class FieldValidator {
     }
 
 	/**
-	 * Проверяет на минимальное количесво символов
+	 * Проверяет на минимальное количество символов
 	 *
 	 * @param iLen: number
 	 * @param sError: string = 'lessThanMinLen'

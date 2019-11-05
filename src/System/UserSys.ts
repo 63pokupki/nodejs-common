@@ -15,7 +15,7 @@ import {AccessGroupSQL} from '../Infrastructure/SQL/Repository/AccessGroupSQL';
 import {CtrlAccessSQL} from '../Infrastructure/SQL/Repository/CtrlAccessSQL';
 
 /**
- * Клас который глобально знает все данные пользователя
+ * Класс который глобально знает все данные пользователя
  */
 export class UserSys
 {
@@ -75,7 +75,7 @@ export class UserSys
 
 	/**
 	 * Инициализация данных пользователя
-	 * тольrо если this.isAuth() == true
+	 * только если this.isAuth() == true
 	 *
 	 * @return void
 	 */
@@ -95,7 +95,7 @@ export class UserSys
 
 			if( !userInfoList ){
 				ok = false;
-				this.errorSys.error('get_user_info_in_auth', 'Не возомжно получить данные пользователя при авторизации');
+				this.errorSys.error('get_user_info_in_auth', 'Не возможно получить данные пользователя при авторизации');
 			} else {
 				this.userInfoList = userInfoList;
 				this.idUser = userInfoList['user_id'];
@@ -109,7 +109,7 @@ export class UserSys
 
 			if( !userGroupsList ){
 				ok = false;
-				this.errorSys.error('get_user_roles_in_auth', 'Не возомжно получить роли пользователя при авторизации');
+				this.errorSys.error('get_user_roles_in_auth', 'Не возможно получить роли пользователя при авторизации');
 			}
 		}
 
@@ -152,7 +152,7 @@ export class UserSys
 			});
 		}
 
-		if( ok && ifAuth ){ // Уведоиление об успешной авторизации пользователя в DEV режиме
+		if( ok && ifAuth ){ // Уведомление об успешной авторизации пользователя в DEV режиме
 			this.errorSys.devNotice('is_user_init', 'Авторизация прошла успешно, пользователь - '+userInfoList['username']);
 		} else {
 			this.errorSys.devWarning('is_user_init', 'Авторизация провалилась');
@@ -202,7 +202,7 @@ export class UserSys
 
 			if( !accessCRUDList ){
 				ok = false;
-				this.errorSys.error('get_access_crud', 'Не возможно получить CRUD права на контрллер');
+				this.errorSys.error('get_access_crud', 'Не возможно получить CRUD права на контроллер');
 			}
 		}
 
@@ -437,4 +437,18 @@ export class UserSys
 		return this.idUser;
 	}
 
+	/**
+	 * Список ID групп в которых состоит пользователь
+	 */
+	public getUserGroupIds():number[] {
+		return !this.userGroupsList ? [] : Object.values(this.userGroupsList);
+	}
+
+	/**
+	 * Проверяет состоит ли пользователь в группе
+	 * @param groupAlias Алиас группы на принадлежность к которой нужно проверить пользователя
+	 */
+	public isUserInGroup(groupAlias:string): boolean {
+		return !this.userGroupsList ? false : !!this.userGroupsList[groupAlias]
+	}
 }
