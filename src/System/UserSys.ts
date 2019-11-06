@@ -116,7 +116,7 @@ export class UserSys
 
 		this.userGroupsList = {};
 		if( ok && ifAuth ){ // Проиндексировать группы по: имени группы
-			_.forEach(userGroupsList, (v, k) => {
+			_.forEach(userGroupsList, (v: any) => {
 				let idGroup = v['group_id'];
 				let aliasGroup = v['alias'];
 
@@ -142,7 +142,7 @@ export class UserSys
 
 		if( ok ){ // Проиндексировать модули по: alias модуля
 
-			_.forEach(ctrlAccessListTemp, (v, k) =>{
+			_.forEach(ctrlAccessListTemp, (v: any) =>{
 				let idCtrlAccess = v['id'];
 				let aliasCtrlAccess = v['alias'];
 

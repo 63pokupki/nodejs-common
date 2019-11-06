@@ -62,6 +62,13 @@ import *  as Mattermost from './System/MattermostSys';
 import { MainConfig, S3confI } from './System/MainConfig';
 import * as S3DO from './System/S3DO';
 
+import {
+    ExpressRouterProxy,
+    HandlerContext,
+    Handler,
+    HandlerDefinition,
+    ControllerClass
+} from './System/ExpressRouterProxy';
 
 const Middleware = {
     ErrorSysMiddleware,
@@ -97,5 +104,10 @@ export {
     HelperSys, // Вспомогательные функции которые ни к чему не привязаны
     FieldValidator, // 
     Mattermost,
-    S3DO
+    S3DO,
+    ExpressRouterProxy,
+    HandlerContext,
+    Handler,
+    HandlerDefinition,
+    ControllerClass
 }

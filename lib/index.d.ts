@@ -25,6 +25,7 @@ import { FieldValidator } from './System/FieldValidator';
 import * as Mattermost from './System/MattermostSys';
 import { MainConfig, S3confI } from './System/MainConfig';
 import * as S3DO from './System/S3DO';
+import { ExpressRouterProxy, HandlerContext, Handler, HandlerDefinition, ControllerClass } from './System/ExpressRouterProxy';
 declare const Middleware: {
     ErrorSysMiddleware: typeof ErrorSysMiddleware;
     RequestSysMiddleware: typeof RequestSysMiddleware;
@@ -39,4 +40,4 @@ BaseTest, // Конструктор тестов
 Seo, // сео собственно
 HelperSys, // Вспомогательные функции которые ни к чему не привязаны
 FieldValidator, // 
-Mattermost, S3DO };
+Mattermost, S3DO, ExpressRouterProxy, HandlerContext, Handler, HandlerDefinition, ControllerClass };
