@@ -1,4 +1,4 @@
-import MainRequest from './MainRequest';
+import { MainRequest } from './MainRequest';
 export declare class RabbitSender {
     private query;
     private connection;

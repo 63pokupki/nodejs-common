@@ -1,5 +1,5 @@
 import * as amqp from 'amqplib/callback_api';
-import MainRequest from './MainRequest';
+import { MainRequest } from './MainRequest';
 import { resolve, reject } from 'bluebird';
 import { Replies } from 'amqplib/callback_api';
 

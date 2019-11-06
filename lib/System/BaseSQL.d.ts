@@ -1,6 +1,6 @@
 import { ErrorSys } from './ErrorSys';
 import { RedisSys } from './RedisSys';
-import MainRequest from './MainRequest';
+import { MainRequest } from './MainRequest';
 import { ModelValidatorSys } from './ModelValidatorSys';
 import { UserSys } from './UserSys';
 /**

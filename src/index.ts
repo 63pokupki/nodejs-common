@@ -17,10 +17,8 @@ import { UserSys } from './System/UserSys'
 
 import { ResponseSys } from './System/ResponseSys'
 
-import MainRequest from './System/MainRequest'
+import { MainRequest, TError, initMainRequest } from './System/MainRequest'
 import { devReq } from './System/MainRequest'
-import { initMainRequest } from './System/MainRequest'
-// export { MainRequest as MainRequest };
 
 import { ModelOneRuleC } from './Components/ModelOneRuleC'
 
@@ -91,6 +89,7 @@ export {
     RedisSys,
     Middleware,
     MainRequest, // interface MainRequest,
+    TError, 
     MainConfig,
     devReq, // Пример MainRequest
     S3,

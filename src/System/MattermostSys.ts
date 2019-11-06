@@ -1,4 +1,4 @@
-import MainRequest from './MainRequest';
+import { MainRequest } from './MainRequest';
 
 import axios from "axios";
 import { ErrorSys } from './ErrorSys';

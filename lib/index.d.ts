@@ -5,9 +5,8 @@ import { ModelValidatorSys } from './System/ModelValidatorSys';
 import { ErrorSys } from './System/ErrorSys';
 import { UserSys } from './System/UserSys';
 import { ResponseSys } from './System/ResponseSys';
-import MainRequest from './System/MainRequest';
+import { MainRequest, TError, initMainRequest } from './System/MainRequest';
 import { devReq } from './System/MainRequest';
-import { initMainRequest } from './System/MainRequest';
 import { ModelOneRuleC } from './Components/ModelOneRuleC';
 import { ModelRulesC, ModelRulesT } from './Components/ModelRulesC';
 import ErrorSysMiddleware from './System/Middleware/ErrorSysMiddleware';
@@ -33,7 +32,7 @@ declare const Middleware: {
     AuthSysMiddleware: typeof AuthSysMiddleware;
 };
 export { BaseCtrl, BaseSQL, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ModelRulesT, ErrorSys, UserSys, ResponseSys, RedisSys, Middleware, MainRequest, // interface MainRequest,
-MainConfig, devReq, // Пример MainRequest
+TError, MainConfig, devReq, // Пример MainRequest
 S3, S3objectParamsI, S3confI, RabbitSenderSys, initMainRequest, // Инициализация Main Request для тестов
 BaseCommand, // Конструктор консольных команд
 BaseTest, // Конструктор тестов

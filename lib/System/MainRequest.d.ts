@@ -4,7 +4,7 @@ import { ResponseSys } from './ResponseSys';
 import { Request } from 'express';
 import { SeoBase } from '../Components/Seo';
 import { MainConfig } from './MainConfig';
-export default interface MainRequest extends Request {
+export interface MainRequest extends Request {
     headers: {
         [key: string]: any;
     };

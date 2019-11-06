@@ -1,4 +1,4 @@
-import MainRequest from './MainRequest';
+import { MainRequest } from './MainRequest';
 import { S3confI } from './MainConfig';
 const AWS = require('aws-sdk');
 

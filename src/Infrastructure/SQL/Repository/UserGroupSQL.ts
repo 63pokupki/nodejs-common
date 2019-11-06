@@ -2,7 +2,7 @@
 // Глобальные сервисы
 
 import * as redisSys  from '../../../System/RedisSys';
-import MainRequest from '../../../System/MainRequest';
+import { MainRequest } from '../../../System/MainRequest';
 
 // Системные сервисы
 import {ErrorSys} from '../../../System/ErrorSys';

@@ -7,7 +7,7 @@ var md5 = require('md5');
 // Глобальные сервисы
 
 // Системные сервисы
-import MainRequest from '../../../System/MainRequest';
+import { MainRequest } from '../../../System/MainRequest';
 import BaseSQL from '../../../System/BaseSQL';
 
 

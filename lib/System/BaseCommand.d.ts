@@ -1,5 +1,5 @@
 import { ErrorSys } from './ErrorSys';
-import MainRequest from './MainRequest';
+import { MainRequest } from './MainRequest';
 import { UserSys } from './UserSys';
 /**
  * Конструктор для консольных команд

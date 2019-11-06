@@ -1,4 +1,4 @@
-import MainRequest from '../System/MainRequest';
+import { MainRequest } from '../System/MainRequest';
 import { ErrorSys } from './ErrorSys';
 /**
  * Системный сервис валидации данных для моделей

@@ -1,4 +1,4 @@
-import MainRequest from "../System/MainRequest";
+import { MainRequest } from "../System/MainRequest";
 /**
  * Open Graph
  */

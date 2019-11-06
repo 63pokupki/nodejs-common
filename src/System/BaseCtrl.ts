@@ -3,7 +3,7 @@
 // Системные сервисы
 import { ResponseSys } from './ResponseSys';
 import { ErrorSys } from './ErrorSys';
-import MainRequest from './MainRequest';
+import { MainRequest } from './MainRequest';
 
 import { UserSys } from './UserSys';
 

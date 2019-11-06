@@ -5,7 +5,7 @@ const utf8 = require('utf8');
 
 
 // Глобальные сервисы
-import MainRequest from '../System/MainRequest';
+import { MainRequest } from '../System/MainRequest';
 
 // Системные сервисы
 

@@ -1,6 +1,6 @@
 import { ErrorSys } from './ErrorSys';
 import { UserSys } from './UserSys';
-import MainRequest from './MainRequest';
+import { MainRequest } from './MainRequest';
 /**
  * Базовая модель
  */

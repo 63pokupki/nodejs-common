@@ -5,7 +5,7 @@
 // Системные сервисы
 import { ErrorSys } from './ErrorSys';
 import { RedisSys } from './RedisSys';
-import MainRequest from './MainRequest';
+import { MainRequest } from './MainRequest';
 
 import { UserSys } from './UserSys';
 

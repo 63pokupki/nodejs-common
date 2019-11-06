@@ -1,4 +1,4 @@
-import MainRequest from '../../../System/MainRequest';
+import { MainRequest } from '../../../System/MainRequest';
 import BaseSQL from '../../../System/BaseSQL';
 /**
  * Здесь методы для SQL запросов
