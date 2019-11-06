@@ -6,6 +6,8 @@ import { Request } from 'express';
 import { SeoBase } from '../Components/Seo';
 import { MainConfig } from './MainConfig';
 
+
+
 export default interface MainRequest extends Request {
     headers: { [key: string]: any };
     body: any;
@@ -25,7 +27,8 @@ export default interface MainRequest extends Request {
         mysql: any;
         redis: any;
         rabbit: any;
-    }
+    },
+    errorType?: TError, // тип ошибки
 }
 
 const Req: any = {
@@ -68,4 +71,14 @@ export function initMainRequest(conf: any): MainRequest {
     mainRequest.sys.errorSys = new ErrorSys(mainRequest);
 
     return mainRequest;
+}
+
+/**
+ * Типы ошибок
+ */
+export enum TError {
+    None = 0,
+    PageNotFound = 404,
+    Api = 1,
+    AllBad = 500,
 }

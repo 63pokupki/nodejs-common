@@ -24,9 +24,19 @@ export default interface MainRequest extends Request {
         redis: any;
         rabbit: any;
     };
+    errorType?: TError;
 }
 export declare const devReq: MainRequest;
 /**
  * Инициализация MainRequest для консольных запросов
  */
 export declare function initMainRequest(conf: any): MainRequest;
+/**
+ * Типы ошибок
+ */
+export declare enum TError {
+    None = 0,
+    PageNotFound = 404,
+    Api = 1,
+    AllBad = 500
+}
