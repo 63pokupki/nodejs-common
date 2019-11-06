@@ -37,7 +37,7 @@ export class ExpressRouterProxy<TCtrl = {}, TCtrlClass extends ControllerClass<T
 		options?: THandlerOptions,
 	) {
 		this.router.get(url, async (req: Request, res: Response, next: NextFunction) => {
-			await this.runMethod(handlerDefinition, req, res, next, options);
+			await this.runMethod(handlerDefinition, req.params as any, req, res, next, options);
 		});
 	}
 
@@ -47,12 +47,13 @@ export class ExpressRouterProxy<TCtrl = {}, TCtrlClass extends ControllerClass<T
 		options?: THandlerOptions,
 	) {
 		this.router.post(url, async (req: Request, res: Response, next: NextFunction) => {
-			await this.runMethod(handlerDefinition, req, res, next, options);
+			await this.runMethod(handlerDefinition, req.body, req, res, next, options);
 		});
 	}
 
 	private async runMethod<TReqData, TResData, THandlerOptions>(
 		handlerDefinition: HandlerDefinition<TCtrl, TReqData, TResData, THandlerOptions>,
+		data: TReqData,
 		req: Request,
 		res: Response,
 		next: NextFunction,
@@ -68,7 +69,7 @@ export class ExpressRouterProxy<TCtrl = {}, TCtrlClass extends ControllerClass<T
 				options,
 			};
 			const handler = handlerDefinition(ctrl);
-			const handlerResult = handler.call(ctrl, req.body, context) as TResData;
+			const handlerResult = handler.call(ctrl, data, context) as TResData;
 			const responseData = await promisify(handlerResult);
 			await this.buildResponse(responseData, context);
 			if(!res.headersSent) { // Check if response was provided
