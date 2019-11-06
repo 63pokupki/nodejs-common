@@ -1,6 +1,6 @@
 {
   "name": "@63pokupki/nodejs-common",
-  "version": "0.0.102",
+  "version": "0.0.103",
   "description": "common nodejs functionality",
   "main": "lib/src/index.js",
   "types": "lib/src/index.d.ts",
