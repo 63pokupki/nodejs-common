@@ -28,6 +28,13 @@ export default class BaseSQL {
      */
     autoCacheInt(sKey: string, iTimeSec: number, callback: any): Promise<number>;
     /**
+     * Авто кеширование ID переменной для встраивания в функцию
+     * @param sKey - Ключ кеша
+     * @param iTimeSec - Время кеширования
+     * @param callback - функция получающая данные из БД
+     */
+    autoCacheID(sKey: string, iTimeSec: number, callback: any): Promise<number>;
+    /**
      * Очистить кеш редиса
      * @param sKey
      */
