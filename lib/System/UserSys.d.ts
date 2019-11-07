@@ -1,4 +1,17 @@
 import { MainRequest } from './MainRequest';
+interface UserInfo {
+    user_id: number;
+    user_type: number;
+    group_id: number;
+    username: string;
+    username_clean: string;
+    user_email: string;
+    user_birthday: string;
+    user_avatar: string;
+    user_avatar_type: string;
+    user_mobile: string;
+    user_sig: string;
+}
 /**
  * Класс который глобально знает все данные пользователя
  */
@@ -93,6 +106,10 @@ export declare class UserSys {
      */
     getIdUser(): number;
     /**
+     * Получить инфу о пользователе
+     */
+    getUserInfo(): UserInfo;
+    /**
      * Список ID групп в которых состоит пользователь
      */
     getUserGroupIds(): number[];
@@ -102,3 +119,4 @@ export declare class UserSys {
      */
     isUserInGroup(groupAlias: string): boolean;
 }
+export {};

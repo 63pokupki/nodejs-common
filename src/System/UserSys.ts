@@ -14,6 +14,20 @@ import {UserGroupSQL} from '../Infrastructure/SQL/Repository/UserGroupSQL';
 import {AccessGroupSQL} from '../Infrastructure/SQL/Repository/AccessGroupSQL';
 import {CtrlAccessSQL} from '../Infrastructure/SQL/Repository/CtrlAccessSQL';
 
+interface UserInfo {
+	user_id:number,
+	user_type:number,
+	group_id:number,
+	username:string,
+	username_clean:string,
+	user_email:string,
+	user_birthday:string,
+	user_avatar:string,
+	user_avatar_type:string,
+	user_mobile:string,
+	user_sig:string
+}
+
 /**
  * Класс который глобально знает все данные пользователя
  */
@@ -25,7 +39,7 @@ export class UserSys
 
 	private apikey:string; // APIKEY
 
-	private userInfoList:any; // Информация о пользователе
+	private userInfoList:UserInfo; // Информация о пользователе
 	private userGroupsList:any; // Роли пользователя
 
 	private ctrlAccessList:any; // Список модулей
@@ -435,6 +449,13 @@ export class UserSys
 	 */
 	public getIdUser(): number{
 		return this.idUser;
+	}
+
+	/**
+	 * Получить инфу о пользователе
+	 */
+	public getUserInfo(): UserInfo {
+		return this.userInfoList;
 	}
 
 	/**
