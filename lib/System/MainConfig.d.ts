@@ -28,18 +28,6 @@ export interface MainConfig {
         };
         acquireConnectionTimeout: number;
     };
-    pgsql: {
-        dialect: string;
-        username: string;
-        password: string;
-        host: string;
-        port: number;
-        database: string;
-        dialectOptions: {
-            supportBigNumbers: true;
-            decimalNumbers: true;
-        };
-    };
     redis: {
         url: string;
     };

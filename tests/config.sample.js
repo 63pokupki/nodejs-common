@@ -28,20 +28,6 @@ module.exports = {
 	 * Конфигурация для sequelizejs. Соединение с Postgresql базой.
 	 * @see http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor
 	 */
-	// pgsql: {
-	// 	dialect: 'postgres',
-	// 	username: '',
-	// 	password: '',
-	// 	host: '',
-	// 	port: 5432,
-	// 	database: '',
-	// 	dialectOptions: {
-	// 		supportBigNumbers: true,
-	// 		decimalNumbers: true,
-	// 	},
-	// },
-
-	// Конфигурация для sequelizejs.
 	mysql2: {
 		dialect: 'mysql',
 		host: '',

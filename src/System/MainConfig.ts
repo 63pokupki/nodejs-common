@@ -29,19 +29,6 @@ export interface MainConfig { // Конфигурация
 		acquireConnectionTimeout: number; // таймоут 60000
 	};
 	// ================================
-	pgsql: { // Конфиг для Postgress
-		dialect: string; // "postgres",
-		username: string; // Имя пользователя,
-		password: string; // Пароль
-		host: string; // "127.0.0.1",
-		port: number; // 5432,
-		database: string; // Имя базы данных
-		dialectOptions: {
-			supportBigNumbers: true;
-			decimalNumbers: true;
-		}
-	};
-	// ================================
 	redis: { // Конфиг для редиса
 		url: string; // "redis://127.0.0.1:6379"
 	};
