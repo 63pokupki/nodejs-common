@@ -1,18 +1,28 @@
+import Knex = require('knex');
 import { ErrorSys } from './ErrorSys';
 import { RedisSys } from './RedisSys';
 import { MainRequest } from './MainRequest';
 import { ModelValidatorSys } from './ModelValidatorSys';
 import { UserSys } from './UserSys';
+import { DbProvider } from './DbProvider';
 /**
  * SQL Запросы
  */
 export default class BaseSQL {
-    protected db: any;
+    protected db: Knex;
+    protected dbProvider: DbProvider;
     protected redisSys: RedisSys;
     protected modelValidatorSys: ModelValidatorSys;
     protected errorSys: ErrorSys;
     protected userSys: UserSys;
     constructor(req: MainRequest);
+    /**
+     * Выполнить запросы в транзакции
+     *
+     * Для того чтобы вызываемые в func методы работали через транзакцию
+     * нужно в SQL файлах вместо this.db использовать this.dbProvider.current
+     */
+    transaction<T>(func: () => Promise<T>): Promise<T>;
     /**
      * Авто кеширование для встраивания в функцию
      * @param sKey - Ключ кеша

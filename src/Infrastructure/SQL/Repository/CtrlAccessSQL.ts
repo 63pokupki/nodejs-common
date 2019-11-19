@@ -271,7 +271,7 @@ export class CtrlAccessSQL extends BaseSQL
             this.redisSys.del(aRelatedKeyRedis);
         }
 
-        return resp;
+        return !!resp;
     }
 
     // ========================================

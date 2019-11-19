@@ -1,6 +1,7 @@
 
 // Глобальные сервисы
-
+import { isObject, isArray } from 'util';
+import Knex = require('knex')
 
 // Системные сервисы
 import { ErrorSys } from './ErrorSys';
@@ -9,15 +10,19 @@ import { MainRequest } from './MainRequest';
 
 import { ModelValidatorSys } from './ModelValidatorSys';
 import { UserSys } from './UserSys';
-import { isObject, isArray } from 'util';
-
+import { DbProvider } from './DbProvider';
 
 /**
  * SQL Запросы
  */
 export default class BaseSQL {
 
-    protected db: any;
+    protected db: Knex;
+    /**
+     * Отличие между dbProvider и db заключается в том, 
+     * что dbProvider умеет переключать поле current на транзакцию
+     */
+    protected dbProvider: DbProvider;
     protected redisSys: RedisSys;
 
     protected modelValidatorSys: ModelValidatorSys;
@@ -30,8 +35,9 @@ export default class BaseSQL {
         this.errorSys = req.sys.errorSys;
         this.userSys = req.sys.userSys;
 
-        if( req.infrastructure.mysql ){
-            this.db = req.infrastructure.mysql;
+        if( req.infrastructure.dbProvider ){
+            this.dbProvider = req.infrastructure.dbProvider;
+            this.db = this.dbProvider.db;
         } else {
             this.errorSys.error('db_no_connection', 'Отсутствует подключение к mysql');
         }
@@ -43,6 +49,16 @@ export default class BaseSQL {
         }
     }
 
+    /**
+     * Выполнить запросы в транзакции
+     * 
+     * Для того чтобы вызываемые в func методы работали через транзакцию 
+     * нужно в SQL файлах вместо this.db использовать this.dbProvider.current
+     */
+    async transaction<T>(func: () => Promise<T>) {
+        const result = await this.dbProvider.transaction(func);
+        return result
+    }
 
     /**
      * Авто кеширование для встраивания в функцию

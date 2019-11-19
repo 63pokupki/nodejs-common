@@ -1,6 +1,6 @@
 {
   "name": "@63pokupki/nodejs-common",
-  "version": "0.0.105",
+  "version": "0.0.106",
   "description": "common nodejs functionality",
   "main": "lib/src/index.js",
   "types": "lib/src/index.d.ts",
@@ -43,6 +43,7 @@
     "@trongnd/ts-nodemon": "^1.0.3",
     "@types/expect": "^24.3.0",
     "@types/express": "^4.17.2",
+    "@types/knex": "^0.16.1",
     "@types/lodash": "^4.14.145",
     "@types/md5": "^2.1.33",
     "@types/mocha": "^5.2.6",
