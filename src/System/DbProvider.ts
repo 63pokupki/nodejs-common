@@ -9,12 +9,13 @@ export class DbProvider {
 		this.db = db;
 	}
 
-	public async transaction(func: () => Promise<void>) {
+	public async transaction<T>(func: () => Promise<T>) {
 		const trx = await this.db.transaction();
 		this.current = trx;
 		try {
-			await func();
+			const result = await func();
 			trx.commit();
+			return result;
 		} catch (e) {
 			trx.rollback();
 			throw e;

@@ -22,7 +22,7 @@ export default class BaseSQL {
      * Для того чтобы вызываемые в func методы работали через транзакцию
      * нужно в SQL файлах вместо this.db использовать this.dbProvider.current
      */
-    transaction: (func: () => Promise<void>) => Promise<void>;
+    transaction<T>(func: () => Promise<T>): Promise<T>;
     /**
      * Авто кеширование для встраивания в функцию
      * @param sKey - Ключ кеша
