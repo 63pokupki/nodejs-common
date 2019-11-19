@@ -18,6 +18,10 @@ import { DbProvider } from './DbProvider';
 export default class BaseSQL {
 
     protected db: Knex;
+    /**
+     * Отличие между dbProvider и db заключается в том, 
+     * что dbProvider умеет переключать поле current на транзакцию
+     */
     protected dbProvider: DbProvider;
     protected redisSys: RedisSys;
 
