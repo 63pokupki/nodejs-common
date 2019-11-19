@@ -4,6 +4,7 @@ import { ResponseSys } from './ResponseSys';
 import { Request } from 'express';
 import { SeoBase } from '../Components/Seo';
 import { MainConfig } from './MainConfig';
+import { DbProvider } from './DbProvider';
 export interface MainRequest extends Request {
     headers: {
         [key: string]: any;
@@ -20,7 +21,7 @@ export interface MainRequest extends Request {
     };
     conf: MainConfig;
     infrastructure: {
-        mysql: any;
+        dbProvider: DbProvider;
         redis: any;
         rabbit: any;
     };
