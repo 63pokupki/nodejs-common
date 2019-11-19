@@ -45,6 +45,14 @@ export default class BaseSQL {
         }
     }
 
+    /**
+     * Выполнить запросы в транзакции
+     * 
+     * Для того чтобы вызываемые в func методы работали через транзакцию 
+     * нужно в SQL файлах вместо this.db использовать this.dbProvider.current
+     */
+    transaction = (func: () => Promise<void>) => this.dbProvider.transaction(func);
+
 
     /**
      * Авто кеширование для встраивания в функцию
