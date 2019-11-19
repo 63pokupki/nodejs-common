@@ -10,6 +10,14 @@ import { DbProvider } from './DbProvider';
  */
 export default class BaseSQL {
     protected db: Knex;
+    /**
+     * Отличие между dbProvider и db заключается в том,
+     * что dbProvider умеет переключать поле current на транзакцию
+     * и обратно после завешения транзакции
+     *
+     * Т.е. если в SQL классах использовать this.dbProvider.current вместо this.db
+     * такой класс можно будет вызвать как внутри транзакции, так и отдельно
+     */
     protected dbProvider: DbProvider;
     protected redisSys: RedisSys;
     protected modelValidatorSys: ModelValidatorSys;
