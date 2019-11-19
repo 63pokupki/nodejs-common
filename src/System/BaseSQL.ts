@@ -1,7 +1,7 @@
 
 // Глобальные сервисы
 import { isObject, isArray } from 'util';
-import { QueryInterface } from 'knex'
+import Knex = require('knex')
 
 // Системные сервисы
 import { ErrorSys } from './ErrorSys';
@@ -17,7 +17,7 @@ import { DbProvider } from './DbProvider';
  */
 export default class BaseSQL {
 
-    protected db: QueryInterface;
+    protected db: Knex;
     protected dbProvider: DbProvider;
     protected redisSys: RedisSys;
 

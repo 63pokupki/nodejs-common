@@ -1,4 +1,4 @@
-import { QueryInterface } from 'knex';
+import Knex = require('knex');
 import { ErrorSys } from './ErrorSys';
 import { RedisSys } from './RedisSys';
 import { MainRequest } from './MainRequest';
@@ -9,7 +9,7 @@ import { DbProvider } from './DbProvider';
  * SQL Запросы
  */
 export default class BaseSQL {
-    protected db: QueryInterface;
+    protected db: Knex;
     protected dbProvider: DbProvider;
     protected redisSys: RedisSys;
     protected modelValidatorSys: ModelValidatorSys;
