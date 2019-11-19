@@ -25,6 +25,7 @@ export interface MainRequest extends Request {
     };
     conf: MainConfig,
     infrastructure: {
+        mysql: any;
         dbProvider: DbProvider;
         redis: any;
         rabbit: any;
