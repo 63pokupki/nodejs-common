@@ -14,7 +14,7 @@ import {UserGroupSQL} from '../Infrastructure/SQL/Repository/UserGroupSQL';
 import {AccessGroupSQL} from '../Infrastructure/SQL/Repository/AccessGroupSQL';
 import {CtrlAccessSQL} from '../Infrastructure/SQL/Repository/CtrlAccessSQL';
 
-interface UserInfo {
+export interface UserInfo {
 	user_id:number,
 	user_type:number,
 	group_id:number,

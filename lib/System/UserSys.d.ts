@@ -1,5 +1,5 @@
 import { MainRequest } from './MainRequest';
-interface UserInfo {
+export interface UserInfo {
     user_id: number;
     user_type: number;
     group_id: number;
@@ -119,4 +119,3 @@ export declare class UserSys {
      */
     isUserInGroup(groupAlias: string): boolean;
 }
-export {};

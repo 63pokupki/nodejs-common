@@ -13,7 +13,8 @@ import { ModelValidatorSys } from './System/ModelValidatorSys'
 import { ErrorSys } from './System/ErrorSys';
 // export { ErrorSys, BaseSQL };
 
-import { UserSys } from './System/UserSys'
+import { UserSys, UserInfo } from './System/UserSys'
+import { DbProvider } from './System/DbProvider'
 
 import { ResponseSys } from './System/ResponseSys'
 
@@ -78,6 +79,7 @@ const Middleware = {
 export {
     BaseCtrl,
     BaseSQL,
+    DbProvider,
     BaseM,
     ModelValidatorSys,
     ModelOneRuleC,
@@ -85,6 +87,7 @@ export {
     ModelRulesT,
     ErrorSys,
     UserSys,
+    UserInfo,
     ResponseSys,
     RedisSys,
     Middleware,
