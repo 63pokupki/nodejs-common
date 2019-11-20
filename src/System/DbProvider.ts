@@ -7,6 +7,7 @@ export class DbProvider {
 
 	constructor(db: Knex) {
 		this.db = db;
+		this.current = db;
 	}
 
 	public async transaction<T>(func: () => Promise<T>) {
