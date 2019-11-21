@@ -39,8 +39,8 @@ export default class BaseSQL {
         this.errorSys = req.sys.errorSys;
         this.userSys = req.sys.userSys;
 
-        if( req.infrastructure.dbProvider ){
-            this.dbProvider = req.infrastructure.dbProvider;
+        this.dbProvider = req.infrastructure.dbProvider;
+        if( req.infrastructure.mysql ){
             this.db = req.infrastructure.mysql;
         } else {
             this.errorSys.error('db_no_connection', 'Отсутствует подключение к mysql');
