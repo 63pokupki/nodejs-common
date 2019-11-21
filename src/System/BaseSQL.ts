@@ -41,7 +41,7 @@ export default class BaseSQL {
 
         if( req.infrastructure.dbProvider ){
             this.dbProvider = req.infrastructure.dbProvider;
-            this.db = this.dbProvider.db;
+            this.db = req.infrastructure.mysql;
         } else {
             this.errorSys.error('db_no_connection', 'Отсутствует подключение к mysql');
         }
