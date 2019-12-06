@@ -3,12 +3,20 @@ import { ErrorSys } from './ErrorSys';
 import { MainRequest } from './MainRequest';
 import { UserSys } from './UserSys';
 /**
- * SQL Запросы
+ * Базовый контроллер
  */
 export default class BaseCtrl {
     req: MainRequest;
     errorSys: ErrorSys;
     userSys: UserSys;
     responseSys: ResponseSys;
-    constructor(req: MainRequest);
+    protected resp: any;
+    constructor(req: MainRequest, resp: any);
+    protected fClassName(): string;
+    /**
+     *
+     * @param msg - Сообщение
+     * @param cbAction - Анонимная функция для вызова действия
+     */
+    faAction(msg: string, cbAction: Function): Promise<void>;
 }

@@ -8,9 +8,6 @@ import { MainRequest } from './MainRequest';
 import { UserSys } from './UserSys';
 
 
-const express = require('express');
-
-
 /**
  * Базовый контроллер
  */
