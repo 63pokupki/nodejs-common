@@ -8,8 +8,11 @@ import { MainRequest } from './MainRequest';
 import { UserSys } from './UserSys';
 
 
+const express = require('express');
+
+
 /**
- * SQL Запросы
+ * Базовый контроллер
  */
 export default class BaseCtrl {
 
@@ -18,12 +21,44 @@ export default class BaseCtrl {
     public userSys: UserSys;
     public responseSys: ResponseSys;
 
-    constructor(req: MainRequest) {
+    protected resp: any;
 
+    constructor(req: MainRequest, resp: any){
         this.req = req;
         this.responseSys = req.sys.responseSys;
         this.errorSys = req.sys.errorSys;
         this.userSys = req.sys.userSys;
+        this.resp = resp;
     }
+
+    protected fClassName() {
+        return this.constructor.name;
+    }
+
+    /**
+     *
+     * @param msg - Сообщение
+     * @param cbAction - Анонимная функция для вызова действия
+     */
+    public async faAction(msg:string, cbAction:Function){
+
+        let out = null;
+        if(this.errorSys.isOk()){
+            try {
+                out = await cbAction();
+            } catch (e) {
+                this.errorSys.errorEx(e, 'fatal_error', 'Ошибка сервера');
+                this.resp.status(500)
+            }
+        } else {
+            this.resp.status(401)
+            this.errorSys.error('init_ctrl', 'Авторизация или активация провалились')
+        }
+
+        this.resp.send(
+            this.responseSys.response(out, msg)
+        );
+    }
+
 
 }
