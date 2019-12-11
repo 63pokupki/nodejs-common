@@ -12,7 +12,7 @@ import { fErrorHandler } from './ErrorHandler';
 export const faSendRouter = (faCallback: Function) => {
 	return async (req: MainRequest, res: express.Response, next: any) => {
 		try {
-			res.send(await faCallback(req, res));
+			await faCallback(req, res);
 		} catch (e) {
 			fErrorHandler(e, req, res, next);
 		}
