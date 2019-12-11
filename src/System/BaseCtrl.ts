@@ -46,17 +46,10 @@ export default class BaseCtrl {
 			throw Error('Авторизация или активация провалились');
 		}
 
-		try {
-			out = await cbAction();
-			this.resp.send(
-				this.responseSys.response(out, msg)
-			);
-		} catch (e) {
-			this.errorSys.errorEx(e, 'server_error', 'Ошибка сервера');
-			this.resp.status(500);
-			throw Error('Ошибка сервера');
-
-		}
+		out = await cbAction();
+		this.resp.send(
+			this.responseSys.response(out, msg)
+		);
     }
 
 

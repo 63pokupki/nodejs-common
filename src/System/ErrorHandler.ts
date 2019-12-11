@@ -45,6 +45,7 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: express.Respons
 		}
 	} else {
 		/* у нас в err что-то не то */
+		req.sys.errorSys.error('server_error', 'Ошибка сервера');
 		mattermostSys.sendErrorMsg(req.sys.errorSys, err, `${String(err)} Кривой формат ошибки`);
 	}
 
@@ -56,8 +57,9 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: express.Respons
 	next();
 	} else next(err); */
 
-	req.sys.errorSys.error('500', err.message);
 
+
+	res.status(500);
 	res.send(
 		req.sys.responseSys.response(null, err.message),
 	);
