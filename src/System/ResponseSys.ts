@@ -2,7 +2,22 @@
 import {ErrorSys} from './ErrorSys';
 import { MainRequest } from './MainRequest';
 import { MattermostSys } from './MattermostSys';
+import express = require('express');
+import { fErrorHandler } from './ErrorHandler';
 
+/**
+ * Функция рендера страницы
+ * @param faCallback - функция контролера
+ */
+export const faSendRouter = (faCallback: Function) => {
+	return async (req: MainRequest, res: express.Response, next: any) => {
+		try {
+			res.send(await faCallback(req, res));
+		} catch (e) {
+			fErrorHandler(e, req, res, next);
+		}
+	};
+};
 
 /**
  * Системный сервис формирования ответа
