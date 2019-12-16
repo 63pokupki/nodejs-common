@@ -456,7 +456,13 @@ export class UserSys
 	 * Получить рейтинг пользователя
 	 */
 	public getUserRating(): number {
-		return this.userInfo.consumer_rating;
+		let iUserRating:number = 0;
+		if(this.userInfo){
+			iUserRating = this.userInfo.consumer_rating;
+		} else {
+			iUserRating = 0;
+		}
+		return iUserRating;
 	}
 
 	/**
