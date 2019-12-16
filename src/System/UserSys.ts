@@ -452,6 +452,7 @@ export class UserSys
 		return this.idUser;
 	}
 
+
 	/**
 	 * Получить рейтинг пользователя
 	 */
