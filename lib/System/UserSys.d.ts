@@ -1,5 +1,5 @@
 import { MainRequest } from './MainRequest';
-export interface UserInfo {
+export interface UserInfoI {
     user_id: number;
     user_type: number;
     group_id: number;
@@ -11,6 +11,7 @@ export interface UserInfo {
     user_avatar_type: string;
     user_mobile: string;
     user_sig: string;
+    consumer_rating: number;
 }
 /**
  * Класс который глобально знает все данные пользователя
@@ -18,7 +19,7 @@ export interface UserInfo {
 export declare class UserSys {
     idUser: number;
     private apikey;
-    private userInfoList;
+    private userInfo;
     private userGroupsList;
     private ctrlAccessList;
     private aliasCtrlAccess;
@@ -106,9 +107,13 @@ export declare class UserSys {
      */
     getIdUser(): number;
     /**
+     * Получить рейтинг пользователя
+     */
+    getUserRating(): number;
+    /**
      * Получить инфу о пользователе
      */
-    getUserInfo(): UserInfo;
+    getUserInfo(): UserInfoI;
     /**
      * Список ID групп в которых состоит пользователь
      */

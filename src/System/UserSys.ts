@@ -14,18 +14,19 @@ import {UserGroupSQL} from '../Infrastructure/SQL/Repository/UserGroupSQL';
 import {AccessGroupSQL} from '../Infrastructure/SQL/Repository/AccessGroupSQL';
 import {CtrlAccessSQL} from '../Infrastructure/SQL/Repository/CtrlAccessSQL';
 
-export interface UserInfo {
-	user_id:number,
-	user_type:number,
-	group_id:number,
-	username:string,
-	username_clean:string,
-	user_email:string,
-	user_birthday:string,
+export interface UserInfoI {
+	user_id:number;
+	user_type:number;
+	group_id:number;
+	username:string;
+	username_clean:string;
+	user_email:string;
+	user_birthday:string;
 	user_avatar:string,
-	user_avatar_type:string,
-	user_mobile:string,
-	user_sig:string
+	user_avatar_type:string;
+	user_mobile:string;
+	user_sig:string;
+	consumer_rating:number;
 }
 
 /**
@@ -39,7 +40,7 @@ export class UserSys
 
 	private apikey:string; // APIKEY
 
-	private userInfoList:UserInfo; // Информация о пользователе
+	private userInfo:UserInfoI; // Информация о пользователе
 	private userGroupsList:any; // Роли пользователя
 
 	private ctrlAccessList:any; // Список модулей
@@ -111,7 +112,7 @@ export class UserSys
 				ok = false;
 				this.errorSys.error('get_user_info_in_auth', 'Не возможно получить данные пользователя при авторизации');
 			} else {
-				this.userInfoList = userInfoList;
+				this.userInfo = userInfoList;
 				this.idUser = userInfoList['user_id'];
 			}
 		}
@@ -428,7 +429,7 @@ export class UserSys
 			ok = false;
 			this.errorSys.error('is_auth', '');
             this.errorSys.devNotice('is_auth', 'Вы не авторизованы');
-			
+
         }
 
 		return ok;
@@ -452,10 +453,17 @@ export class UserSys
 	}
 
 	/**
+	 * Получить рейтинг пользователя
+	 */
+	public getUserRating(): number {
+		return this.userInfo.consumer_rating;
+	}
+
+	/**
 	 * Получить инфу о пользователе
 	 */
-	public getUserInfo(): UserInfo {
-		return this.userInfoList;
+	public getUserInfo(): UserInfoI {
+		return this.userInfo;
 	}
 
 	/**

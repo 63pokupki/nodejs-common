@@ -1,5 +1,6 @@
 import { MainRequest } from '../../../System/MainRequest';
 import BaseSQL from '../../../System/BaseSQL';
+import { UserInfoI } from '../../../System/UserSys';
 /**
  * Здесь методы для SQL запросов
  */
@@ -23,7 +24,7 @@ export declare class UserSQL extends BaseSQL {
      * @return array|null
      */
     getUserByID(idUser: number): Promise<any>;
-    fGetUserInfoByApiKey(apikey?: string): Promise<any>;
+    fGetUserInfoByApiKey(apikey?: string): Promise<UserInfoI>;
     /**
      * проверка на то что есть apikey в базе
      */

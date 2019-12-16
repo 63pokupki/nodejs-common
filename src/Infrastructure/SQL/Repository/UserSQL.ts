@@ -9,6 +9,7 @@ var md5 = require('md5');
 // Системные сервисы
 import { MainRequest } from '../../../System/MainRequest';
 import BaseSQL from '../../../System/BaseSQL';
+import { UserInfoI } from '../../../System/UserSys';
 
 
 /**
@@ -148,9 +149,9 @@ export class UserSQL extends BaseSQL
 
 
     /* выдает инфу по юзеру по apikey */
-    public async fGetUserInfoByApiKey(apikey = ''):Promise<any>{
+    public async fGetUserInfoByApiKey(apikey = ''):Promise<UserInfoI>{
         let ok = true;
-        let resp:{[key:string]:any} = null;
+        let resp = null;
 
         // Декларация ошибок
         this.errorSys.declare([
@@ -169,7 +170,8 @@ export class UserSQL extends BaseSQL
                 u.user_avatar,
                 u.user_avatar_type,
                 u.user_mobile,
-                u.user_sig
+				u.user_sig,
+				u.consumer_rating
                 from phpbb_users u
 
                 join user_token ut

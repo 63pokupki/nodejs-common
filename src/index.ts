@@ -13,7 +13,7 @@ import { ModelValidatorSys } from './System/ModelValidatorSys'
 import { ErrorSys } from './System/ErrorSys';
 // export { ErrorSys, BaseSQL };
 
-import { UserSys, UserInfo } from './System/UserSys'
+import { UserSys, UserInfoI } from './System/UserSys'
 import { DbProvider } from './System/DbProvider'
 
 import { ResponseSys } from './System/ResponseSys'
@@ -87,12 +87,12 @@ export {
     ModelRulesT,
     ErrorSys,
     UserSys,
-    UserInfo,
+    UserInfoI as UserInfo,
     ResponseSys,
     RedisSys,
     Middleware,
     MainRequest, // interface MainRequest,
-    TError, 
+    TError,
     MainConfig,
     devReq, // Пример MainRequest
     S3,
@@ -104,7 +104,7 @@ export {
     BaseTest, // Конструктор тестов
     Seo, // сео собственно
     HelperSys, // Вспомогательные функции которые ни к чему не привязаны
-    FieldValidator, // 
+    FieldValidator, //
     Mattermost,
     S3DO,
     ExpressRouterProxy,
