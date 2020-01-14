@@ -1,8 +1,6 @@
 import * as express from 'express';
 import { MainRequest, Mattermost } from '..';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { ValidationError: JsonValidatorError } = require('express-json-validator-middleware');
 
 /**
  * Обработчик ошибок выполнения
