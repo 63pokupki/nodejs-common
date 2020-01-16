@@ -49,7 +49,8 @@ export interface MainConfig { // Конфигурация
 	S3: S3confI, // Локальное хранилище
     S3DO: S3confI, // Хранилище обзих
     S3DO256: S3confI, // Хранилище картинок товара x256
-    S3DO512: S3confI, // Хранилище картинок товара x512
+	S3DO512: S3confI, // Хранилище картинок товара x512
+	S3DOPrivMsg512: S3confI, // Хранилище картинок приватных сообщений x512
 
 	SeoConfig?: SeoConfigI
 
