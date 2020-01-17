@@ -83,4 +83,5 @@ export enum TError {
     PageNotFound = 404,
     Api = 1,
     AllBad = 500,
+    AccessDenied = 403,
 }
