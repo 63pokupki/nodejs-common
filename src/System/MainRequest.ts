@@ -30,7 +30,7 @@ export interface MainRequest extends Request {
         redis: any;
         rabbit: any;
     },
-    errorType?: TError, // тип ошибки
+    errorType?: number, // тип ошибки
 }
 
 const Req: any = {

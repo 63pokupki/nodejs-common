@@ -26,7 +26,7 @@ export interface MainRequest extends Request {
         redis: any;
         rabbit: any;
     };
-    errorType?: TError;
+    errorType?: number;
 }
 export declare const devReq: MainRequest;
 /**
