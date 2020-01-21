@@ -51,7 +51,7 @@ export class LogicSys {
                 this.errorSys.devNotice('ifok', sError);
             } catch(e) {
 				this.errorSys.error(`ifok`, sError);
-				throw Error('query_master_db');
+				throw e;
 
             }
         } else {
