@@ -2,6 +2,7 @@
 import { ErrorSys } from './ErrorSys';
 import { UserSys } from './UserSys';
 import { MainRequest } from './MainRequest';
+import { LogicSys } from './LogicSys';
 
 /**
  * Класс для сервисов которые проксируют запросы к базе данных
@@ -12,12 +13,14 @@ export default class BaseS {
 
     public errorSys: ErrorSys;
     public userSys: UserSys;
-    public req: MainRequest;
+	public req: MainRequest;
+	public logicSys:LogicSys;
 
     constructor(req: MainRequest) {
         this.errorSys = req.sys.errorSys;
-        this.userSys = req.sys.userSys;
-        this.req = req;
+		this.userSys = req.sys.userSys;
+		this.logicSys = req.sys.logicSys;
+		this.req = req;
     }
 
 }
