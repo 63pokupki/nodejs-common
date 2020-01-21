@@ -19,8 +19,14 @@ export declare class LogicSys {
      */
     fMasterDBOff(): void;
     /**
+     * Логический блок
+     * @param sError - Сообщение об ощибке
+     * @param callback - функция содержащая логическую операцию
+     */
+    ifOk(sError: string, callback: Function): Promise<any>;
+    /**
      * Блок для выполнения запросов на мастер базу данных
      * @param callback - функция содержащая логическую операцию
      */
-    faQueryMasterDB(callback: Function): Promise<any>;
+    faQueryMasterDB(sError: string, callback: Function): Promise<any>;
 }

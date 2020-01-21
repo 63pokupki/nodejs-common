@@ -38,10 +38,36 @@ export class LogicSys {
 	}
 
 	/**
+     * Логический блок
+     * @param sError - Сообщение об ощибке
+     * @param callback - функция содержащая логическую операцию
+     */
+    async ifOk(sError:string, callback:Function):Promise<any>{
+
+        let out = null;
+        if( this.errorSys.isOk() ){
+            try{
+                out = await callback();
+                this.errorSys.devNotice('ifok', sError);
+            } catch(e) {
+				this.errorSys.error(`ifok`, sError);
+				throw Error('query_master_db');
+
+            }
+        } else {
+			this.errorSys.error('ifok', sError);
+			throw Error('ifok');
+        }
+
+        return out;
+
+    }
+
+	/**
      * Блок для выполнения запросов на мастер базу данных
      * @param callback - функция содержащая логическую операцию
      */
-    async faQueryMasterDB(callback:Function):Promise<any>{
+    async faQueryMasterDB(sError:string, callback:Function):Promise<any>{
 
 		this.req.sys.bMasterDB = true;
 
@@ -50,10 +76,11 @@ export class LogicSys {
             try{
                 out = await callback();
             } catch(e) {
+				this.errorSys.error(`query_master_db`, sError);
                 throw e;
             }
         } else {
-			this.errorSys.devWarning('query_master_db', ' - Не выполненно');
+			this.errorSys.error(`query_master_db`, sError);
 			throw Error('query_master_db');
 		}
 
