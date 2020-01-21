@@ -74,7 +74,8 @@ export class LogicSys {
         let out = null;
         if( this.errorSys.isOk() ){
             try{
-                out = await callback();
+				out = await callback();
+				this.errorSys.devNotice('query_master_db', sError);
             } catch(e) {
 				this.errorSys.error(`query_master_db`, sError);
                 throw e;
