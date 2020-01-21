@@ -5,6 +5,7 @@ import { Request } from 'express';
 import { SeoBase } from '../Components/Seo';
 import { MainConfig } from './MainConfig';
 import { DbProvider } from './DbProvider';
+import { LogicSys } from './LogicSys';
 export interface MainRequest extends Request {
     headers: {
         [key: string]: any;
@@ -14,14 +15,17 @@ export interface MainRequest extends Request {
     sys: {
         apikey: string;
         bAuth: boolean;
+        bMasterDB: boolean;
         errorSys: ErrorSys;
         userSys: UserSys;
         responseSys: ResponseSys;
+        logicSys: LogicSys;
         seo?: SeoBase;
     };
     conf: MainConfig;
     infrastructure: {
         mysql: any;
+        mysqlMaster: any;
         dbProvider: DbProvider;
         redis: any;
         rabbit: any;

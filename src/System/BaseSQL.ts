@@ -17,12 +17,30 @@ import { DbProvider } from './DbProvider';
  */
 export default class BaseSQL {
 
-    protected db: Knex;
+	/**
+	 * Получаем базу данных для выполнения запроса
+	 * В зависимости от bMasterDB
+	 * может быть масте БД или балансировщик
+	 */
+	protected get db(): Knex{
+		let db = null;
+		if(this.req.sys.bMasterDB){
+			db = this.dbMaster;
+		} else {
+			db = this.dbBalancer;
+		}
+		return db;
+	};
+
+	protected dbMaster: Knex;
+	protected dbBalancer: Knex;
+
+
     /**
-     * Отличие между dbProvider и db заключается в том, 
+     * Отличие между dbProvider и db заключается в том,
      * что dbProvider умеет переключать поле current на транзакцию
      * и обратно после завешения транзакции
-     * 
+     *
      * Т.е. если в SQL классах использовать this.dbProvider.current вместо this.db
      * такой класс можно будет вызвать как внутри транзакции, так и отдельно
      */
@@ -31,9 +49,11 @@ export default class BaseSQL {
 
     protected modelValidatorSys: ModelValidatorSys;
     protected errorSys: ErrorSys;
-    protected userSys: UserSys;
+	protected userSys: UserSys;
+	protected req:MainRequest;
 
     constructor(req: MainRequest) {
+		this.req = req;
 
         this.modelValidatorSys = new ModelValidatorSys(req);
         this.errorSys = req.sys.errorSys;
@@ -41,10 +61,17 @@ export default class BaseSQL {
 
         this.dbProvider = req.infrastructure.dbProvider;
         if( req.infrastructure.mysql ){
-            this.db = req.infrastructure.mysql;
+            this.dbBalancer = req.infrastructure.mysql;
         } else {
             this.errorSys.error('db_no_connection', 'Отсутствует подключение к mysql');
-        }
+		}
+
+		if( req.infrastructure.mysqlMaster ){
+            this.dbMaster = req.infrastructure.mysqlMaster;
+        } else {
+            this.errorSys.error('db_master_no_connection', 'Отсутствует подключение к mysql мастеру');
+		}
+
 
         if( req.infrastructure.redis ){
             this.redisSys = req.infrastructure.redis;
@@ -55,8 +82,8 @@ export default class BaseSQL {
 
     /**
      * Выполнить запросы в транзакции
-     * 
-     * Для того чтобы вызываемые в func методы работали через транзакцию 
+     *
+     * Для того чтобы вызываемые в func методы работали через транзакцию
      * нужно в SQL файлах вместо this.db использовать this.dbProvider.current
      */
     async transaction<T>(func: () => Promise<T>) {

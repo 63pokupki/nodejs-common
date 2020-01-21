@@ -9,7 +9,14 @@ import { DbProvider } from './DbProvider';
  * SQL Запросы
  */
 export default class BaseSQL {
-    protected db: Knex;
+    /**
+     * Получаем базу данных для выполнения запроса
+     * В зависимости от bMasterDB
+     * может быть масте БД или балансировщик
+     */
+    protected readonly db: Knex;
+    protected dbMaster: Knex;
+    protected dbBalancer: Knex;
     /**
      * Отличие между dbProvider и db заключается в том,
      * что dbProvider умеет переключать поле current на транзакцию
@@ -23,6 +30,7 @@ export default class BaseSQL {
     protected modelValidatorSys: ModelValidatorSys;
     protected errorSys: ErrorSys;
     protected userSys: UserSys;
+    protected req: MainRequest;
     constructor(req: MainRequest);
     /**
      * Выполнить запросы в транзакции

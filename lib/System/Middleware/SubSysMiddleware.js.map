@@ -1,0 +1,1 @@
+{"version":3,"file":"SubSysMiddleware.js","sourceRoot":"","sources":["../../../src/System/Middleware/SubSysMiddleware.ts"],"names":[],"mappings":";;AAEA,0CAAuC;AAEvC,iBAAiB;AACjB,SAAwB,gBAAgB,CAAC,GAAgB,EAAE,QAAa,EAAE,IAAS;IAE/E,GAAG,CAAC,GAAG,CAAC,QAAQ,GAAG,IAAI,mBAAQ,CAAC,GAAG,CAAC,CAAC,CAAC,iBAAiB;IAEvD,IAAI,EAAE,CAAC;AACX,CAAC;AALD,mCAKC"}

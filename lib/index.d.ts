@@ -25,14 +25,17 @@ import { FieldValidator } from './System/FieldValidator';
 import * as Mattermost from './System/MattermostSys';
 import { MainConfig, S3confI } from './System/MainConfig';
 import * as S3DO from './System/S3DO';
+import { LogicSys } from './System/LogicSys';
+import SubSysMiddleware from './System/Middleware/SubSysMiddleware';
 import { ExpressRouterProxy, HandlerContext, Handler, HandlerDefinition, ControllerClass } from './System/ExpressRouterProxy';
 declare const Middleware: {
     ErrorSysMiddleware: typeof ErrorSysMiddleware;
     RequestSysMiddleware: typeof RequestSysMiddleware;
     ResponseSysMiddleware: typeof ResponseSysMiddleware;
     AuthSysMiddleware: typeof AuthSysMiddleware;
+    SubSysMiddleware: typeof SubSysMiddleware;
 };
-export { BaseCtrl, BaseSQL, DbProvider, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ModelRulesT, ErrorSys, UserSys, UserInfoI as UserInfo, ResponseSys, RedisSys, Middleware, MainRequest, // interface MainRequest,
+export { BaseCtrl, BaseSQL, DbProvider, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ModelRulesT, ErrorSys, UserSys, UserInfoI as UserInfo, LogicSys, ResponseSys, RedisSys, Middleware, MainRequest, // interface MainRequest,
 TError, MainConfig, devReq, // Пример MainRequest
 S3, S3objectParamsI, S3confI, RabbitSenderSys, initMainRequest, // Инициализация Main Request для тестов
 BaseCommand, // Конструктор консольных команд

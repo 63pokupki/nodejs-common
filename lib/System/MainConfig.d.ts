@@ -28,6 +28,24 @@ export interface MainConfig {
         };
         acquireConnectionTimeout: number;
     };
+    mysqlMaster: {
+        client: string;
+        connection: {
+            host: string;
+            user: string;
+            password: string;
+            database: string;
+        };
+        pool: {
+            min: number;
+            max: number;
+        };
+        migrations: {
+            tableName: string;
+            directory: string;
+        };
+        acquireConnectionTimeout: number;
+    };
     redis: {
         url: string;
     };

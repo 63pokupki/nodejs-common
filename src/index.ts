@@ -60,6 +60,8 @@ import { FieldValidator } from './System/FieldValidator';
 import *  as Mattermost from './System/MattermostSys';
 import { MainConfig, S3confI } from './System/MainConfig';
 import * as S3DO from './System/S3DO';
+import { LogicSys } from './System/LogicSys';
+import SubSysMiddleware from './System/Middleware/SubSysMiddleware';
 
 import {
     ExpressRouterProxy,
@@ -73,7 +75,8 @@ const Middleware = {
     ErrorSysMiddleware,
     RequestSysMiddleware,
     ResponseSysMiddleware,
-    AuthSysMiddleware
+	AuthSysMiddleware,
+	SubSysMiddleware
 };
 
 export {
@@ -87,7 +90,8 @@ export {
     ModelRulesT,
     ErrorSys,
     UserSys,
-    UserInfoI as UserInfo,
+	UserInfoI as UserInfo,
+	LogicSys,
     ResponseSys,
     RedisSys,
     Middleware,

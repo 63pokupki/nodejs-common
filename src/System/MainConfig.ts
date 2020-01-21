@@ -29,6 +29,23 @@ export interface MainConfig { // Конфигурация
 		acquireConnectionTimeout: number; // таймоут 60000
 	};
 	// ================================
+	mysqlMaster: { // Конфиг для MySql
+		client: string, // mysql
+		connection: { // Параметры соединения
+			host: string; // "127.0.0.1"
+			user: string; // Пользователь
+			password: string; // Пароль
+			database: string; // Имя базы данных
+		},
+		pool: { min: number, max: number }, // Количество соединений
+		migrations: {
+			tableName: string; // "knex_migrations",
+			directory: string; // "./src/Infrastructure/SQL/Migrations"
+		},
+		acquireConnectionTimeout: number; // таймоут 60000
+	};
+	// ================================
+
 	redis: { // Конфиг для редиса
 		url: string; // "redis://127.0.0.1:6379"
 	};

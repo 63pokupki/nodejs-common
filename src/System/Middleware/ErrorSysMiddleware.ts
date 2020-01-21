@@ -1,5 +1,6 @@
 import { MainRequest } from '../MainRequest';
 import {ErrorSys} from '../ErrorSys';
+import { LogicSys } from '../LogicSys';
 
 /* LEGO ошибок */
 export default function ErrorSysMiddleware(request: MainRequest, response: any, next: any) {
@@ -8,8 +9,10 @@ export default function ErrorSysMiddleware(request: MainRequest, response: any, 
         apikey: '',
         errorSys: null,
         userSys: null,
-        responseSys: null,
-        bAuth: false
+		responseSys: null,
+		logicSys: null,
+		bAuth: false,
+		bMasterDB:false
     }
 
     request.sys.errorSys = new ErrorSys(request);

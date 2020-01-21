@@ -6,6 +6,7 @@ import { Request } from 'express';
 import { SeoBase } from '../Components/Seo';
 import { MainConfig } from './MainConfig';
 import { DbProvider } from './DbProvider';
+import { LogicSys } from './LogicSys';
 
 
 
@@ -16,16 +17,19 @@ export interface MainRequest extends Request {
 
     sys: {
         apikey: string,
-        bAuth: boolean, /* флаг авторизации */
+		bAuth: boolean, /* флаг авторизации */
+		bMasterDB: boolean, // Для запроса использовать мастер соединение
 
         errorSys: ErrorSys,
         userSys: UserSys,
-        responseSys: ResponseSys,
+		responseSys: ResponseSys,
+		logicSys: LogicSys, // Система логики управления приложением
         seo?: SeoBase;
     };
     conf: MainConfig,
     infrastructure: {
-        mysql: any;
+		mysql: any;
+		mysqlMaster: any;
         dbProvider: DbProvider;
         redis: any;
         rabbit: any;
@@ -44,11 +48,13 @@ const Req: any = {
     },
     sys: {
         apikey: '',
-        bAuth: false, /* флаг авторизации */
+		bAuth: false, /* флаг авторизации */
+		bMasterDB: false, // По умолчанию используется maxScale
 
-        errorSys: null,
-        userSys: null,
-        responseSys: null
+        errorSys: null, // Система ошибок
+        userSys: null, // Система пользователя
+		responseSys: null, // Система формирвания ответа
+		logicSys: null, // Система логики управления приложением
     },
     conf: null,
     infrastructure: {
