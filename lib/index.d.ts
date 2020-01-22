@@ -28,6 +28,7 @@ import * as S3DO from './System/S3DO';
 import { LogicSys } from './System/LogicSys';
 import SubSysMiddleware from './System/Middleware/SubSysMiddleware';
 import { ExpressRouterProxy, HandlerContext, Handler, HandlerDefinition, ControllerClass } from './System/ExpressRouterProxy';
+import { CacheSys } from './System/CacheSys';
 declare const Middleware: {
     ErrorSysMiddleware: typeof ErrorSysMiddleware;
     RequestSysMiddleware: typeof RequestSysMiddleware;
@@ -35,7 +36,7 @@ declare const Middleware: {
     AuthSysMiddleware: typeof AuthSysMiddleware;
     SubSysMiddleware: typeof SubSysMiddleware;
 };
-export { BaseCtrl, BaseSQL, DbProvider, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ModelRulesT, ErrorSys, UserSys, UserInfoI as UserInfo, LogicSys, ResponseSys, RedisSys, Middleware, MainRequest, // interface MainRequest,
+export { BaseCtrl, BaseSQL, DbProvider, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ModelRulesT, ErrorSys, UserSys, UserInfoI as UserInfo, LogicSys, CacheSys, ResponseSys, RedisSys, Middleware, MainRequest, // interface MainRequest,
 TError, MainConfig, devReq, // Пример MainRequest
 S3, S3objectParamsI, S3confI, RabbitSenderSys, initMainRequest, // Инициализация Main Request для тестов
 BaseCommand, // Конструктор консольных команд

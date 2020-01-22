@@ -5,6 +5,8 @@ import { MainRequest } from './MainRequest';
 import { ModelValidatorSys } from './ModelValidatorSys';
 import { UserSys } from './UserSys';
 import { DbProvider } from './DbProvider';
+import { CacheSys } from './CacheSys';
+import { LogicSys } from './LogicSys';
 /**
  * SQL Запросы
  */
@@ -31,6 +33,8 @@ export default class BaseSQL {
     protected errorSys: ErrorSys;
     protected userSys: UserSys;
     protected req: MainRequest;
+    protected cacheSys: CacheSys;
+    protected logicSys: LogicSys;
     constructor(req: MainRequest);
     /**
      * Выполнить запросы в транзакции

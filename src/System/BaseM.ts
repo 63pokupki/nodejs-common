@@ -3,6 +3,7 @@ import { ErrorSys } from './ErrorSys';
 import { UserSys } from './UserSys';
 import { MainRequest } from './MainRequest';
 import { LogicSys } from './LogicSys';
+import { CacheSys } from './CacheSys';
 
 /**
  * Базовая модель
@@ -13,11 +14,13 @@ export default class BaseM {
     public userSys: UserSys;
 	public req: MainRequest;
 	public logicSys:LogicSys;
+	public cacheSys:CacheSys;
 
     constructor(req: MainRequest) {
         this.errorSys = req.sys.errorSys;
 		this.userSys = req.sys.userSys;
 		this.logicSys = req.sys.logicSys;
+		this.cacheSys = req.sys.cacheSys;
         this.req = req;
     }
 

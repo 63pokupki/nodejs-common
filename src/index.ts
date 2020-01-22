@@ -70,6 +70,7 @@ import {
     HandlerDefinition,
     ControllerClass
 } from './System/ExpressRouterProxy';
+import { CacheSys } from './System/CacheSys';
 
 const Middleware = {
     ErrorSysMiddleware,
@@ -92,6 +93,7 @@ export {
     UserSys,
 	UserInfoI as UserInfo,
 	LogicSys,
+	CacheSys,
     ResponseSys,
     RedisSys,
     Middleware,

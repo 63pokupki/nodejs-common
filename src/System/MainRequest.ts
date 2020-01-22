@@ -7,6 +7,7 @@ import { SeoBase } from '../Components/Seo';
 import { MainConfig } from './MainConfig';
 import { DbProvider } from './DbProvider';
 import { LogicSys } from './LogicSys';
+import { CacheSys } from './CacheSys';
 
 
 
@@ -24,6 +25,7 @@ export interface MainRequest extends Request {
         userSys: UserSys,
 		responseSys: ResponseSys,
 		logicSys: LogicSys, // Система логики управления приложением
+		cacheSys: CacheSys, // Система кеширования
         seo?: SeoBase;
     };
     conf: MainConfig,
@@ -55,11 +57,14 @@ const Req: any = {
         userSys: null, // Система пользователя
 		responseSys: null, // Система формирвания ответа
 		logicSys: null, // Система логики управления приложением
+		cacheSys: null, // Система кеширования
     },
     conf: null,
     infrastructure: {
-        mysql: null,
-        redis: null
+		mysql: null, // коннект к балансеру БД
+		mysqlMaster: null, // конект к мастеру
+		redis: null,
+		rabbit: null
     }
 };
 

@@ -6,6 +6,7 @@ import { SeoBase } from '../Components/Seo';
 import { MainConfig } from './MainConfig';
 import { DbProvider } from './DbProvider';
 import { LogicSys } from './LogicSys';
+import { CacheSys } from './CacheSys';
 export interface MainRequest extends Request {
     headers: {
         [key: string]: any;
@@ -20,6 +21,7 @@ export interface MainRequest extends Request {
         userSys: UserSys;
         responseSys: ResponseSys;
         logicSys: LogicSys;
+        cacheSys: CacheSys;
         seo?: SeoBase;
     };
     conf: MainConfig;

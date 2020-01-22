@@ -2,6 +2,7 @@ import { ErrorSys } from './ErrorSys';
 import { UserSys } from './UserSys';
 import { MainRequest } from './MainRequest';
 import { LogicSys } from './LogicSys';
+import { CacheSys } from './CacheSys';
 /**
  * Класс для сервисов которые проксируют запросы к базе данных
  * объединяют под различные запросы SQL под единой логикой службы
@@ -12,5 +13,6 @@ export default class BaseS {
     userSys: UserSys;
     req: MainRequest;
     logicSys: LogicSys;
+    cacheSys: CacheSys;
     constructor(req: MainRequest);
 }

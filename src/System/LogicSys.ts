@@ -56,7 +56,6 @@ export class LogicSys {
             }
         } else {
 			this.errorSys.error('ifok', sError);
-			throw Error('ifok');
         }
 
         return out;
@@ -72,17 +71,12 @@ export class LogicSys {
 		this.req.sys.bMasterDB = true;
 
         let out = null;
-        if( this.errorSys.isOk() ){
-            try{
-				out = await callback();
-				this.errorSys.devNotice('query_master_db', sError);
-            } catch(e) {
-				this.errorSys.error(`query_master_db`, sError);
-                throw e;
-            }
-        } else {
+		try{
+			out = await callback();
+			this.errorSys.devNotice('query_master_db', sError);
+		} catch(e) {
 			this.errorSys.error(`query_master_db`, sError);
-			throw Error('query_master_db');
+			throw e;
 		}
 
 		this.req.sys.bMasterDB = false;
