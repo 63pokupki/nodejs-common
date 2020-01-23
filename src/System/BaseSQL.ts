@@ -72,10 +72,15 @@ export default class BaseSQL {
             this.errorSys.error('db_no_connection', 'Отсутствует подключение к mysql');
 		}
 
+		// Если мастер есть ставим его
 		if( req.infrastructure.mysqlMaster ){
             this.dbMaster = req.infrastructure.mysqlMaster;
-        } else {
-            this.errorSys.error('db_master_no_connection', 'Отсутствует подключение к mysql мастеру');
+        } else { // если мастера нет ставим MaxScale
+			this.dbMaster = req.infrastructure.mysql
+		}
+
+		if(!this.dbMaster){ // Если мастера все еще нет ОШИБКА
+			this.errorSys.error('db_master_no_connection', 'Отсутствует подключение к mysql мастеру');
 		}
 
 
