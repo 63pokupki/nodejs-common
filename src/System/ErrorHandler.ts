@@ -62,5 +62,5 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: express.Respons
 		req.sys.responseSys.response(null, err.message),
 	);
 
-	next(err);
+	// next(err);
 };
