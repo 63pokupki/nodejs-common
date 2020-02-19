@@ -13,7 +13,8 @@ export default function ErrorSysMiddleware(request: MainRequest, response: any, 
 		logicSys: null,
 		cacheSys: null,
 		bAuth: false,
-		bMasterDB:false
+		bMasterDB:false,
+		bCache:true
     }
 
     request.sys.errorSys = new ErrorSys(request);
