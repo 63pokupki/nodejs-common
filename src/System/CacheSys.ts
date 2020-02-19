@@ -47,7 +47,7 @@ export class CacheSys {
 
         let sCache = null;
         let out:any = null;
-        if( ok ){ // Пробуем получить данные из кеша
+        if( ok && this.req.sys.bCache ){ // Пробуем получить данные из кеша
             sCache = await this.redisSys.get(sKey);
 
             if( sCache ){
@@ -96,7 +96,7 @@ export class CacheSys {
 
         let sCache = null;
         let out:number = null;
-        if( ok ){ // Пробуем получить данные из кеша
+        if( ok && this.req.sys.bCache ){ // Пробуем получить данные из кеша
             sCache = await this.redisSys.get(sKey);
 
             if( sCache ){
@@ -143,7 +143,7 @@ export class CacheSys {
 
         let sCache = null;
         let out:number = null;
-        if( ok ){ // Пробуем получить данные из кеша
+        if( ok && this.req.sys.bCache ){ // Пробуем получить данные из кеша
             sCache = await this.redisSys.get(sKey);
 
             if( sCache ){

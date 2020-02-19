@@ -38,6 +38,20 @@ export class LogicSys {
 	}
 
 	/**
+	 * Включить кеш редиса
+	 */
+	fCacheOn(){
+		this.req.sys.bCache = true;
+	}
+
+	/**
+	 * Выключить кеш редиса
+	 */
+	fCacheOff(){
+		this.req.sys.bCache = false;
+	}
+
+	/**
      * Логический блок
      * @param sError - Сообщение об ощибке
      * @param callback - функция содержащая логическую операцию

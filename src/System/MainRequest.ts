@@ -20,6 +20,7 @@ export interface MainRequest extends Request {
         apikey: string,
 		bAuth: boolean, /* флаг авторизации */
 		bMasterDB: boolean, // Для запроса использовать мастер соединение
+		bCache?: boolean, // Управление кешированием Вкл/Выкл
 
         errorSys: ErrorSys,
         userSys: UserSys,
@@ -52,6 +53,7 @@ const Req: any = {
         apikey: '',
 		bAuth: false, /* флаг авторизации */
 		bMasterDB: false, // По умолчанию используется maxScale
+		bCache: true, // По умолчанию кеш используется
 
         errorSys: null, // Система ошибок
         userSys: null, // Система пользователя
