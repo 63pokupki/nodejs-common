@@ -16,7 +16,7 @@ export default class BaseSQL {
      * В зависимости от bMasterDB
      * может быть масте БД или балансировщик
      */
-    protected get db(): Knex;
+    protected readonly db: Knex;
     protected dbMaster: Knex;
     protected dbBalancer: Knex;
     /**

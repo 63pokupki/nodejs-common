@@ -19,6 +19,14 @@ export declare class LogicSys {
      */
     fMasterDBOff(): void;
     /**
+     * Включить кеш редиса
+     */
+    fCacheOn(): void;
+    /**
+     * Выключить кеш редиса
+     */
+    fCacheOff(): void;
+    /**
      * Логический блок
      * @param sError - Сообщение об ощибке
      * @param callback - функция содержащая логическую операцию

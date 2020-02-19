@@ -17,6 +17,7 @@ export interface MainRequest extends Request {
         apikey: string;
         bAuth: boolean;
         bMasterDB: boolean;
+        bCache?: boolean;
         errorSys: ErrorSys;
         userSys: UserSys;
         responseSys: ResponseSys;
