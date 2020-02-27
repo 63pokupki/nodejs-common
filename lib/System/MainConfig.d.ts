@@ -60,7 +60,6 @@ export interface MainConfig {
         connection: string;
         queryList: string[];
     };
-    S3: S3confI;
     S3DO: S3confI;
     S3DO256: S3confI;
     S3DO512: S3confI;

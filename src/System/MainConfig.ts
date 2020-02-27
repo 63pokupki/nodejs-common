@@ -63,7 +63,6 @@ export interface MainConfig { // Конфигурация
 		queryList: string[];
 	};
 
-	S3: S3confI, // Локальное хранилище
     S3DO: S3confI, // Хранилище обзих
     S3DO256: S3confI, // Хранилище картинок товара x256
 	S3DO512: S3confI, // Хранилище картинок товара x512

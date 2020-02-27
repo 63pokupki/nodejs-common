@@ -39,7 +39,7 @@ export class S3 {
     protected spacesEndpoint: any;
 
     constructor(req: MainRequest) {
-        this.conf = <S3confI>req.conf.S3;
+        this.conf = <S3confI>req.conf.S3DO;
     }
 
     /**
