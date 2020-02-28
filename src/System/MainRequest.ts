@@ -46,7 +46,8 @@ const Req: any = {
         env: 'dev', // Тип окружения
         oldCoreURL: null, // URL адрес основного сайта
         errorMute: true,
-        hook_url: 'https://', // Сообщения об ошибках matermost
+        hook_url_errors: 'https://', // Сообщения об ошибках mattermost
+        hook_url_monitoring: 'https://', // Сообщения мониторинга в mattermost
         port: 3005, // порт на котором будет работать нода
     },
     sys: {

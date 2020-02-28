@@ -53,7 +53,8 @@ export interface MainConfig {
         env: string;
         oldCoreURL: string;
         errorMute: boolean;
-        hook_url: string;
+        hook_url_errors: string;
+        hook_url_monitoring: string;
         port: number;
     };
     rabbit: {

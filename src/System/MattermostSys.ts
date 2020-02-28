@@ -8,6 +8,7 @@ interface MattermostField {
     title: string,
     value: string,
 }
+
 interface MattermostMsg {
     attachments: {
         fallback: string,
@@ -16,14 +17,12 @@ interface MattermostMsg {
         title: string,
         fields: MattermostField[];
     }[];
-};
+}
 
 /**
- * Класс для роботы с S3 like
+ * Класс для работы с MatterMost'ом
  */
 export class MattermostSys {
-
-
     protected req: MainRequest;
     protected errorSys: ErrorSys;
 
@@ -32,14 +31,18 @@ export class MattermostSys {
         this.errorSys = req.sys.errorSys;
     }
 
-    public sendMsg() {
+    /**
+     * Отправить сообщение в чат monitoring
+     * todo: доделать отправку данных извне
+     */
+    public sendMonitoringMsg() {
 
         let arrError: any = this.errorSys.getErrors();
         let msg: MattermostMsg = {
             attachments: [
                 {
                     "fallback": "test",
-                    "color": "#FF8000",
+                    "color": "warning",
                     "text": this.req.originalUrl,
                     "title": "Ошибка",
                     "fields": [
@@ -58,11 +61,11 @@ export class MattermostSys {
             })
         }
 
-        this.send(msg);
+        this.send(msg, this.req.conf.common.hook_url_monitoring);
     }
 
     /**
-     * Отправить ошибку
+     * Отправить сообщение об ошибке в чат errors
      * @param errorSys 
      * @param err 
      * @param addMessage 
@@ -114,14 +117,15 @@ export class MattermostSys {
             })
         }
 
-        this.send(msg);
+        this.send(msg, this.req.conf.common.hook_url_errors);
     }
 
     /**
-     * отправить сообщение
-     * @param msg 
+     * общий метод для отправки сообщения
+     * @param msg
+     * @param hook_url
      */
-    public send(msg: MattermostMsg) {
-        axios.post(this.req.conf.common.hook_url, msg);
+    public send(msg: MattermostMsg, hook_url: string) {
+        axios.post(hook_url, msg);
     }
 }

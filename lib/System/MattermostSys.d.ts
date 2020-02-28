@@ -15,24 +15,29 @@ interface MattermostMsg {
     }[];
 }
 /**
- * Класс для роботы с S3 like
+ * Класс для работы с MatterMost'ом
  */
 export declare class MattermostSys {
     protected req: MainRequest;
     protected errorSys: ErrorSys;
     constructor(req: MainRequest);
-    sendMsg(): void;
     /**
-     * Отправить ошибку
+     * Отправить сообщение в чат monitoring
+     * todo: доделать отправку данных извне
+     */
+    sendMonitoringMsg(): void;
+    /**
+     * Отправить сообщение об ошибке в чат errors
      * @param errorSys
      * @param err
      * @param addMessage
      */
     sendErrorMsg(errorSys: ErrorSys, err: Error, addMessage: string): void;
     /**
-     * отправить сообщение
+     * общий метод для отправки сообщения
      * @param msg
+     * @param hook_url
      */
-    send(msg: MattermostMsg): void;
+    send(msg: MattermostMsg, hook_url: string): void;
 }
 export {};

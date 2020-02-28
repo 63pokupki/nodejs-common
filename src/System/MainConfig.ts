@@ -54,7 +54,8 @@ export interface MainConfig { // Конфигурация
 		env: string; // Тип окружения
 		oldCoreURL: string; // URL адрес основного сайта
 		errorMute: boolean;
-		hook_url: string; // Сообщения об ошибках matermost
+		hook_url_errors: string; // Сообщения об ошибках mattermost
+		hook_url_monitoring: string; // Сообщения мониторинга в mattermost
 		port: number; // порт на котором будет работать экземпляр ноды
 	};
 
