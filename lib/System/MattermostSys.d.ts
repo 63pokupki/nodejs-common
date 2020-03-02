@@ -34,6 +34,13 @@ export declare class MattermostSys {
      */
     sendErrorMsg(errorSys: ErrorSys, err: Error, addMessage: string): void;
     /**
+     * Отправить сообщение по мониторингу RabbitMQ
+     * @param ixParam - key = очередь, val = количество картинок
+     */
+    sendMonitoringRabbitQueue(ixParam: {
+        [key: string]: number;
+    }): void;
+    /**
      * общий метод для отправки сообщения
      * @param msg
      * @param hook_url

@@ -66,9 +66,9 @@ export class MattermostSys {
 
     /**
      * Отправить сообщение об ошибке в чат errors
-     * @param errorSys 
-     * @param err 
-     * @param addMessage 
+     * @param errorSys
+     * @param err
+     * @param addMessage
      */
     public sendErrorMsg(errorSys: ErrorSys, err: Error, addMessage: string) {
 
@@ -118,6 +118,44 @@ export class MattermostSys {
         }
 
         this.send(msg, this.req.conf.common.hook_url_errors);
+	}
+
+	/**
+     * Отправить сообщение по мониторингу RabbitMQ
+     * @param ixParam - key = очередь, val = количество картинок
+     */
+    public sendMonitoringRabbitQueue(ixParam:{[key:string]:number}) {
+
+        let msg: MattermostMsg = {
+            attachments: [
+                {
+                    "fallback": "test",
+                    "color": "info",
+                    "text": ':boom: :trollface: RabbitMQ:',
+                    "title": "Мониторинг на " + this.req.conf.common.env,
+                    "fields": [
+                        {
+                            short: true,
+                            title: 'URL',
+                            value: ':link: ' + this.req.originalUrl,
+                        },
+                    ],
+                }
+            ]
+		};
+
+		for (let k in ixParam) {
+            let v = ixParam[k];
+
+            msg.attachments[0].fields.push({
+                short: true,
+                title: k,
+                value: String(v),
+            })
+        }
+
+
+        this.send(msg, this.req.conf.common.hook_url_monitoring);
     }
 
     /**
