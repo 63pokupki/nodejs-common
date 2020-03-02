@@ -32,39 +32,6 @@ export class MattermostSys {
     }
 
     /**
-     * Отправить сообщение в чат monitoring
-     * todo: доделать отправку данных извне
-     */
-    public sendMonitoringMsg() {
-
-        let arrError: any = this.errorSys.getErrors();
-        let msg: MattermostMsg = {
-            attachments: [
-                {
-                    "fallback": "test",
-                    "color": "warning",
-                    "text": this.req.originalUrl,
-                    "title": "Ошибка",
-                    "fields": [
-                    ],
-                }
-            ]
-        };
-
-        for (let k in arrError) {
-            let v = arrError[k];
-
-            msg.attachments[0].fields.push({
-                short: false,
-                title: k,
-                value: v,
-            })
-        }
-
-        this.send(msg, this.req.conf.common.hook_url_monitoring);
-    }
-
-    /**
      * Отправить сообщение об ошибке в чат errors
      * @param errorSys
      * @param err
@@ -122,37 +89,28 @@ export class MattermostSys {
 
 	/**
      * Отправить сообщение по мониторингу RabbitMQ
-     * @param ixParam - key = очередь, val = количество картинок
+     * @param sTitle - Заголово сообщения
+	 * @param sMsg - Сообщение
      */
-    public sendMonitoringRabbitQueue(ixParam:{[key:string]:string}) {
+    public sendMonitoringMsg(sTitle:string, sMsg:string) {
 
         let msg: MattermostMsg = {
             attachments: [
                 {
                     "fallback": "test",
                     "color": "info",
-                    "text": ':boom: :trollface: RabbitMQ:',
+                    "text": ':boom: :trollface: ' + sTitle,
                     "title": "Мониторинг на " + this.req.conf.common.env,
                     "fields": [
                         {
                             short: true,
-                            title: 'URL',
-                            value: ':link: ' + this.req.originalUrl,
+                            title: sTitle,
+                            value: sMsg,
                         },
                     ],
                 }
             ]
 		};
-
-		for (let k in ixParam) {
-            let v = ixParam[k];
-
-            msg.attachments[0].fields.push({
-                short: true,
-                title: k,
-                value: v,
-            })
-        }
 
 
         this.send(msg, this.req.conf.common.hook_url_monitoring);

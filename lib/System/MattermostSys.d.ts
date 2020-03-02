@@ -22,11 +22,6 @@ export declare class MattermostSys {
     protected errorSys: ErrorSys;
     constructor(req: MainRequest);
     /**
-     * Отправить сообщение в чат monitoring
-     * todo: доделать отправку данных извне
-     */
-    sendMonitoringMsg(): void;
-    /**
      * Отправить сообщение об ошибке в чат errors
      * @param errorSys
      * @param err
@@ -35,11 +30,10 @@ export declare class MattermostSys {
     sendErrorMsg(errorSys: ErrorSys, err: Error, addMessage: string): void;
     /**
      * Отправить сообщение по мониторингу RabbitMQ
-     * @param ixParam - key = очередь, val = количество картинок
+     * @param sTitle - Заголово сообщения
+     * @param sMsg - Сообщение
      */
-    sendMonitoringRabbitQueue(ixParam: {
-        [key: string]: string;
-    }): void;
+    sendMonitoringMsg(sTitle: string, sMsg: string): void;
     /**
      * общий метод для отправки сообщения
      * @param msg
