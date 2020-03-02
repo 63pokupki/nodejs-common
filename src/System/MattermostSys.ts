@@ -124,7 +124,7 @@ export class MattermostSys {
      * Отправить сообщение по мониторингу RabbitMQ
      * @param ixParam - key = очередь, val = количество картинок
      */
-    public sendMonitoringRabbitQueue(ixParam:{[key:string]:number}) {
+    public sendMonitoringRabbitQueue(ixParam:{[key:string]:string}) {
 
         let msg: MattermostMsg = {
             attachments: [
@@ -150,7 +150,7 @@ export class MattermostSys {
             msg.attachments[0].fields.push({
                 short: true,
                 title: k,
-                value: String(v),
+                value: v,
             })
         }
 

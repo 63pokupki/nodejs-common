@@ -38,7 +38,7 @@ export declare class MattermostSys {
      * @param ixParam - key = очередь, val = количество картинок
      */
     sendMonitoringRabbitQueue(ixParam: {
-        [key: string]: number;
+        [key: string]: string;
     }): void;
     /**
      * общий метод для отправки сообщения
