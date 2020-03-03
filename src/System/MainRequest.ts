@@ -44,7 +44,8 @@ const Req: any = {
     headers: null,
     common: { // Общее
         env: 'dev', // Тип окружения
-        oldCoreURL: null, // URL адрес основного сайта
+		oldCoreURL: null, // URL адрес основного сайта
+		nameApp:'default',
         errorMute: true,
         hook_url_errors: 'https://', // Сообщения об ошибках mattermost
         hook_url_monitoring: 'https://', // Сообщения мониторинга в mattermost
