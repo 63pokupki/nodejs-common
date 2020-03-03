@@ -52,6 +52,7 @@ export interface MainConfig { // Конфигурация
 	// ================================
 	common: { // Общее
 		env: string; // Тип окружения
+		nameApp?: string; // Имя приложения выводится если стукнуться GET
 		oldCoreURL: string; // URL адрес основного сайта
 		errorMute: boolean;
 		hook_url_errors: string; // Сообщения об ошибках mattermost

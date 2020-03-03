@@ -51,6 +51,7 @@ export interface MainConfig {
     };
     common: {
         env: string;
+        nameApp?: string;
         oldCoreURL: string;
         errorMute: boolean;
         hook_url_errors: string;
