@@ -36,7 +36,7 @@ export class UserSys
 {
 
 
-	public idUser:number; // ID пользователя
+	public idUser:number = 0; // ID пользователя
 
 	private apikey:string; // APIKEY
 
@@ -71,7 +71,6 @@ export class UserSys
 		this.userGroupSQL = new UserGroupSQL(req);
 		this.accessGroupSQL = new AccessGroupSQL(req);
 		this.ctrlAccessSQL = new CtrlAccessSQL(req);
-
 
 		this.ctrlAccessList = {};
 		this.userGroupsList = {};
