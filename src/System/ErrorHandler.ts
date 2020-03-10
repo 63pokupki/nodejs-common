@@ -19,12 +19,14 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: express.Respons
 
 
 	if (err.name == 'AuthError') {
-
+		res.status(500);
 		// req.sys.errorSys.error('AuthError', 'Ошибка авторизации');
 
 	} else if (err.name == 'ValidationError') {
+		res.status(200);
 		req.sys.errorSys.error('ValidationError', 'Ошибка валидации');
 	} else if (err.name == 'AppError') {
+		res.status(500);
 		if (req.conf.common.env !== 'local') {
 			mattermostSys.sendErrorMsg(req.sys.errorSys, err, err.message);
 		}
@@ -42,25 +44,14 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: express.Respons
 			);
 		}
 	} else {
+		res.status(500);
 		/* у нас в err что-то не то */
 		req.sys.errorSys.error('server_error', 'Ошибка сервера');
 		mattermostSys.sendErrorMsg(req.sys.errorSys, err, `${String(err)} Кривой формат ошибки`);
 	}
 
-	/*
-	// Для выписок
-	if (err instanceof ValidationError) {
-	const responseSys = new System.ResponseSys(req);
-	res.status(200).send(responseSys.response(err, 'Ошибка'));
-	next();
-	} else next(err); */
-
-
-
-	res.status(500);
 	res.send(
 		req.sys.responseSys.response(null, err.message),
 	);
 
-	// next(err);
 };
