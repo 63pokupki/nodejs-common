@@ -4,7 +4,7 @@ import express = require('express');
  * Функция рендера страницы
  * @param faCallback - функция контролера
  */
-export declare const faSendRouter: (faCallback: Function) => (req: MainRequest, res: express.Response, next: any) => Promise<void>;
+export declare const faSendRouter: (faCallback: Function) => (req: MainRequest, res: express.Response<any>, next: any) => Promise<void>;
 /**
  * Системный сервис формирования ответа
  */
