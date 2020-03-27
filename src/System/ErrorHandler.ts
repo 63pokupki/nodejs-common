@@ -24,7 +24,7 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: express.Respons
 
 	} else if (err.name == 'ValidationError') {
 		res.status(200);
-		req.sys.errorSys.error('ValidationError', 'Ошибка валидации');
+		req.sys.errorSys.error('ValidationError', err.message);
 	} else if (err.name == 'AppError') {
 		res.status(500);
 		if (req.conf.common.env !== 'local') {
@@ -47,7 +47,7 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: express.Respons
 		res.status(500);
 		/* у нас в err что-то не то */
 		req.sys.errorSys.error('server_error', 'Ошибка сервера');
-		mattermostSys.sendErrorMsg(req.sys.errorSys, err, `${String(err)} Кривой формат ошибки`);
+		mattermostSys.sendErrorMsg(req.sys.errorSys, err, `${String(err)}`);
 	}
 
 	res.send(
