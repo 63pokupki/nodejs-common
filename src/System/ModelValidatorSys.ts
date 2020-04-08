@@ -203,9 +203,23 @@ export class ModelValidatorSys {
     protected fValidEnum(sKey: string, aEnumList: any[]) {
 
         let bSuccess = false;
-        let v: any = this.data[sKey];
+		let v: any = null; // this.data[sKey];
 
-        if (_.indexOf(aEnumList, v) >= 0) {
+		let bNumberVal = false;
+		let bStringVal = false;
+
+		// Пробуем значение сконвертировать в цифру
+		if(Number(this.data[sKey]) || Number(this.data[sKey]) == 0){
+			v = Number(this.data[sKey])
+			bNumberVal = true;
+		}
+		// Если не цифра - пробуем конвертировать в строку
+		if(!bNumberVal && String(this.data[sKey])){
+			v = String(this.data[sKey]);
+			bStringVal = true;
+		}
+		
+        if ((bNumberVal || bStringVal) && _.indexOf(aEnumList, v) >= 0) {
             let index = _.indexOf(aEnumList, this.data[sKey]);
 
             this.aResult[sKey] = aEnumList[index];
