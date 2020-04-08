@@ -220,7 +220,7 @@ export class ModelValidatorSys {
 		}
 		
         if ((bNumberVal || bStringVal) && _.indexOf(aEnumList, v) >= 0) {
-            let index = _.indexOf(aEnumList, this.data[sKey]);
+            let index = _.indexOf(aEnumList, v);
 
             this.aResult[sKey] = aEnumList[index];
             bSuccess = true;
