@@ -1,5 +1,5 @@
 
-import {ErrorSys} from './ErrorSys';
+import {ErrorSys} from '@a-a-game-studio/aa-components/lib';
 import { MainRequest } from './MainRequest';
 import { MattermostSys } from './MattermostSys';
 import express = require('express');

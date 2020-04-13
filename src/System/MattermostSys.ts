@@ -1,7 +1,7 @@
 import { MainRequest } from './MainRequest';
 
 import axios from "axios";
-import { ErrorSys } from './ErrorSys';
+import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 
 interface MattermostField {
     short: boolean,

@@ -36,11 +36,6 @@ export class UserSQL extends BaseSQL
         let resp = null;
         let sql = '';
 
-        // Декларирование ошибок
-        this.errorSys.declare([
-            'get_user' // получение пользователей
-        ]);
-
         let sSearchFIO = "";
         if( aFilter['search_fullname']  ){
             sSearchFIO = aFilter['search_fullname'];
@@ -104,11 +99,6 @@ export class UserSQL extends BaseSQL
         let resp = null;
         let sql = '';
 
-        // Декларация ошибок
-        this.errorSys.declare([
-            'get_user'
-        ]);
-
         sql = `
             SELECT
                 u.user_id,
@@ -152,11 +142,6 @@ export class UserSQL extends BaseSQL
     public async fGetUserInfoByApiKey(apikey = ''):Promise<UserInfoI>{
         let ok = true;
         let resp = null;
-
-        // Декларация ошибок
-        this.errorSys.declare([
-            'user_info_by_apikey'
-        ]);
 
         if( ok ){
             let sql = `
@@ -213,11 +198,6 @@ export class UserSQL extends BaseSQL
         let ok = true;
         let resp:any[] = null;
 
-        // Декларация ошибок
-        this.errorSys.declare([
-            'api_key_in_db'
-        ]);
-
         /* если ключ больше 4 */
         if( apikey.length > 4) {
 
@@ -263,11 +243,6 @@ export class UserSQL extends BaseSQL
         let resp:any[] = null;
         let idUser:number = 0;
 
-        // Декларация ошибок
-        this.errorSys.declare([
-            'api_key_in_db'
-        ]);
-
 
 		/* дата создания смски сегодня или никогда */
         let sql = `
@@ -308,11 +283,6 @@ export class UserSQL extends BaseSQL
         let ok = true;
         let resp:any[] = null;
 
-        // Декларация ошибок
-        this.errorSys.declare([
-            'api_key_in_db'
-        ]);
-
         if( ok ){
             /* todo прикрутить reddis */
             let sql = `
@@ -347,11 +317,6 @@ export class UserSQL extends BaseSQL
 
         let ok = true;
         let resp:any[] = null;
-
-        // Декларация ошибок
-        this.errorSys.declare([
-            'api_key_in_db'
-        ]);
 
         let token:string = null;
 		if( ok ){ /* выбираем последний из вставленных */
@@ -391,11 +356,6 @@ export class UserSQL extends BaseSQL
         let sql = '';
         let apikey = this.generateApiKey();
 
-        // Декларация ошибок
-        this.errorSys.declare([
-            'inser_key_for_user'
-        ]);
-
         user_id = Number(user_id);
         sql = `INSERT INTO user_token (\`user_id\`, \`token\`) VALUES (:user_id, :api_key)`;
 
@@ -432,11 +392,6 @@ export class UserSQL extends BaseSQL
     {
         let ok = true;
         let resp:any[] = null;
-
-        // Декларация ошибок
-        this.errorSys.declare([
-            'api_key_in_db'
-        ]);
 
         let sql = `
             select u.* from phpbb_users u

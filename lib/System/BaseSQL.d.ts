@@ -1,8 +1,8 @@
 import Knex = require('knex');
-import { ErrorSys } from './ErrorSys';
+import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 import { RedisSys } from './RedisSys';
 import { MainRequest } from './MainRequest';
-import { ModelValidatorSys } from './ModelValidatorSys';
+import { ModelValidatorSys } from '@a-a-game-studio/aa-components/lib';
 import { UserSys } from './UserSys';
 import { DbProvider } from './DbProvider';
 import { CacheSys } from './CacheSys';

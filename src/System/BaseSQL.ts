@@ -4,11 +4,11 @@ import { isObject, isArray } from 'util';
 import Knex = require('knex')
 
 // Системные сервисы
-import { ErrorSys } from './ErrorSys';
+import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 import { RedisSys } from './RedisSys';
 import { MainRequest } from './MainRequest';
 
-import { ModelValidatorSys } from './ModelValidatorSys';
+import { ModelValidatorSys } from '@a-a-game-studio/aa-components/lib';
 import { UserSys } from './UserSys';
 import { DbProvider } from './DbProvider';
 import { CacheSys } from './CacheSys';
@@ -59,7 +59,7 @@ export default class BaseSQL {
     constructor(req: MainRequest) {
 		this.req = req;
 
-        this.modelValidatorSys = new ModelValidatorSys(req);
+        this.modelValidatorSys = new ModelValidatorSys(req.sys.errorSys);
         this.errorSys = req.sys.errorSys;
 		this.userSys = req.sys.userSys;
 		this.logicSys = req.sys.logicSys;

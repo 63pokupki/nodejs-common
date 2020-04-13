@@ -1,4 +1,4 @@
-import { ErrorSys } from "./ErrorSys";
+import { ErrorSys } from "@a-a-game-studio/aa-components/lib";
 /**
  * Валидатор поля
  */

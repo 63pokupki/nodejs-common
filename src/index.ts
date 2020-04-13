@@ -7,10 +7,10 @@ import BaseSQL from './System/BaseSQL'
 import BaseM from './System/BaseM'
 // export { BaseM as BaseM };
 
-import { ModelValidatorSys } from './System/ModelValidatorSys'
+import { ModelValidatorSys } from '@a-a-game-studio/aa-components/lib'
 // export { ModelValidatorSys as ModelValidatorSys };
 
-import { ErrorSys } from './System/ErrorSys';
+import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 // export { ErrorSys, BaseSQL };
 
 import { UserSys, UserInfoI } from './System/UserSys'

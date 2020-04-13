@@ -1,6 +1,6 @@
 {
   "name": "@63pokupki/nodejs-common",
-  "version": "0.0.155",
+  "version": "0.1.0",
   "description": "common nodejs functionality",
   "main": "lib/src/index.js",
   "types": "lib/src/index.d.ts",
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/63pokupki/nodejs-common#readme",
   "dependencies": {
+    "@a-a-game-studio/aa-components": "^1.0.27",
     "@types/amqplib": "^0.5.13",
     "amqplib": "^0.5.5",
     "aws-sdk": "^2.648.0",

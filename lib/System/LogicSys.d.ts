@@ -1,6 +1,6 @@
 import { MainRequest } from './MainRequest';
 import { UserSys } from './UserSys';
-import { ErrorSys } from './ErrorSys';
+import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 /**
  * Система логическая система
  * Логические функции управления приложением

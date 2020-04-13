@@ -1,4 +1,4 @@
-import { ErrorSys } from './ErrorSys';
+import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 import { UserSys } from './UserSys';
 import { ResponseSys } from './ResponseSys';
 
@@ -85,7 +85,12 @@ export function initMainRequest(conf: any): MainRequest {
     mainRequest = devReq;
     mainRequest.conf = conf;
 
-    mainRequest.sys.errorSys = new ErrorSys(mainRequest);
+    mainRequest.sys.errorSys = new ErrorSys(conf.common.env);
+    if(conf.common.errorMute){ // Настройка режим тищины
+        mainRequest.sys.errorSys.option({
+            bMute:true
+        })
+    }
 
     return mainRequest;
 }

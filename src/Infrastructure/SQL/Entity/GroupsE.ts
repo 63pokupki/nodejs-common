@@ -1,5 +1,3 @@
-// Системные сервисы
-import {UserSys} from '../../../System/UserSys';
 
 
 // Компоненты

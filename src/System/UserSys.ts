@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 // Системные сервисы
 import { MainRequest } from './MainRequest';
 
-import {ErrorSys} from './ErrorSys';
+import {ErrorSys} from '@a-a-game-studio/aa-components/lib';
 
 
 // SQL Запросы
@@ -241,11 +241,6 @@ export class UserSys
 
 		let ok = this.errorSys.isOk();
 
-		this.errorSys.declare([
-			'crud_access_list',
-			'access_create'
-		]);
-
 		if( !this.accessCRUDList ){
 			ok = false;
 			this.errorSys.error('crud_access_list', 'Нет списка прав');
@@ -271,11 +266,6 @@ export class UserSys
 	 */
 	public isAccessRead(): boolean {
 		let ok = this.errorSys.isOk();
-
-		this.errorSys.declare([
-			'crud_access_list',
-			'access_read'
-		]);
 
 		if( !this.accessCRUDList ){
 			ok = false;
@@ -303,11 +293,6 @@ export class UserSys
 	public isAccessUpdate(): boolean {
 		let ok = this.errorSys.isOk();
 
-		this.errorSys.declare([
-			'crud_access_list',
-			'access_update'
-		]);
-
 		if( !this.accessCRUDList ){
 			ok = false;
 			this.errorSys.error('crud_access_list', 'Нет списка прав');
@@ -334,11 +319,6 @@ export class UserSys
 	public isAccessDelete(): boolean {
 		let ok = this.errorSys.isOk();
 
-		this.errorSys.declare([
-			'crud_access_list',
-			'access_delete'
-		]);
-
 		if( !this.accessCRUDList ){
 			ok = false;
 			this.errorSys.error('crud_access_list', 'Нет списка прав');
@@ -364,10 +344,6 @@ export class UserSys
 	public isOrg(): boolean {
 
 		let ok = this.errorSys.isOk();
-
-		this.errorSys.declare([
-			'is_org'
-		]);
 
 		if( ok && this.userGroupsList['organizers'] ){
 			this.errorSys.devNotice('is_org', 'Вы организатор');
@@ -397,10 +373,6 @@ export class UserSys
 
 		let ok = this.errorSys.isOk();
 
-		this.errorSys.declare([
-			'is_admin'
-		]);
-
 		if( ok && this.userGroupsList['administrators'] ){
 			this.errorSys.devNotice('is_admin', 'Вы администратор');
 		} else {
@@ -417,10 +389,6 @@ export class UserSys
 	public async isAuth(): Promise<boolean> {
 
 		let ok = this.errorSys.isOk();
-
-		this.errorSys.declare([
-			'is_auth'
-		]);
 
 		if( ok && await this.userSQL.isAuth(this.apikey) ){
             this.errorSys.devNotice('is_auth', 'Вы авторизованы');

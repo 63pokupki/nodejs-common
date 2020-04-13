@@ -5,10 +5,6 @@ export default function RequestSysMiddleware(request: MainRequest, response: any
 
     let errorSys = request.sys.errorSys;
 
-    errorSys.declareEx({
-        data:'Неправильный формат входных данных'
-    });
-
     if (request.method == 'POST') {
         if (request.body['data']) {
 

@@ -34,12 +34,6 @@ export class CtrlAccessSQL extends BaseSQL
         let resp:any = null;
         let sql = '';
 
-        // Декларация ошибок
-        this.errorSys.declare([
-            'get_ctrl_access',
-            'get_ctrl_access_not_found'
-        ]);
-
         sql = `
             SELECT
                 ca.id,
@@ -79,12 +73,6 @@ export class CtrlAccessSQL extends BaseSQL
     public async getCtrlAccessByID(idCtrlAccess:number): Promise<any>{
         let ok = this.errorSys.isOk();
         let resp:any = null;
-
-        // Декларация ошибок
-        this.errorSys.declare([
-            'get_ctrl_access',
-            'ctrl_access_not_found'
-        ]);
 
         let sql = `
             SELECT
@@ -129,11 +117,6 @@ export class CtrlAccessSQL extends BaseSQL
         let bCache = false; // Наличие кеша
         let sql = '';
         let resp:any = null;
-
-        // Декларация ошибок
-        this.errorSys.declare([
-            'get_list_ctrl_access'
-        ]);
 
         let sCache = null;
         if( ok ){ // Пробуем получить данные из кеша
@@ -197,11 +180,6 @@ export class CtrlAccessSQL extends BaseSQL
     public async saveCtrlAccess(idCtrlAccess:number, data:{ [key: string]: any }): Promise<boolean>{
         let ok = this.errorSys.isOk();
 
-        // Декларация ошибок
-        this.errorSys.declare([
-            'save_ctrl_access'
-        ]);
-
         let vCtrlAccessE = new CtrlAccessE();
         if( ok && this.modelValidatorSys.fValid(vCtrlAccessE.getRulesUpdate(), data) ){
 
@@ -241,10 +219,6 @@ export class CtrlAccessSQL extends BaseSQL
     public async addCtrlAccess(data:{ [key: string]: any }): Promise<boolean>{
         let ok = this.errorSys.isOk();
         let resp;
-        // Декларация ошибок
-        this.errorSys.declare([
-            'add_ctrl_access'
-        ]);
 
         let vCtrlAccessE = new CtrlAccessE();
         if( ok && this.modelValidatorSys.fValid(vCtrlAccessE.getRulesInsert(), data) ){
@@ -288,11 +262,6 @@ export class CtrlAccessSQL extends BaseSQL
     public async delCtrlAccessByAlias(aliasCtrlAccess:string): Promise<boolean>{
         let ok = this.errorSys.isOk();
 
-        // Декларация ошибок
-        this.errorSys.declare([
-            'del_ctrl_access'
-        ]);
-
         let resp = null;
         try{
             resp = await this.db('ctrl_access')
@@ -300,7 +269,7 @@ export class CtrlAccessSQL extends BaseSQL
                     alias: aliasCtrlAccess,
                 })
                 .limit(1)
-                .del(this.modelValidatorSys.getResult());
+                .del();
 
         } catch (e){
             ok = false;
@@ -330,10 +299,6 @@ export class CtrlAccessSQL extends BaseSQL
     public async cntCtrlAccessByAlias(aliasCtrlAccess:string): Promise<number>{
         let ok = this.errorSys.isOk();
 
-        // Декларация ошибок
-        this.errorSys.declare([
-            'cnt_ctrl_access'
-        ]);
 
         let resp = null;
         let cntCtrlAccess = 0;

@@ -3,10 +3,10 @@
 import * as redisSys  from '../../../System/RedisSys';
 
 // Системные сервисы
-import {ErrorSys} from '../../../System/ErrorSys';
+import {ErrorSys} from '@a-a-game-studio/aa-components/lib';
 import { MainRequest } from '../../../System/MainRequest';
 
-import {ModelValidatorSys} from '../../../System/ModelValidatorSys';
+import {ModelValidatorSys} from '@a-a-game-studio/aa-components/lib';
 
 // Сущности и правила валидации
 import {GroupsE} from '../Entity/GroupsE';
@@ -37,12 +37,6 @@ export class GroupsSQL extends BaseSQL
         let ok = this.errorSys.isOk();
         let resp: any[] = null;
         let sql:string = '';
-
-        // Декларация ошибок
-        this.errorSys.declare([
-            'get_group',
-            'group_not_found'
-        ]);
 
         sql = `
             SELECT
@@ -88,11 +82,6 @@ export class GroupsSQL extends BaseSQL
         let bCache = false; // Наличие кеша
         let sql:string = '';
         let resp = null;
-
-        // Декларация ошибок
-        this.errorSys.declare([
-            'get_roles'
-        ]);
 
         let sCache = null;
         if( ok ){ // Пробуем получить данные из кеша
@@ -156,11 +145,6 @@ export class GroupsSQL extends BaseSQL
     public async saveGroup(idGroup:number, data:{ [key: string]: any }): Promise<boolean>{
         let ok = this.errorSys.isOk();
         let sql:string = '';
-
-        // Декларация ошибок
-        this.errorSys.declare([
-            'save_group'
-        ]);
 
         let vGroupsE = new GroupsE();
         if( ok && this.modelValidatorSys.fValid(vGroupsE.getRulesUpdate(), data) ){

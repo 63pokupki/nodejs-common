@@ -1,8 +1,8 @@
 import BaseCtrl from './System/BaseCtrl';
 import BaseSQL from './System/BaseSQL';
 import BaseM from './System/BaseM';
-import { ModelValidatorSys } from './System/ModelValidatorSys';
-import { ErrorSys } from './System/ErrorSys';
+import { ModelValidatorSys } from '@a-a-game-studio/aa-components/lib';
+import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 import { UserSys, UserInfoI } from './System/UserSys';
 import { DbProvider } from './System/DbProvider';
 import { ResponseSys } from './System/ResponseSys';

@@ -5,9 +5,9 @@ import * as redisSys  from '../../../System/RedisSys';
 import { MainRequest } from '../../../System/MainRequest';
 
 // Системные сервисы
-import {ErrorSys} from '../../../System/ErrorSys';
+import {ErrorSys} from '@a-a-game-studio/aa-components/lib';
 
-import {ModelValidatorSys} from '../../../System/ModelValidatorSys';
+import {ModelValidatorSys} from '@a-a-game-studio/aa-components/lib';
 import BaseSQL from '../../../System/BaseSQL';
 
 /**
@@ -32,11 +32,6 @@ export class UserGroupSQL extends BaseSQL
      */
     public async getUserGroupsByUserID(idUser:number): Promise<any>{
         let ok = this.errorSys.isOk();
-
-        // Декларация ошибок
-        this.errorSys.declare([
-            'get_role'
-        ]);
 
         let bCache = false; // Наличие кеша
 
@@ -111,13 +106,6 @@ export class UserGroupSQL extends BaseSQL
      */
     public async addUserToGroup(idUser:number, idGroup:number): Promise<boolean>{
         let ok = this.errorSys.isOk();
-
-        // Декларация ошибок
-        this.errorSys.declare([
-            'ctrl_user_in_group',
-            'user_in_group',
-            'add_role'
-        ]);
 
         let iCountUserInGroup = 0;
         if( ok ){ // Проверяем имеется ли пользователь в группе
@@ -204,13 +192,6 @@ export class UserGroupSQL extends BaseSQL
     public async delUserFromGroup(idUser:number, idGroup:number): Promise<boolean>{
         let ok = this.errorSys.isOk();
 
-        // Декларация ошибок
-        this.errorSys.declare([
-            'ctrl_user_in_group',
-            'user_in_group',
-            'del_role'
-        ]);
-
         let iCountUserInGroup = 0;
         if( ok ){ // Проверяем имеется ли пользователь в группе
             let sql = `
@@ -263,7 +244,7 @@ export class UserGroupSQL extends BaseSQL
                         user_id: idUser,
                         group_id: idGroup
                     })
-                    .del(this.modelValidatorSys.getResult());
+                    .del();
 
             } catch (e){
                 ok = false;

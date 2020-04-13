@@ -6,10 +6,10 @@ import * as _ from 'lodash';
 import * as redisSys  from '../../../System/RedisSys';
 
 // Системные сервисы
-import {ErrorSys} from '../../../System/ErrorSys';
+import {ErrorSys} from '@a-a-game-studio/aa-components/lib';
 import { MainRequest } from '../../../System/MainRequest';
 
-import {ModelValidatorSys} from '../../../System/ModelValidatorSys';
+import {ModelValidatorSys} from '@a-a-game-studio/aa-components/lib';
 
 // Сущности и правила валидации
 import {AccessGroupE} from '../Entity/AccessGroupE';
@@ -38,10 +38,6 @@ export class AccessGroupSQL extends BaseSQL
      */
     public async getCtrlAccessOfGroupByID(idGroup:number): Promise<any>{
         let ok = this.errorSys.isOk();
-
-        this.errorSys.declare([
-            'get_ctrl_access',
-        ]);
 
         let resp = null;
 
@@ -89,12 +85,6 @@ export class AccessGroupSQL extends BaseSQL
     public async getAccessCRUD(aIdsGroup:number[], idCtrlAccess:number): Promise<any>{
         let ok = this.errorSys.isOk();
         let sql:string = '';
-
-        // Декларация ошибок
-        this.errorSys.declare([
-            'user_no_has_group',
-            'get_access_crud'
-        ]);
 
         if( aIdsGroup.length < 1){ // Если пользователь не имеет групп - значит у него нет прав
             ok = false;
@@ -158,12 +148,6 @@ export class AccessGroupSQL extends BaseSQL
     public async getAccess(aIdsGroup:number[], idCtrlAccess:number): Promise<boolean>{
         let ok = this.errorSys.isOk();
 
-        // Декларация ошибок
-        this.errorSys.declare([
-            'user_no_has_group',
-            'get_access_to_ctrl'
-        ]);
-
         let sql: string = '';
 
         if( aIdsGroup.length < 1){ // Если пользователь не имеет групп - значит у него нет прав
@@ -221,11 +205,6 @@ export class AccessGroupSQL extends BaseSQL
         let ok = this.errorSys.isOk();
         let sql:string = '';
 
-        // Декларация ошибок
-        this.errorSys.declare([
-            'add_ctrl_access'
-        ]);
-
         let idAccessGroup = 0;
         if( ok ){
 
@@ -270,11 +249,6 @@ export class AccessGroupSQL extends BaseSQL
         let ok = this.errorSys.isOk();
         let sql:string = '';
 
-        // Декларация ошибок
-        this.errorSys.declare([
-            'save_access_group'
-        ]);
-
         let vAccessGroupE = new AccessGroupE();
         if( ok && this.modelValidatorSys.fValid(vAccessGroupE.getRulesUpdate(), data) ){
 
@@ -315,11 +289,6 @@ export class AccessGroupSQL extends BaseSQL
      */
     public async delCtrlAccessFromGroup(idCtrlAccess:number, idGroup:number): Promise<boolean>{
         let ok = this.errorSys.isOk();
-
-        // Декларация ошибок
-        this.errorSys.declare([
-            'del_ctrl_access'
-        ]);
 
         if( ok ){
             let resp = null;
@@ -362,11 +331,6 @@ export class AccessGroupSQL extends BaseSQL
      */
     public async cntAccessGroup(idCtrlAccess:number, idGroup:number): Promise<number>{
         let ok = this.errorSys.isOk();
-
-        // Декларация ошибок
-        this.errorSys.declare([
-            'cnt_ctrl_access'
-        ]);
 
         let resp = [];
         let sql = '';

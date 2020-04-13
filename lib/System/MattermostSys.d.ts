@@ -1,5 +1,5 @@
 import { MainRequest } from './MainRequest';
-import { ErrorSys } from './ErrorSys';
+import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 interface MattermostField {
     short: boolean;
     title: string;
