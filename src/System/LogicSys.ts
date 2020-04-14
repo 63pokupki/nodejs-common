@@ -4,7 +4,7 @@
 import { MainRequest } from './MainRequest';
 
 import { UserSys } from './UserSys';
-import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
+import { ErrorSys, ModelRulesC, ModelValidatorSys } from '@a-a-game-studio/aa-components/lib';
 
 
 /**
@@ -74,6 +74,24 @@ export class LogicSys {
 
         return out;
 
+	}
+	
+	/**
+     * Блок для валидации входных данных
+     * Выбрасывает ошибку в случае не правильности данных
+     */
+    fValidData<RequestT>(vModelRules:ModelRulesC, data:RequestT):RequestT{
+
+		const validator = new ModelValidatorSys(this.errorSys);
+
+		let validData:RequestT = null;
+		if(validator.fValid(vModelRules.get(), data)){
+			validData = validator.getResult();
+		} else {
+			throw this.errorSys.throwValid('Ошибка входных данных');
+		}
+
+		return validData;
     }
 
 	/**

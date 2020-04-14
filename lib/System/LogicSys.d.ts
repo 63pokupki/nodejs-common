@@ -1,6 +1,6 @@
 import { MainRequest } from './MainRequest';
 import { UserSys } from './UserSys';
-import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
+import { ErrorSys, ModelRulesC } from '@a-a-game-studio/aa-components/lib';
 /**
  * Система логическая система
  * Логические функции управления приложением
@@ -32,6 +32,11 @@ export declare class LogicSys {
      * @param callback - функция содержащая логическую операцию
      */
     ifOk(sError: string, callback: Function): Promise<any>;
+    /**
+     * Блок для валидации входных данных
+     * Выбрасывает ошибку в случае не правильности данных
+     */
+    fValidData<RequestT>(vModelRules: ModelRulesC, data: RequestT): RequestT;
     /**
      * Блок для выполнения запросов на мастер базу данных
      * @param callback - функция содержащая логическую операцию
