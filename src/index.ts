@@ -7,12 +7,6 @@ import BaseSQL from './System/BaseSQL'
 import BaseM from './System/BaseM'
 // export { BaseM as BaseM };
 
-import { ModelValidatorSys } from '@a-a-game-studio/aa-components/lib'
-// export { ModelValidatorSys as ModelValidatorSys };
-
-import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
-// export { ErrorSys, BaseSQL };
-
 import { UserSys, UserInfoI } from './System/UserSys'
 import { DbProvider } from './System/DbProvider'
 
@@ -21,9 +15,6 @@ import { ResponseSys } from './System/ResponseSys'
 import { MainRequest, TError, initMainRequest } from './System/MainRequest'
 import { devReq } from './System/MainRequest'
 
-import { ModelOneRuleC } from './Components/ModelOneRuleC'
-
-import { ModelRulesC, ModelRulesT } from './Components/ModelRulesC'
 
 // /* LEGO ошибок */
 import ErrorSysMiddleware from './System/Middleware/ErrorSysMiddleware'
@@ -85,11 +76,6 @@ export {
     BaseSQL,
     DbProvider,
     BaseM,
-    ModelValidatorSys,
-    ModelOneRuleC,
-    ModelRulesC,
-    ModelRulesT,
-    ErrorSys,
     UserSys,
 	UserInfoI as UserInfo,
 	LogicSys,

@@ -1,7 +1,7 @@
 
 
 // Компоненты
-import {ModelRulesC} from '../../../Components/ModelRulesC';
+import {ModelRulesC} from '@a-a-game-studio/aa-components/lib';
 
 export class GroupsE
 {
@@ -16,22 +16,22 @@ export class GroupsE
 
 
         rules.set(rules.rule('alias')
-            .type('text')
+            .typeText()
             .error('alias - неверный формат')
         );
 
         rules.set(rules.rule('group_name')
-            .type('text')
+            .typeText()
             .error('group_name - неверный формат')
         );
 
         rules.set(rules.rule('group_desc')
-            .type('text')
+            .typeText()
             .error('group_desc - неверный формат')
         );
 
         rules.set(rules.rule('group_type')
-            .type('int')
+            .typeInt()
             .error('group_type - неверный формат')
         );
 

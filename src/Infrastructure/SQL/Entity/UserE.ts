@@ -1,6 +1,6 @@
 
 // Компоненты
-import {ModelRulesC} from '../../../Components/ModelRulesC';
+import {ModelRulesC} from '@a-a-game-studio/aa-components/lib';
 
 
 export class UserE
@@ -12,17 +12,17 @@ export class UserE
         let rules = new ModelRulesC();
 
         rules.set(rules.rule('user_id')
-            .type('int')
+            .typeInt()
             .error('user_id - неверный формат')
         );
 
         rules.set(rules.rule('user_email')
-            .type('text')
+            .typeText()
             .error('user_email - неверный формат')
         );
 
         rules.set(rules.rule('user_fullname')
-            .type('text')
+            .typeText()
             .error('user_fullname - неверный формат')
         );
 

@@ -1,15 +1,11 @@
 import BaseCtrl from './System/BaseCtrl';
 import BaseSQL from './System/BaseSQL';
 import BaseM from './System/BaseM';
-import { ModelValidatorSys } from '@a-a-game-studio/aa-components/lib';
-import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 import { UserSys, UserInfoI } from './System/UserSys';
 import { DbProvider } from './System/DbProvider';
 import { ResponseSys } from './System/ResponseSys';
 import { MainRequest, TError, initMainRequest } from './System/MainRequest';
 import { devReq } from './System/MainRequest';
-import { ModelOneRuleC } from './Components/ModelOneRuleC';
-import { ModelRulesC, ModelRulesT } from './Components/ModelRulesC';
 import ErrorSysMiddleware from './System/Middleware/ErrorSysMiddleware';
 import RequestSysMiddleware from './System/Middleware/RequestSysMiddleware';
 import ResponseSysMiddleware from './System/Middleware/ResponseSysMiddleware';
@@ -36,7 +32,7 @@ declare const Middleware: {
     AuthSysMiddleware: typeof AuthSysMiddleware;
     SubSysMiddleware: typeof SubSysMiddleware;
 };
-export { BaseCtrl, BaseSQL, DbProvider, BaseM, ModelValidatorSys, ModelOneRuleC, ModelRulesC, ModelRulesT, ErrorSys, UserSys, UserInfoI as UserInfo, LogicSys, CacheSys, ResponseSys, RedisSys, Middleware, MainRequest, // interface MainRequest,
+export { BaseCtrl, BaseSQL, DbProvider, BaseM, UserSys, UserInfoI as UserInfo, LogicSys, CacheSys, ResponseSys, RedisSys, Middleware, MainRequest, // interface MainRequest,
 TError, MainConfig, devReq, // Пример MainRequest
 S3, S3objectParamsI, S3confI, RabbitSenderSys, initMainRequest, // Инициализация Main Request для тестов
 BaseCommand, // Конструктор консольных команд
