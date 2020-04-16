@@ -87,8 +87,10 @@ export class LogicSys {
 		let validData:RequestT = null;
 		if(validator.fValid(vModelRules.get(), data)){
 			validData = validator.getResult();
-		} else {
-			throw this.errorSys.throwValid('Ошибка входных данных');
+		} else {	
+			const e:Error = this.errorSys.throwValid('Ошибка входных данных');
+			this.errorSys.errorEx(e, 'valid_data', 'Ошибка входных данных');
+			throw e;
 		}
 
 		return validData;
