@@ -19,6 +19,13 @@ export declare class CacheSys {
      */
     autoCache(sKey: string, iTimeSec: number, callback: any): Promise<any>;
     /**
+     * Авто кеширование строки для встраивания в функцию
+     * @param sKey - Ключ кеша
+     * @param iTimeSec - Время кеширования
+     * @param callback - функция получающая данные из БД
+     */
+    autoCacheStr(sKey: string, iTimeSec: number, callback: any): Promise<string>;
+    /**
      * Авто кеширование int переменной для встраивания в функцию
      * @param sKey - Ключ кеша
      * @param iTimeSec - Время кеширования

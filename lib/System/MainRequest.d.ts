@@ -15,7 +15,6 @@ export interface MainRequest extends Request {
     method: string;
     sys: {
         apikey: string;
-        sAppPath?: string;
         bAuth: boolean;
         bMasterDB: boolean;
         bCache?: boolean;

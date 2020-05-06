@@ -18,7 +18,6 @@ export interface MainRequest extends Request {
 
     sys: {
         apikey: string,
-        sAppPath?: string, // путь старта приложения(назначается самим приложением)
 		bAuth: boolean, /* флаг авторизации */
 		bMasterDB: boolean, // Для запроса использовать мастер соединение
 		bCache?: boolean, // Управление кешированием Вкл/Выкл
