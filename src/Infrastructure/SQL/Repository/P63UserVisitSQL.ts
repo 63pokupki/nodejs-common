@@ -41,7 +41,7 @@ export class P63UserVisitSQL extends BaseSQL
             WHERE
                 uv.user_id = :user_id
             AND
-                uv.create_at > (NOW() - INTERVAL 1 HOUR)
+                uv.created_at > (NOW() - INTERVAL 1 HOUR)
             LIMIT 1
             ;
         `;
@@ -54,7 +54,7 @@ export class P63UserVisitSQL extends BaseSQL
                     user_id:idUser
                 }))[0][0];
             } catch (e){
-                this.errorSys.error('db_get_user_visit', 'Не удалось получить визит пользователя');
+                this.errorSys.errorEx(e, 'db_get_user_visit', 'Не удалось получить визит пользователя');
             }
             return oneUserVisit;
         });
@@ -84,7 +84,7 @@ export class P63UserVisitSQL extends BaseSQL
 
 
             } catch (e){
-                this.errorSys.error('add_user_visit', 'Не удалось добавить визит пользователя');
+                this.errorSys.errorEx(e, 'add_user_visit', 'Не удалось добавить визит пользователя');
             }
 
         }
