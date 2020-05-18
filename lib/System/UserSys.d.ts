@@ -31,6 +31,7 @@ export declare class UserSys {
     private userGroupSQL;
     private accessGroupSQL;
     private ctrlAccessSQL;
+    private p63UserVisitSQL;
     constructor(req: MainRequest);
     /**
      * Инициализация данных пользователя
