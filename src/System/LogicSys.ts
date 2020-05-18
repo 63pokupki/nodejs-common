@@ -64,12 +64,8 @@ export class LogicSys {
                 out = await callback();
                 this.errorSys.devNotice('ifok', sError);
             } catch(e) {
-				this.errorSys.error(`ifok`, sError);
-				throw e;
-
+				this.errorSys.errorEx(e, `ifok`, sError);
             }
-        } else {
-			this.errorSys.error('ifok', sError);
         }
 
         return out;

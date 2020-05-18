@@ -13,6 +13,7 @@ import {UserSQL} from '../Infrastructure/SQL/Repository/UserSQL';
 import {UserGroupSQL} from '../Infrastructure/SQL/Repository/UserGroupSQL';
 import {AccessGroupSQL} from '../Infrastructure/SQL/Repository/AccessGroupSQL';
 import {CtrlAccessSQL} from '../Infrastructure/SQL/Repository/CtrlAccessSQL';
+import { P63UserVisitSQL } from '../Infrastructure/SQL/Repository/P63UserVisitSQL';
 
 export interface UserInfoI {
 	user_id:number;
@@ -61,6 +62,8 @@ export class UserSys
 
 	private ctrlAccessSQL:CtrlAccessSQL;
 
+	private p63UserVisitSQL:P63UserVisitSQL;
+
 	public constructor (req:MainRequest) {
 
 		this.req = req;
@@ -71,6 +74,7 @@ export class UserSys
 		this.userGroupSQL = new UserGroupSQL(req);
 		this.accessGroupSQL = new AccessGroupSQL(req);
 		this.ctrlAccessSQL = new CtrlAccessSQL(req);
+		this.p63UserVisitSQL = new P63UserVisitSQL(req);
 
 		this.ctrlAccessList = {};
 		this.userGroupsList = {};
@@ -113,6 +117,14 @@ export class UserSys
 			} else {
 				this.userInfo = userInfoList;
 				this.idUser = userInfoList['user_id'];
+			}
+		}
+
+		if( ifAuth ){ // Проверяем визиты пользователя
+			const vUserVisit = await this.p63UserVisitSQL.oneLastUserVisit(this.idUser);
+
+			if(!vUserVisit){ // Если за час небыло посещений и пользователь существует добавляем визит
+				await this.p63UserVisitSQL.addUserVisit(this.idUser);
 			}
 		}
 
