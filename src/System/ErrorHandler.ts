@@ -13,7 +13,7 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: express.Respons
 	const mattermostSys = new Mattermost.MattermostSys(req);
 
 	let ifDevMode = false;
-	if (req.conf.common.env !== 'prod') {
+	if (req.conf.common.env === 'dev' || req.conf.common.env === 'local') {
 		ifDevMode = true;
 	}
 
@@ -30,24 +30,25 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: express.Respons
 		if (req.conf.common.env !== 'local') {
 			mattermostSys.sendErrorMsg(req.sys.errorSys, err, err.message);
 		}
-		if (ifDevMode) {
-			console.log(
-				'=================================== \r\n',
-				`err.msg: ${err.message}`, '\r\n',
-				'err.stack: \r\n ',
-				'----------------------------------- \r\n',
-				err.stack, '\r\n',
-				'----------------------------------- \r\n',
-				'originalUrl:', req.originalUrl, '\r\n',
-				'=================================== \r\n',
-				'\r\n',
-			);
-		}
 	} else {
 		res.status(500);
 		/* у нас в err что-то не то */
 		req.sys.errorSys.error('server_error', 'Ошибка сервера');
 		mattermostSys.sendErrorMsg(req.sys.errorSys, err, `${String(err)}`);
+	}
+
+	if (ifDevMode) {
+		console.log(
+			'=================================== \r\n',
+			`err.msg: ${err.message}`, '\r\n',
+			'err.stack: \r\n ',
+			'----------------------------------- \r\n',
+			err.stack, '\r\n',
+			'----------------------------------- \r\n',
+			'originalUrl:', req.originalUrl, '\r\n',
+			'=================================== \r\n',
+			'\r\n',
+		);
 	}
 
 	res.send(
