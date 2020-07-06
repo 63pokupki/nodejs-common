@@ -67,12 +67,12 @@ export class RabbitSenderSys {
 					connection.on("error", function(err:any) {
 						if (err.message !== "Connection closing") {
 							console.error("[AMQP] Ошибка соединения, переподключение...", err.message);
-							return setTimeout(this.Init, 30000, confConnect, queryList);
+							return setTimeout(this.Init, 10000, confConnect, queryList);
 						}
 					});
 					connection.on("close", function() {
 						console.error("[AMQP] переподключение");
-						return setTimeout(this.Init, 30000, confConnect, queryList);
+						return setTimeout(this.Init, 10000, confConnect, queryList);
 					});
 
 					self.connection = connection;
@@ -84,11 +84,14 @@ export class RabbitSenderSys {
                         self.aQuery[sQuery] = await RabbitQueue.init(connection, sQuery);
 
                         resolve(connection);
-                    }
+					}
+
+					console.log('Соединение c RabbitMQ успешно установленно');
 
                 });
 
             } catch (e) {
+				console.log('Не удалось соединится c RabbitMQ');
 				console.error("[AMQP]", e.message);
                 reject(e);
             }
