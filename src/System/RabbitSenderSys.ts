@@ -13,8 +13,8 @@ export class RabbitSenderSys {
     protected connection: any;
     public aQuery: { [key: string]: RabbitQueue };
 
-    constructor(connection: any) {
-        this.connection = connection;
+    constructor() {
+        this.connection = null;
         this.aQuery = <any>[];
     }
 
@@ -70,7 +70,7 @@ export class RabbitSenderSys {
 						}
 					});
 					connection.on("close", function() {
-						console.error("[AMQP] reconnecting");
+						console.error("[AMQP] переподключение");
 						return setTimeout(this.Init, 30000, confConnect, queryList);
 					});
 

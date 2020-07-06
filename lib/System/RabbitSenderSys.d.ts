@@ -7,7 +7,7 @@ export declare class RabbitSenderSys {
     aQuery: {
         [key: string]: RabbitQueue;
     };
-    constructor(connection: any);
+    constructor();
     /**
      * Отправить сообщение в очередь
      * @param msg
