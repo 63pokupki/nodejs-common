@@ -54,6 +54,7 @@ export class RabbitSenderSys {
      * @param query
      */
     public async Init(confConnect: string, queryList: string[]): Promise<any> {
+		let self = this;
         return new Promise((resolve, reject) => {
 
             try {
@@ -74,13 +75,13 @@ export class RabbitSenderSys {
 						return setTimeout(this.Init, 30000, confConnect, queryList);
 					});
 
-					this.connection = connection;
+					self.connection = connection;
 
                     // let rabbitSender = new RabbitSenderSys(connection);
                     for (let kQuery in queryList) {
                         let sQuery = queryList[kQuery];
 
-                        this.aQuery[sQuery] = await RabbitQueue.init(connection, sQuery);
+                        self.aQuery[sQuery] = await RabbitQueue.init(connection, sQuery);
 
                         resolve(connection);
                     }
