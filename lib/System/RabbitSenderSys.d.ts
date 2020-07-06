@@ -26,7 +26,7 @@ export declare class RabbitSenderSys {
      * Асинхронный конструктор
      * @param query
      */
-    static Init(confConnect: string, queryList: string[]): Promise<RabbitSenderSys>;
+    Init(confConnect: string, queryList: string[]): Promise<any>;
 }
 /**
  * Очередь

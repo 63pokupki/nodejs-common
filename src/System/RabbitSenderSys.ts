@@ -29,7 +29,7 @@ export class RabbitSenderSys {
 
     /**
      * Получает данные по очереди
-     * @param sQueue 
+     * @param sQueue
      */
     public checkQueue(sQueue: string): Promise<Replies.AssertQueue> {
         return new Promise((resolve, reject) => {
@@ -53,7 +53,7 @@ export class RabbitSenderSys {
      * Асинхронный конструктор
      * @param query
      */
-    static async Init(confConnect: string, queryList: string[]): Promise<RabbitSenderSys> {
+    public async Init(confConnect: string, queryList: string[]): Promise<any> {
         return new Promise((resolve, reject) => {
 
             try {
@@ -61,20 +61,32 @@ export class RabbitSenderSys {
                 amqp.connect(confConnect, async function (error0: any, connection: any) {
                     if (error0) {
                         throw error0;
-                    }
+					}
 
-                    let rabbitSender = new RabbitSenderSys(connection);
+					connection.on("error", function(err:any) {
+						if (err.message !== "Connection closing") {
+							console.error("[AMQP] Ошибка соединения, переподключение...", err.message);
+							return setTimeout(this.Init, 30000, confConnect, queryList);
+						}
+					});
+					connection.on("close", function() {
+						console.error("[AMQP] reconnecting");
+						return setTimeout(this.Init, 30000, confConnect, queryList);
+					});
+
+                    // let rabbitSender = new RabbitSenderSys(connection);
                     for (let kQuery in queryList) {
                         let sQuery = queryList[kQuery];
 
-                        rabbitSender.aQuery[sQuery] = await RabbitQueue.init(connection, sQuery);
+                        this.aQuery[sQuery] = await RabbitQueue.init(connection, sQuery);
 
-                        resolve(rabbitSender);
+                        resolve(connection);
                     }
 
                 });
 
             } catch (e) {
+				console.error("[AMQP]", e.message);
                 reject(e);
             }
         });
