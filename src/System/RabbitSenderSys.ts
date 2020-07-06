@@ -74,6 +74,8 @@ export class RabbitSenderSys {
 						return setTimeout(this.Init, 30000, confConnect, queryList);
 					});
 
+					this.connection = connection;
+
                     // let rabbitSender = new RabbitSenderSys(connection);
                     for (let kQuery in queryList) {
                         let sQuery = queryList[kQuery];
