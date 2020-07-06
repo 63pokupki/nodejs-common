@@ -9,7 +9,7 @@ import { Replies } from 'amqplib/callback_api';
  */
 export class RabbitSenderSys {
 
-
+	public bConnectionProcess = false;
     protected connection: any;
     public aQuery: { [key: string]: RabbitQueue };
 
@@ -54,53 +54,73 @@ export class RabbitSenderSys {
      * @param query
      */
     public async Init(confConnect: string, queryList: string[]): Promise<any> {
-		let self = this;
+		rabbitSender.bConnectionProcess = false;
         return new Promise((resolve, reject) => {
-
-            try {
-                /* подключаемся к серверу */
-                amqp.connect(confConnect, async function (error0: any, connection: any) {
-                    if (error0) {
-                        throw error0;
+				/* подключаемся к серверу */
+				amqp.connect(confConnect, async function (error0: any, connection: any) {
+					if (error0) {
+						reject(error0);
+						throw error0;
 					}
 
 					connection.on("error", function(err:any) {
 						if (err.message !== "Connection closing") {
-							console.error("[AMQP] Ошибка соединения, переподключение...", err.message);
-							return setTimeout(this.Init, 10000, confConnect, queryList);
+							console.error("[AMQP] Ошибка соединения", err.message);
+
+							if(!rabbitSender.bConnectionProcess){
+								console.log('Переподключение...');
+								rabbitSender.bConnectionProcess = true;
+								return  setTimeout(rabbitSender.Init, 30000, confConnect, queryList);
+							}
+
 						}
 					});
 					connection.on("close", function() {
-						console.error("[AMQP] переподключение");
-						return setTimeout(this.Init, 10000, confConnect, queryList);
+						console.error("[AMQP] Соединение закрыто");
+						if(!rabbitSender.bConnectionProcess){
+							console.log('Переподключение...');
+							rabbitSender.bConnectionProcess = true;
+							return setTimeout(rabbitSender.Init, 30000, confConnect, queryList);
+						}
 					});
 
-					self.connection = connection;
+					rabbitSender.connection = connection;
 
-                    // let rabbitSender = new RabbitSenderSys(connection);
-                    for (let kQuery in queryList) {
-                        let sQuery = queryList[kQuery];
+					// let rabbitSender = new RabbitSenderSys(connection);
+					for (let kQuery in queryList) {
+						let sQuery = queryList[kQuery];
 
-                        self.aQuery[sQuery] = await RabbitQueue.init(connection, sQuery);
+						rabbitSender.aQuery[sQuery] = await RabbitQueue.init(connection, sQuery);
 
-                        resolve(connection);
 					}
 
+
 					console.log('Соединение c RabbitMQ успешно установленно');
+					rabbitSender.bConnectionProcess = false;
 
-                });
+					resolve(connection);
 
-            } catch (e) {
-				console.log('Не удалось соединится c RabbitMQ');
-				console.error("[AMQP]", e.message);
-                reject(e);
-            }
-        });
+				});
+
+
+
+
+		}).catch((e) =>{
+			console.log('Не удалось соединится c RabbitMQ');
+			console.error("[AMQP]", e.message);
+			if(!rabbitSender.bConnectionProcess){
+				console.log('Переподключение...');
+				rabbitSender.bConnectionProcess = true;
+				setTimeout(rabbitSender.Init, 30000, confConnect, queryList);
+			}
+			reject(e);
+		});
 
     }
 
 
 }
+
 
 
 /**
@@ -165,7 +185,6 @@ class RabbitQueue {
         // return vQuery;
     }
 
-
-
-
 }
+
+export const rabbitSender: RabbitSenderSys = new RabbitSenderSys();
