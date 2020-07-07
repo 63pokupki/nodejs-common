@@ -34,7 +34,7 @@ import { RedisSys } from './System/RedisSys';
 import { S3objectParamsI, S3 } from './System/S3';
 
 /* Отправлятор сообщений в Rabbit */
-import { RabbitSenderSys } from './System/RabbitSenderSys';
+import { rabbitSenderSys, RabbitSenderSys } from './System/RabbitSenderSys';
 
 /* Конструктор Консольной команды */
 import BaseCommand from './System/BaseCommand';
@@ -90,7 +90,8 @@ export {
     S3,
     S3objectParamsI,
     S3confI,
-    RabbitSenderSys,
+	RabbitSenderSys, // Класс системы для работы с ребитом
+	rabbitSenderSys, // Объект система работы с ребитом
     initMainRequest, // Инициализация Main Request для тестов
     BaseCommand, // Конструктор консольных команд
     BaseTest, // Конструктор тестов

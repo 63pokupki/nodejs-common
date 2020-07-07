@@ -12,7 +12,7 @@ import ResponseSysMiddleware from './System/Middleware/ResponseSysMiddleware';
 import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware';
 import { RedisSys } from './System/RedisSys';
 import { S3objectParamsI, S3 } from './System/S3';
-import { RabbitSenderSys } from './System/RabbitSenderSys';
+import { rabbitSenderSys, RabbitSenderSys } from './System/RabbitSenderSys';
 import BaseCommand from './System/BaseCommand';
 import BaseTest from './System/BaseTest';
 import * as Seo from './Components/Seo';
@@ -34,7 +34,9 @@ declare const Middleware: {
 };
 export { BaseCtrl, BaseSQL, DbProvider, BaseM, UserSys, UserInfoI as UserInfo, LogicSys, CacheSys, ResponseSys, RedisSys, Middleware, MainRequest, // interface MainRequest,
 TError, MainConfig, devReq, // Пример MainRequest
-S3, S3objectParamsI, S3confI, RabbitSenderSys, initMainRequest, // Инициализация Main Request для тестов
+S3, S3objectParamsI, S3confI, RabbitSenderSys, // Класс системы для работы с ребитом
+rabbitSenderSys, // Объект система работы с ребитом
+initMainRequest, // Инициализация Main Request для тестов
 BaseCommand, // Конструктор консольных команд
 BaseTest, // Конструктор тестов
 Seo, // сео собственно
