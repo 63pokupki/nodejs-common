@@ -3,6 +3,7 @@ import { Replies } from 'amqplib/callback_api';
  * Отправщик сообщений в очередь
  */
 export declare class RabbitSenderSys {
+    bConnectionProcess: boolean;
     protected connection: any;
     aQuery: {
         [key: string]: RabbitQueue;
@@ -40,4 +41,5 @@ declare class RabbitQueue {
     constructor(sQuery: any, conn: any, channel: any);
     static init(conn: any, sQuery: any): Promise<RabbitQueue>;
 }
+export declare const rabbitSenderSys: RabbitSenderSys;
 export {};
