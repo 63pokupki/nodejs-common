@@ -58,6 +58,10 @@ export interface MainConfig {
         hook_url_monitoring: string;
         port: number;
     };
+    auth?: {
+        secret?: string;
+        algorithm?: string;
+    };
     rabbit: {
         connection: string;
         queryList: string[];

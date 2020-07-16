@@ -1,10 +1,45 @@
 import { MainRequest } from '../MainRequest';
 import { UserSys } from '../UserSys';
+import * as jwt from 'jsonwebtoken'
+
+/**
+ * Ответ декодиирования тикена
+ * Должен обновляться каждую неделю
+ * Время действия токена 1 месяц
+ * Если пользователь постоянно пользуется сайтом у него будет ощущение бесконечного токена
+ * Токен скрыто обновляется если он старше 1 недели
+ */
+interface JwtDecodeI{
+	token?:string; // старый статичный apikey
+	iat?:number; // время создания токена
+	exp?:number; // время действия токена
+}
 
 /* проверка аутентификации на уровне приложения */
 export default async function AuthSysMiddleware(request: MainRequest, response: any, next: any) {
-    if (request.headers.apikey) {
-        request.sys.apikey = request.headers.apikey;
+
+
+    if (request.headers.apikey && String(request.headers.apikey)) {
+
+		if(request.headers.apikey.length > 32){
+
+			const decoded:JwtDecodeI = <any>jwt.verify(request.headers.apikey,
+				request.conf.auth.secret, {
+				algorithms: [<any>request.conf.auth.algorithm]
+			});
+
+			// Проверяем что прошло меньше месяца
+			if((Date.now() / 1000) < decoded.exp){
+				request.sys.apikey = decoded.token;
+			} else {
+				request.sys.apikey = '';
+			}
+
+		} else { // Временное решение пока идет разработка
+			// Дает возможность использовать старый токен
+			request.sys.apikey = request.headers.apikey;
+		}
+
     } else {
         request.sys.apikey = '';
     }

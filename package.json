@@ -22,11 +22,13 @@
   "dependencies": {
     "@a-a-game-studio/aa-components": "latest",
     "@types/amqplib": "^0.5.13",
+    "@types/jsonwebtoken": "^8.5.0",
     "amqplib": "^0.5.5",
     "aws-sdk": "^2.664.0",
     "axios": "^0.19.2",
     "chai": "^4.2.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.1",
     "lodash": "^4.17.11",
     "md5": "2.2.1",

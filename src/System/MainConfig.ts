@@ -44,6 +44,7 @@ export interface MainConfig { // Конфигурация
 		},
 		acquireConnectionTimeout: number; // таймоут 60000
 	};
+
 	// ================================
 
 	redis: { // Конфиг для редиса
@@ -58,6 +59,12 @@ export interface MainConfig { // Конфигурация
 		hook_url_errors: string; // Сообщения об ошибках mattermost
 		hook_url_monitoring: string; // Сообщения мониторинга в mattermost
 		port: number; // порт на котором будет работать экземпляр ноды
+	};
+
+	// Параметры ра
+	auth?:{
+		secret?:string; // KEY
+		algorithm?:string; // Алгоритм для расшифровки
 	};
 
 	rabbit: {
