@@ -17,6 +17,6 @@ async function run (){
 
 	console.log('decoded>>>',decoded) // bar
 
-	console.log(decoded.exp - decoded.iat, 60 * 60 * 24 * 7)
+	console.log(decoded.exp - decoded.iat, 60 * 60 * 24 * 7);
 }
 run();

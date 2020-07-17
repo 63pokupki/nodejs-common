@@ -28,6 +28,9 @@ export default async function AuthSysMiddleware(request: MainRequest, response: 
 				algorithms: [<any>request.conf.auth.algorithm]
 			});
 
+			console.log('>>>decoded>>>',decoded);
+			console.log('>>>data>>>', (Date.now() / 1000), decoded.exp);
+
 			// Проверяем что прошло меньше месяца
 			if((Date.now() / 1000) < decoded.exp){
 				request.sys.apikey = decoded.token;
