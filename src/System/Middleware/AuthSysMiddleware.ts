@@ -23,14 +23,24 @@ export default async function AuthSysMiddleware(request: MainRequest, response: 
 
 		if(request.headers.apikey.length > 32){
 
-			const decoded:JwtDecodeI = <any>jwt.verify(request.headers.apikey,
-				request.conf.auth.secret, {
-				algorithms: [<any>request.conf.auth.algorithm]
-			});
+			let decoded:JwtDecodeI = null;
+
+			try{
+				decoded = <any>jwt.verify(request.headers.apikey,
+					request.conf.auth.secret, {
+					algorithms: [<any>request.conf.auth.algorithm]
+				});
+			} catch(e){
+				request.sys.errorSys.error('token_expired_error', 'Время жизни токена закончилось');
+			};
 
 			// Проверяем что прошло меньше месяца
-			if(decoded && (Date.now() / 1000) < decoded.exp){
-				request.sys.apikey = decoded.token;
+			if(decoded){ // Проверяем время жизни токена
+				if((Date.now() / 1000) < decoded.exp){ // TODO это условие скорей всего не нужно поскольку выскакивает ошибка
+					request.sys.apikey = decoded.token;
+				} else {
+					request.sys.apikey = '';
+				}
 			} else {
 				request.sys.apikey = '';
 			}
