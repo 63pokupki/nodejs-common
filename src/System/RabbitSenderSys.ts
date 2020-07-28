@@ -132,8 +132,12 @@ export class RabbitSenderSys {
 
 	}
 
-
-	// Подписаться на канал
+	/**
+	 * Подписаться на канал
+	 * @param queryName
+	 * @param chanelCount
+	 * @param faAction
+	 */
 	public watchCannel(queryName:string,chanelCount:number, faAction:Function){
 
 		rabbitSenderSys.vWatchCannel = {
@@ -141,6 +145,14 @@ export class RabbitSenderSys {
 			chanelCount:chanelCount,
 			faAction:faAction
 		};
+	}
+
+	/**
+	 * Получить канал
+	 * @param queryName
+	 */
+	public getCannel(queryName:string){
+		return rabbitSenderSys.aQuery[queryName].channel;
 	}
 
 

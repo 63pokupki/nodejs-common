@@ -33,7 +33,18 @@ export declare class RabbitSenderSys {
      * @param query
      */
     Init(confConnect: string, queryList: string[]): Promise<any>;
+    /**
+     * Подписаться на канал
+     * @param queryName
+     * @param chanelCount
+     * @param faAction
+     */
     watchCannel(queryName: string, chanelCount: number, faAction: Function): void;
+    /**
+     * Получить канал
+     * @param queryName
+     */
+    getCannel(queryName: string): any;
 }
 /**
  * Очередь
