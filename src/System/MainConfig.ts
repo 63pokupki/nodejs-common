@@ -56,8 +56,9 @@ export interface MainConfig { // Конфигурация
 		nameApp?: string; // Имя приложения выводится если стукнуться GET
 		oldCoreURL: string; // URL адрес основного сайта
 		errorMute: boolean;
-		hook_url_errors: string; // Сообщения об ошибках mattermost
-		hook_url_monitoring: string; // Сообщения мониторинга в mattermost
+		hook_url_errors?: string; // Сообщения об ошибках mattermost
+		hook_url_monitoring?: string; // Сообщения мониторинга в mattermost
+		hook_url_front_errors?: string; // Сообещения об ошибках с фронта в mattermost
 		port: number; // порт на котором будет работать экземпляр ноды
 	};
 

@@ -8,6 +8,11 @@ export declare class RabbitSenderSys {
     aQuery: {
         [key: string]: RabbitQueue;
     };
+    vWatchCannel: {
+        queryName: string;
+        chanelCount: number;
+        faAction: Function;
+    };
     constructor();
     /**
      * Отправить сообщение в очередь
@@ -28,6 +33,7 @@ export declare class RabbitSenderSys {
      * @param query
      */
     Init(confConnect: string, queryList: string[]): Promise<any>;
+    watchCannel(queryName: string, chanelCount: number, faAction: Function): void;
 }
 /**
  * Очередь

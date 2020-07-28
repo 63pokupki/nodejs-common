@@ -54,8 +54,9 @@ export interface MainConfig {
         nameApp?: string;
         oldCoreURL: string;
         errorMute: boolean;
-        hook_url_errors: string;
-        hook_url_monitoring: string;
+        hook_url_errors?: string;
+        hook_url_monitoring?: string;
+        hook_url_front_errors?: string;
         port: number;
     };
     auth?: {

@@ -29,6 +29,16 @@ export declare class MattermostSys {
      */
     sendErrorMsg(errorSys: ErrorSys, err: Error, addMessage: string): void;
     /**
+     * Отправить сообщение об ошибке в чат errors
+     * @param errorSys
+     * @param err
+     * @param addMessage
+     */
+    sendFrontErrorMsg(aError: {
+        title: string;
+        value: string;
+    }[], sMessage: string): void;
+    /**
      * Отправить сообщение по мониторингу RabbitMQ
      * @param sTitle - Заголово сообщения
      * @param sMsg - Сообщение

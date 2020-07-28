@@ -88,6 +88,51 @@ export class MattermostSys {
 	}
 
 	/**
+     * Отправить сообщение об ошибке в чат errors
+     * @param errorSys
+     * @param err
+     * @param addMessage
+     */
+    public sendFrontErrorMsg(aError:{title:string,value:string}[],sMessage: string) {
+
+
+        let msg: MattermostMsg = {
+            attachments: [
+                {
+                    fallback: "test",
+                    color: "danger",
+                    text: `:boom: :trollface: ApiKey:${this.req.sys.apikey} - ID:${this.req.sys.userSys.idUser}`,
+                    "title": "Ошибка на " + this.req.conf.common.env,
+                    "fields": [
+                    ],
+                }
+            ]
+		};
+
+		try{
+
+			for (let i = 0; i < aError.length; i++) {
+				const v = aError[i];
+
+				if(i < 20){ // Максимум 20 ошибок
+					msg.attachments[0].fields.push({
+						short: true,
+						title: v.title,
+						value: v.value,
+					})
+				}
+			}
+
+		} catch(e){
+			this.errorSys.errorEx(e, 'error_format','Некоректный формат ошибок с фронта');
+		}
+
+		if(this.errorSys.isOk()){
+			this.send(msg, this.req.conf.common.hook_url_front_errors);
+		}
+	}
+
+	/**
      * Отправить сообщение по мониторингу RabbitMQ
      * @param sTitle - Заголово сообщения
 	 * @param sMsg - Сообщение

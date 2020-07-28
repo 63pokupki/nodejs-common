@@ -11,7 +11,9 @@ export class RabbitSenderSys {
 
 	public bConnectionProcess = false;
     protected connection: any;
-    public aQuery: { [key: string]: RabbitQueue };
+	public aQuery: { [key: string]: RabbitQueue };
+
+	public vWatchCannel:{queryName:string,chanelCount:number, faAction:Function};
 
     constructor() {
         this.connection = null;
@@ -94,6 +96,22 @@ export class RabbitSenderSys {
 
 				}
 
+				// Подписываемся на отслеживание сообщений на канал для worker
+				if(rabbitSenderSys.vWatchCannel){
+					const vWatchCannel = rabbitSenderSys.vWatchCannel;
+					let vCannel = rabbitSenderSys.aQuery[vWatchCannel.queryName].channel;
+
+					/* флаг ожидания своей очереди */
+					vCannel.prefetch(vWatchCannel.chanelCount);
+					console.log(' [*] Waiting for messages in %s. To exit press CTRL+C', vWatchCannel.queryName);
+					/* Запускаем обработчик */
+					vCannel.consume(vWatchCannel.queryName, async (msg: any) => {
+						await vWatchCannel.faAction(msg, vCannel);
+					}, {
+						noAck: false
+					});
+				}
+
 				console.log('Соединение c RabbitMQ успешно установленно');
 				rabbitSenderSys.bConnectionProcess = false;
 
@@ -112,7 +130,18 @@ export class RabbitSenderSys {
 			reject(e);
 		});
 
-    }
+	}
+
+
+	// Подписаться на канал
+	public watchCannel(queryName:string,chanelCount:number, faAction:Function){
+
+		rabbitSenderSys.vWatchCannel = {
+			queryName:queryName,
+			chanelCount:chanelCount,
+			faAction:faAction
+		};
+	}
 
 
 }
