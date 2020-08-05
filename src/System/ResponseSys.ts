@@ -62,8 +62,8 @@ export class ResponseSys
 			'ok' : this.errorSys.isOk(),
 			'e' : !this.errorSys.isOk(),
 			'errors' : this.errorSys.getErrors(),
-			// 'warning' : this.errorSys.getWarning(), // Временно убраны пользовательские предупреждения
-			// 'notice' : this.errorSys.getNotice(), // Временно убраны пользовательские предупреждения
+			'warning' : this.errorSys.getWarning(),
+			'notice' : this.errorSys.getNotice(),
 			'msg' : sMsg,
 		};
 
