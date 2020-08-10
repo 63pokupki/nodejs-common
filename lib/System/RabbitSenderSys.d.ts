@@ -8,9 +8,9 @@ export declare class RabbitSenderSys {
     aQuery: {
         [key: string]: RabbitQueue;
     };
-    vWatchCannel: {
+    vWatchChannel: {
         queryName: string;
-        chanelCount: number;
+        channelCount: number;
         faAction: Function;
     };
     constructor();
@@ -36,10 +36,10 @@ export declare class RabbitSenderSys {
     /**
      * Подписаться на канал
      * @param queryName
-     * @param chanelCount
+     * @param channelCount
      * @param faAction
      */
-    watchCannel(queryName: string, chanelCount: number, faAction: Function): void;
+    watchChannel(queryName: string, channelCount: number, faAction: Function): void;
     /**
      * Получить канал
      * @param queryName
