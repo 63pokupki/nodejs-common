@@ -44,7 +44,7 @@ export declare class RabbitSenderSys {
      * Получить канал
      * @param queryName
      */
-    getCannel(queryName: string): any;
+    getChannel(queryName: string): any;
 }
 /**
  * Очередь

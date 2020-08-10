@@ -151,16 +151,16 @@ export class RabbitSenderSys {
 	 * Получить канал
 	 * @param queryName
 	 */
-	public getCannel(queryName:string){
+	public getChannel(queryName:string){
 
-		let vCannel = null;
+		let vChannel = null;
 		try{
-			vCannel = rabbitSenderSys.aQuery[queryName].channel;
+			vChannel = rabbitSenderSys.aQuery[queryName].channel;
 		} catch(e){
 			console.log('>>>Очереди не существует');
 		}
 
-		return vCannel;
+		return vChannel;
 	}
 
 
