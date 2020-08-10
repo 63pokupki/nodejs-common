@@ -13,7 +13,7 @@ export class RabbitSenderSys {
     protected connection: any;
 	public aQuery: { [key: string]: RabbitQueue };
 
-	public vWatchCannel:{queryName:string,chanelCount:number, faAction:Function};
+	public vWatchChannel:{queryName:string,channelCount:number, faAction:Function};
 
     constructor() {
         this.connection = null;
@@ -97,12 +97,12 @@ export class RabbitSenderSys {
 				}
 
 				// Подписываемся на отслеживание сообщений на канал для worker
-				if(rabbitSenderSys.vWatchCannel){
-					const vWatchCannel = rabbitSenderSys.vWatchCannel;
+				if(rabbitSenderSys.vWatchChannel){
+					const vWatchCannel = rabbitSenderSys.vWatchChannel;
 					let vCannel = rabbitSenderSys.aQuery[vWatchCannel.queryName].channel;
 
 					/* флаг ожидания своей очереди */
-					vCannel.prefetch(vWatchCannel.chanelCount);
+					vCannel.prefetch(vWatchCannel.channelCount);
 					console.log(' [*] Waiting for messages in %s. To exit press CTRL+C', vWatchCannel.queryName);
 					/* Запускаем обработчик */
 					vCannel.consume(vWatchCannel.queryName, async (msg: any) => {
@@ -135,14 +135,14 @@ export class RabbitSenderSys {
 	/**
 	 * Подписаться на канал
 	 * @param queryName
-	 * @param chanelCount
+	 * @param channelCount
 	 * @param faAction
 	 */
-	public watchCannel(queryName:string,chanelCount:number, faAction:Function){
+	public watchChannel(queryName:string,channelCount:number, faAction:Function){
 
-		rabbitSenderSys.vWatchCannel = {
+		rabbitSenderSys.vWatchChannel = {
 			queryName:queryName,
-			chanelCount:chanelCount,
+			channelCount:channelCount,
 			faAction:faAction
 		};
 	}
