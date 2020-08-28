@@ -29,6 +29,7 @@ export interface MainRequest extends Request {
     infrastructure: {
         mysql: any;
         mysqlMaster: any;
+        sphinx?: any;
         dbProvider: DbProvider;
         redis: any;
         rabbit: any;

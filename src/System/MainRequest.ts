@@ -33,6 +33,7 @@ export interface MainRequest extends Request {
     infrastructure: {
 		mysql: any;
 		mysqlMaster: any;
+		sphinx?:any, // Соединение sphinx
         dbProvider: DbProvider;
         redis: any;
         rabbit: any;
@@ -68,6 +69,7 @@ const Req: any = {
     infrastructure: {
 		mysql: null, // коннект к балансеру БД
 		mysqlMaster: null, // конект к мастеру
+		sphinx:null,
 		redis: null,
 		rabbit: null
     }
