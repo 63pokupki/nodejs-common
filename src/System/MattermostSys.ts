@@ -39,7 +39,7 @@ export class MattermostSys {
      * @param addMessage
      */
 	public sendErrorMsg(errorSys: ErrorSys, err: Error, addMessage: string): void {
-		const arrError: any = errorSys.getErrors();
+		const arrError = errorSys.getErrors();
 
 		const msg: MattermostMsg = {
 			attachments: [

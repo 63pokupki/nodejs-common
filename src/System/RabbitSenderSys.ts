@@ -1,30 +1,22 @@
 import * as amqp from 'amqplib/callback_api';
 import { reject } from 'bluebird';
-import { Replies } from 'amqplib/callback_api';
+import { Connection, Replies } from 'amqplib/callback_api';
 
-import { MainRequest } from './MainRequest';
-
-/**
- * Отправщик сообщений в очередь
- */
+/** Отправщик сообщений в очередь */
 export class RabbitSenderSys {
 	public bConnectionProcess = false;
 
-	protected connection: any;
+	protected connection: Connection = null;
 
-	public aQuery: { [key: string]: RabbitQueue };
+	public aQuery: { [key: string]: RabbitQueue } = {};
 
 	public vWatchChannel: {queryName: string; channelCount: number; faAction: Function};
 
-	constructor() {
-		this.connection = null;
-		this.aQuery = <any>[];
-	}
-
 	/**
-     * Отправить сообщение в очередь
-     * @param msg
-     */
+	 * Отправить сообщение в очередь
+	 * @param sQueue
+	 * @param msg
+	 */
 	public sendToQueue(sQueue: string, msg: any): void {
 		this.aQuery[sQueue].sendToQueue(JSON.stringify(msg));
 	}
@@ -36,15 +28,16 @@ export class RabbitSenderSys {
 	public checkQueue(sQueue: string): Promise<Replies.AssertQueue> {
 		return new Promise((resolve, reject) => {
 			this.aQuery[sQueue].channel.checkQueue(sQueue, (err: any, ok: Replies.AssertQueue) => {
-				if (err) reject(err);
+				if (err) {
+					reject(err);
+				}
+
 				resolve(ok);
 			});
 		});
 	}
 
-	/**
-     * Закрыть соединение
-     */
+	/** Закрыть соединение */
 	public close(): void {
 		setTimeout(() => {
 			this.connection.close();
@@ -52,14 +45,16 @@ export class RabbitSenderSys {
 	}
 
 	/**
-     * Асинхронный конструктор
-     * @param query
-     */
+	 * Асинхронный конструктор
+	 * @param confConnect
+	 * @param queryList
+	 */
 	public async Init(confConnect: string, queryList: string[]): Promise<any> {
-		rabbitSenderSys.bConnectionProcess = false;
+		this.bConnectionProcess = false;
+
 		return new Promise((resolve, reject) => {
-			/* подключаемся к серверу */
-			amqp.connect(confConnect, async (error0: any, connection: any) => {
+			// Подключаемся к серверу
+			amqp.connect(confConnect, async (error0, connection): Promise<void> => {
 				if (error0) {
 					reject(error0);
 					throw error0;
@@ -69,35 +64,36 @@ export class RabbitSenderSys {
 					if (err.message !== 'Connection closing') {
 						console.error('[AMQP] Ошибка соединения', err.message);
 
-						if (!rabbitSenderSys.bConnectionProcess) {
+						if (!this.bConnectionProcess) {
 							console.log('Переподключение...');
-							rabbitSenderSys.bConnectionProcess = true;
-							return setTimeout(rabbitSenderSys.Init, 30000, confConnect, queryList);
+							this.bConnectionProcess = true;
+							setTimeout(this.Init, 30000, confConnect, queryList);
 						}
 					}
 				});
+
 				connection.on('close', () => {
 					console.error('[AMQP] Соединение закрыто');
-					if (!rabbitSenderSys.bConnectionProcess) {
+					if (!this.bConnectionProcess) {
 						console.log('Переподключение...');
-						rabbitSenderSys.bConnectionProcess = true;
-						return setTimeout(rabbitSenderSys.Init, 30000, confConnect, queryList);
+						this.bConnectionProcess = true;
+						setTimeout(this.Init, 30000, confConnect, queryList);
 					}
 				});
 
-				rabbitSenderSys.connection = connection;
+				this.connection = connection;
 
 				// let rabbitSenderSys = new RabbitSenderSys(connection);
 				for (const kQuery in queryList) {
 					const sQuery = queryList[kQuery];
 
-					rabbitSenderSys.aQuery[sQuery] = await RabbitQueue.init(connection, sQuery);
+					this.aQuery[sQuery] = await RabbitQueue.init(connection, sQuery);
 				}
 
 				// Подписываемся на отслеживание сообщений на канал для worker
-				if (rabbitSenderSys.vWatchChannel) {
-					const vWatchCannel = rabbitSenderSys.vWatchChannel;
-					const vCannel = rabbitSenderSys.aQuery[vWatchCannel.queryName].channel;
+				if (this.vWatchChannel) {
+					const vWatchCannel = this.vWatchChannel;
+					const vCannel = this.aQuery[vWatchCannel.queryName].channel;
 
 					/* флаг ожидания своей очереди */
 					vCannel.prefetch(vWatchCannel.channelCount);
@@ -111,18 +107,19 @@ export class RabbitSenderSys {
 				}
 
 				console.log('Соединение c RabbitMQ успешно установленно');
-				rabbitSenderSys.bConnectionProcess = false;
+				this.bConnectionProcess = false;
 
 				resolve(connection);
 			});
 		}).catch((e) => {
 			console.log('Не удалось соединится c RabbitMQ');
 			console.error('[AMQP]', e.message);
-			if (!rabbitSenderSys.bConnectionProcess) {
+			if (!this.bConnectionProcess) {
 				console.log('Переподключение...');
-				rabbitSenderSys.bConnectionProcess = true;
-				setTimeout(rabbitSenderSys.Init, 30000, confConnect, queryList);
+				this.bConnectionProcess = true;
+				setTimeout(this.Init, 30000, confConnect, queryList);
 			}
+
 			reject(e);
 		});
 	}
@@ -134,7 +131,7 @@ export class RabbitSenderSys {
 	 * @param faAction
 	 */
 	public watchChannel(queryName: string, channelCount: number, faAction: Function): void {
-		rabbitSenderSys.vWatchChannel = {
+		this.vWatchChannel = {
 			queryName,
 			channelCount,
 			faAction,
@@ -145,10 +142,10 @@ export class RabbitSenderSys {
 	 * Получить канал
 	 * @param queryName
 	 */
-	public getChannel(queryName: string): void {
+	public getChannel(queryName: string): any {
 		let vChannel = null;
 		try {
-			vChannel = rabbitSenderSys.aQuery[queryName].channel;
+			vChannel = this.aQuery[queryName].channel;
 		} catch (e) {
 			console.log('>>>Очереди не существует');
 		}
@@ -165,23 +162,27 @@ class RabbitQueue {
 
 	public conn: any; // соединение
 
+	/**
+	 *
+	 * @param msg
+	 */
 	public sendToQueue(msg: any): void {
-		// console.log(this.sQuery, Buffer.from(msg));
 		this.channel.sendToQueue(this.sQuery, Buffer.from(msg), {
 			persistent: true,
 		});
 	}
 
+	/** */
 	public checkQueue(): Promise<void> {
 		return new Promise((resolve) => {
-			// console.log(this.sQuery, Buffer.from(msg));
 			this.channel.checkQueue(this.sQuery, (data: any) => {
 				resolve(data);
 			});
 		});
 	}
 
-	public channel: any; // канал
+	/** Канал */
+	public channel: any;
 
 	constructor(sQuery: any, conn: any, channel: any) {
 		this.conn = conn;
@@ -189,6 +190,11 @@ class RabbitQueue {
 		this.channel = channel;
 	}
 
+	/**
+	 *
+	 * @param conn
+	 * @param sQuery
+	 */
 	static async init(conn: any, sQuery: any): Promise<RabbitQueue> {
 		return new Promise((resolve, reject) => {
 			try {
@@ -215,4 +221,4 @@ class RabbitQueue {
 	}
 }
 
-export const rabbitSenderSys: RabbitSenderSys = new RabbitSenderSys();
+export const rabbitSenderSys = new RabbitSenderSys();
