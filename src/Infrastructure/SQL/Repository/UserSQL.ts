@@ -1,29 +1,15 @@
+import * as utf8 from 'utf8';
+import uniqid from 'uniqid';
+import md5 from 'md5';
 
-// Библиотеки
-const utf8 = require('utf8');
-const uniqid = require('uniqid');
-var md5 = require('md5');
-
-// Глобальные сервисы
-
-// Системные сервисы
-import { MainRequest } from '../../../System/MainRequest';
 import BaseSQL from '../../../System/BaseSQL';
 import { UserInfoI } from '../../../System/UserSys';
-
 
 /**
  * Здесь методы для SQL запросов
  */
-export class UserSQL extends BaseSQL
-{
-
-    constructor(req:MainRequest) {
-        super(req);
-    }
-
-
-    /**
+export class UserSQL extends BaseSQL {
+	/**
      * Получить список пользователей
      *
      * @param integer iOffset
@@ -31,23 +17,21 @@ export class UserSQL extends BaseSQL
      * @param array sSearchFIO
      * @return array|null
      */
-    public async getUserList(iOffset:number, iLimit:number, aFilter:{ [key: string]: any }): Promise<any>{
-        let ok = this.errorSys.isOk();
-        let resp = null;
-        let sql = '';
+	public async getUserList(iOffset: number, iLimit: number, aFilter: { [key: string]: any }): Promise<any> {
+		let resp = null;
+		let sql = '';
 
-        let sSearchFIO = "";
-        if( aFilter['search_fullname']  ){
-            sSearchFIO = aFilter['search_fullname'];
-        }
+		let sSearchFIO = '';
+		if (aFilter.search_fullname) {
+			sSearchFIO = aFilter.search_fullname;
+		}
 
-        let sSearchUserName = "";
-        if( aFilter['search_username']  ){
-            sSearchUserName = aFilter['search_username'];
-        }
+		let sSearchUserName = '';
+		if (aFilter.search_username) {
+			sSearchUserName = aFilter.search_username;
+		}
 
-
-        sql = `
+		sql = `
             SELECT
                 u.user_id,
                 u.user_type,
@@ -71,35 +55,31 @@ export class UserSQL extends BaseSQL
             ;
         `;
 
-        try{
-            resp = (await this.db.raw(sql, {
-                'offset': iOffset,
-                'limit': iLimit,
-                'search_username': '%'+sSearchUserName+'%',
-                'search_fullname': '%'+sSearchFIO+'%'
-            }))[0];
+		try {
+			resp = (await this.db.raw(sql, {
+				offset: iOffset,
+				limit: iLimit,
+				search_username: `%${sSearchUserName}%`,
+				search_fullname: `%${sSearchFIO}%`,
+			}))[0];
+		} catch (e) {
+			this.errorSys.errorEx(e, 'get_user', 'Не удалось получить пользователя');
+		}
 
-        } catch (e){
-            ok = false;
-            this.errorSys.errorEx(e, 'get_user', 'Не удалось получить пользователя');
-        }
+		return resp;
+	}
 
-        return resp;
-    }
-
-
-    /**
+	/**
      * Получить пользователя по ID
      *
      * @param integer idUser
      * @return array|null
      */
-    public async getUserByID(idUser:number): Promise<any>{
-        let ok = this.errorSys.isOk();
-        let resp = null;
-        let sql = '';
+	public async getUserByID(idUser: number): Promise<any> {
+		let resp = null;
+		let sql = '';
 
-        sql = `
+		sql = `
             SELECT
                 u.user_id,
                 u.user_type,
@@ -118,33 +98,30 @@ export class UserSQL extends BaseSQL
             LIMIT 1
         `;
 
-        try{
-            resp = (await this.db.raw(sql, {
-                'user_id': idUser
-            }))[0];
+		try {
+			resp = (await this.db.raw(sql, {
+				user_id: idUser,
+			}))[0];
 
-            if (resp.length > 0) {
-                resp = resp[0];
-            } else {
-                resp = null;
-            }
+			if (resp.length > 0) {
+				resp = resp[0];
+			} else {
+				resp = null;
+			}
+		} catch (e) {
+			this.errorSys.error('get_user', 'Не удалось получить пользователя');
+		}
 
-        } catch (e){
-            ok = false;
-            this.errorSys.error('get_user', 'Не удалось получить пользователя');
-        }
+		return resp;
+	}
 
-        return resp;
-    }
+	/* выдает инфу по юзеру по apikey */
+	public async fGetUserInfoByApiKey(apikey = ''): Promise<UserInfoI> {
+		let ok = true;
+		let resp = null;
 
-
-    /* выдает инфу по юзеру по apikey */
-    public async fGetUserInfoByApiKey(apikey = ''):Promise<UserInfoI>{
-        let ok = true;
-        let resp = null;
-
-        if( ok ){
-            let sql = `
+		if (ok) {
+			const sql = `
                 SELECT  u.user_id,
                 u.user_type,
                 u.group_id,
@@ -167,46 +144,41 @@ export class UserSQL extends BaseSQL
                 limit 1
             `;
 
-            try{
-                resp = (await this.db.raw(sql,{
-                    'token': apikey
-                }))[0];
+			try {
+				resp = (await this.db.raw(sql, {
+					token: apikey,
+				}))[0];
 
+				if (resp.length > 0) {
+					resp = resp[0];
+				} else {
+					resp = null;
+				}
+			} catch (e) {
+				ok = false;
+				this.errorSys.error('user_info_by_apikey', 'Не удалось получить информацию о пользователе');
+			}
+		}
 
-                if (resp.length > 0) {
-                    resp = resp[0];
-                } else {
-                    resp = null;
-                }
+		return resp;
+	}
 
-            } catch (e){
-                ok = false;
-                this.errorSys.error('user_info_by_apikey', 'Не удалось получить информацию о пользователе');
-            }
-        }
-
-        return resp;
-    }
-
-    /**
+	/**
      * проверка на то что есть apikey в базе
      */
-    public async isAuth(apikey:string = ''): Promise<boolean>{
+	public async isAuth(apikey = ''): Promise<boolean> {
+		let bResp = false;
+		let sql = '';
+		let resp: any[] = null;
 
-        let bResp = false;
-        let sql = '';
-        let ok = true;
-        let resp:any[] = null;
-
-        /* если ключ больше 4 */
-        if( apikey.length > 4) {
-
-            if ( await this.redisSys.get('is_auth_' + apikey)  ) {
-                bResp = true;
-                this.errorSys.devNotice(`cache:UserSQL.isAuth(${apikey})`, 'Взято из кеша');
-            } else {
-                //Получаем одного пользователя
-                sql = `
+		/* если ключ больше 4 */
+		if (apikey.length > 4) {
+			if (await this.redisSys.get(`is_auth_${apikey}`)) {
+				bResp = true;
+				this.errorSys.devNotice(`cache:UserSQL.isAuth(${apikey})`, 'Взято из кеша');
+			} else {
+				// Получаем одного пользователя
+				sql = `
                     select ut.token from user_token ut
 
                     where ut.token= :token order by ut.user_token_id desc
@@ -214,38 +186,31 @@ export class UserSQL extends BaseSQL
                     limit 1;
                 `;
 
-                try{
-                    resp = (await this.db.raw(sql, {
-                        'token': apikey
-                    }))[0];
+				try {
+					resp = (await this.db.raw(sql, {
+						token: apikey,
+					}))[0];
 
+					if (resp.length > 0) {
+						bResp = true;
+						this.redisSys.set(`is_auth_${apikey}`, 1, 3600);
+					}
+				} catch (e) {
+					this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
+				}
+			}
+		}
 
-                    if (resp.length > 0) {
-                        bResp = true;
-                        this.redisSys.set('is_auth_' + apikey, 1, 3600);
-                    }
+		return bResp;
+	}
 
-                } catch (e){
-                    ok = false;
-                    this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
-                }
-
-            }
-
-        }
-
-        return bResp;
-    }
-
-    /* выдает id юзера по телефону и смс из таблицы user_mobile_code*/
-    public async getUserIdByPhoneAndSms(phone:string, sms:string): Promise<number>{
-        let ok = true;
-        let resp:any[] = null;
-        let idUser:number = 0;
-
+	/* выдает id юзера по телефону и смс из таблицы user_mobile_code */
+	public async getUserIdByPhoneAndSms(phone: string, sms: string): Promise<number> {
+		let resp: any[] = null;
+		let idUser = 0;
 
 		/* дата создания смски сегодня или никогда */
-        let sql = `
+		const sql = `
             select um.user_id from user_mobile_code um
 
             where
@@ -256,71 +221,65 @@ export class UserSQL extends BaseSQL
             limit 1
         `;
 
-        try{
-            resp = (await this.db.raw(sql, {
-                'phone': phone,
-                'sms': sms
-            }))[0];
+		try {
+			resp = (await this.db.raw(sql, {
+				phone,
+				sms,
+			}))[0];
 
-            if (resp.length > 0) {
-                idUser = resp[0]['user_id'];
-            } else {
-                resp = null;
-            }
+			if (resp.length > 0) {
+				idUser = resp[0].user_id;
+			} else {
+				resp = null;
+			}
+		} catch (e) {
+			this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
+		}
 
-        } catch (e){
-            ok = false;
-            this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
-        }
+		return idUser;
+	}
 
-        return idUser;
+	/* выдает строчку инфы из базы по логину об юзере */
+	public async getUserByUsername(username: string): Promise<any[]> {
+		let ok = true;
+		let resp: any[] = null;
 
-    }
-
-      /* выдает строчку инфы из базы по логину об юзере */
-    public async getUserByUsername(username:string)
-    {
-        let ok = true;
-        let resp:any[] = null;
-
-        if( ok ){
-            /* todo прикрутить reddis */
-            let sql = `
+		if (ok) {
+			/* todo прикрутить reddis */
+			const sql = `
                 SELECT *
                 FROM phpbb_users
                 WHERE username_clean = :username limit 1
                 ;
             `;
 
-            try{
-                resp = (await this.db.raw(sql, {
-                    'username': utf8.encode(username),
-                }))[0];
+			try {
+				resp = (await this.db.raw(sql, {
+					username: utf8.encode(username),
+				}))[0];
 
-                if (resp.length > 0) {
-                    resp = resp[0];
-                } else {
-                    resp = null;
-                }
+				if (resp.length > 0) {
+					resp = resp[0];
+				} else {
+					resp = null;
+				}
+			} catch (e) {
+				ok = false;
+				this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
+			}
+		}
 
-            } catch (e){
-                ok = false;
-                this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
-            }
-        }
-
-        return resp;
-    }
+		return resp;
+	}
 
 	/* выдает apikey по user_id */
-    public async getUserApiKey(user_id:number):Promise<string>{
+	public async getUserApiKey(user_id: number): Promise<string> {
+		let ok = true;
+		let resp: any[] = null;
 
-        let ok = true;
-        let resp:any[] = null;
-
-        let token:string = null;
-		if( ok ){ /* выбираем последний из вставленных */
-            let sql = `
+		let token: string = null;
+		if (ok) { /* выбираем последний из вставленных */
+			const sql = `
                 select * from user_token ut
                 where ut.user_id = :user_id
                 order by ut.user_token_id desc
@@ -328,72 +287,58 @@ export class UserSQL extends BaseSQL
                 ;
             `;
 
-            try{
-                resp = (await this.db.raw(sql, {
-                    'user_id': user_id,
-                }))[0];
+			try {
+				resp = (await this.db.raw(sql, {
+					user_id,
+				}))[0];
 
-                if (resp.length > 0) {
-                    token = resp[0]['token'];
-                } else {
-                    token = null;
-                }
+				if (resp.length > 0) {
+					token = resp[0].token;
+				} else {
+					token = null;
+				}
+			} catch (e) {
+				ok = false;
+				this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
+			}
+		}
 
-            } catch (e){
-                ok = false;
-                this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
-            }
-        }
-
-        return token;
-
-    }
+		return token;
+	}
 
 	/* вставляет ключ для юзера */
 	/* ничего не проверяет только вставляет */
-    public async insertUserApiKey(user_id:number): Promise<string>{
-        let ok = true;
-        let sql = '';
-        let apikey = this.generateApiKey();
+	public async insertUserApiKey(user_id: number): Promise<string> {
+		let ok = true;
+		const apikey = this.generateApiKey();
 
-        user_id = Number(user_id);
-        sql = `INSERT INTO user_token (\`user_id\`, \`token\`) VALUES (:user_id, :api_key)`;
+		try {
+			await this.db('user_token').insert({
+				api_key: apikey,
+				user_id: Number(user_id),
+			});
+		} catch (e) {
+			ok = false;
+			this.errorSys.error('inser_key_for_user', 'Не удалось вставить ключ пользователя');
+		}
 
-        let resp = null;
-        try{
-            resp = await this.db('user_token').insert({
-                api_key: apikey,
-                user_id: user_id,
-            });
-
-        } catch (e){
-            ok = false;
-            this.errorSys.error('inser_key_for_user', 'Не удалось вставить ключ пользователя');
-        }
-
-        if ( ok ) {
-            return apikey;
-        } else {
-            return null;
-        }
-
-    }
-
+		if (ok) {
+			return apikey;
+		}
+		return null;
+	}
 
 	/* генерирует apikey */
-    public generateApiKey(max:number = 20)
-    {
+	public generateApiKey(max = 20): string {
 		/* md5 от текущей даты-вермени + рандом */
-        return uniqid(md5(new Date().getTime()));
-    }
+		return uniqid(md5(String(new Date().getTime())));
+	}
 
-    /* выдает инфу по юзеру по id */
-    public async fGetUserInfoById(userId:number)
-    {
-        let ok = true;
-        let resp:any[] = null;
+	/* выдает инфу по юзеру по id */
+	public async fGetUserInfoById(userId: number): Promise<any[]> {
+		let resp: any[] = null;
 
-        let sql = `
+		const sql = `
             select u.* from phpbb_users u
 
             where u.user_id= :user_id
@@ -401,23 +346,20 @@ export class UserSQL extends BaseSQL
             limit 1
         `;
 
-        try{
-            resp = (await this.db.raw(sql, {
-                'user_id': userId,
-            }))[0];
+		try {
+			resp = (await this.db.raw(sql, {
+				user_id: userId,
+			}))[0];
 
-            if (resp.length > 0) {
-                resp = resp[0];
-            } else {
-                resp = null;
-            }
+			if (resp.length > 0) {
+				resp = resp[0];
+			} else {
+				resp = null;
+			}
+		} catch (e) {
+			this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
+		}
 
-        } catch (e){
-            ok = false;
-            this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
-        }
-
-        return resp;
-    }
-
+		return resp;
+	}
 }

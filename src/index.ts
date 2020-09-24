@@ -1,32 +1,32 @@
-import BaseCtrl from './System/BaseCtrl'
+import BaseCtrl from './System/BaseCtrl';
 // export { BaseCtrl as BaseCtrl };
 
-import BaseSQL from './System/BaseSQL'
+import BaseSQL from './System/BaseSQL';
 // export { BaseSQL as BaseSQL };
 
-import BaseM from './System/BaseM'
+import BaseM from './System/BaseM';
 // export { BaseM as BaseM };
 
-import { UserSys, UserInfoI } from './System/UserSys'
-import { DbProvider } from './System/DbProvider'
+import { UserSys, UserInfoI } from './System/UserSys';
+import { DbProvider } from './System/DbProvider';
 
-import { ResponseSys } from './System/ResponseSys'
+import { ResponseSys } from './System/ResponseSys';
 
-import { MainRequest, TError, initMainRequest } from './System/MainRequest'
-import { devReq } from './System/MainRequest'
-
+import {
+	MainRequest, TError, initMainRequest, devReq,
+} from './System/MainRequest';
 
 // /* LEGO ошибок */
-import ErrorSysMiddleware from './System/Middleware/ErrorSysMiddleware'
+import ErrorSysMiddleware from './System/Middleware/ErrorSysMiddleware';
 
 /* Создает объект запроса */
-import RequestSysMiddleware from './System/Middleware/RequestSysMiddleware'
+import RequestSysMiddleware from './System/Middleware/RequestSysMiddleware';
 
 /* Создает объект ответа */
-import ResponseSysMiddleware from './System/Middleware/ResponseSysMiddleware'
+import ResponseSysMiddleware from './System/Middleware/ResponseSysMiddleware';
 
 // /* проверка авторизации на уровне приложения */
-import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware'
+import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware';
 
 import { RedisSys } from './System/RedisSys';
 
@@ -48,61 +48,61 @@ import * as Seo from './Components/Seo';
 import * as HelperSys from './System/HelperSys';
 import { FieldValidator } from './System/FieldValidator';
 
-import *  as Mattermost from './System/MattermostSys';
+import * as Mattermost from './System/MattermostSys';
 import { MainConfig, S3confI } from './System/MainConfig';
 import * as S3DO from './System/S3DO';
 import { LogicSys } from './System/LogicSys';
 import SubSysMiddleware from './System/Middleware/SubSysMiddleware';
 
 import {
-    ExpressRouterProxy,
-    HandlerContext,
-    Handler,
-    HandlerDefinition,
-    ControllerClass
+	ExpressRouterProxy,
+	HandlerContext,
+	Handler,
+	HandlerDefinition,
+	ControllerClass,
 } from './System/ExpressRouterProxy';
 import { CacheSys } from './System/CacheSys';
 
 const Middleware = {
-    ErrorSysMiddleware,
-    RequestSysMiddleware,
-    ResponseSysMiddleware,
+	ErrorSysMiddleware,
+	RequestSysMiddleware,
+	ResponseSysMiddleware,
 	AuthSysMiddleware,
-	SubSysMiddleware
+	SubSysMiddleware,
 };
 
 export {
-    BaseCtrl,
-    BaseSQL,
-    DbProvider,
-    BaseM,
-    UserSys,
+	BaseCtrl,
+	BaseSQL,
+	DbProvider,
+	BaseM,
+	UserSys,
 	UserInfoI as UserInfo,
 	LogicSys,
 	CacheSys,
-    ResponseSys,
-    RedisSys,
-    Middleware,
-    MainRequest, // interface MainRequest,
-    TError,
-    MainConfig,
-    devReq, // Пример MainRequest
-    S3,
-    S3objectParamsI,
-    S3confI,
+	ResponseSys,
+	RedisSys,
+	Middleware,
+	MainRequest, // interface MainRequest,
+	TError,
+	MainConfig,
+	devReq, // Пример MainRequest
+	S3,
+	S3objectParamsI,
+	S3confI,
 	RabbitSenderSys, // Класс системы для работы с ребитом
 	rabbitSenderSys, // Объект система работы с ребитом
-    initMainRequest, // Инициализация Main Request для тестов
-    BaseCommand, // Конструктор консольных команд
-    BaseTest, // Конструктор тестов
-    Seo, // сео собственно
-    HelperSys, // Вспомогательные функции которые ни к чему не привязаны
-    FieldValidator, //
-    Mattermost,
-    S3DO,
-    ExpressRouterProxy,
-    HandlerContext,
-    Handler,
-    HandlerDefinition,
-    ControllerClass
-}
+	initMainRequest, // Инициализация Main Request для тестов
+	BaseCommand, // Конструктор консольных команд
+	BaseTest, // Конструктор тестов
+	Seo, // сео собственно
+	HelperSys, // Вспомогательные функции которые ни к чему не привязаны
+	FieldValidator, //
+	Mattermost,
+	S3DO,
+	ExpressRouterProxy,
+	HandlerContext,
+	Handler,
+	HandlerDefinition,
+	ControllerClass,
+};

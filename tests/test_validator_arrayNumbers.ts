@@ -1,5 +1,6 @@
 import * as System from '../src';
 import { initMainRequest } from '../src/System/MainRequest';
+
 const config = require('./config.js');
 
 const req = initMainRequest(config);
@@ -12,7 +13,7 @@ function valid(data: any) {
 			.rule('array_true')
 			.type(System.ModelRulesT.arrayNumbers)
 			.require()
-			.errorEx('array_true', 'array_true')
+			.errorEx('array_true', 'array_true'),
 	);
 
 	rules.set(
@@ -20,7 +21,7 @@ function valid(data: any) {
 			.rule('array_false')
 			.type(System.ModelRulesT.arrayNumbers)
 			.require()
-			.errorEx('array_false', 'array_false')
+			.errorEx('array_false', 'array_false'),
 	);
 
 	rules.set(
@@ -28,15 +29,15 @@ function valid(data: any) {
 			.rule('array_decimal')
 			.type(System.ModelRulesT.arrayNumbers)
 			.require()
-			.errorEx('array_decimal', 'array_decimal')
-    );
+			.errorEx('array_decimal', 'array_decimal'),
+	);
 
-    rules.set(
+	rules.set(
 		rules
 			.rule('array_false_null')
 			.type(System.ModelRulesT.arrayNumbers)
 			.require()
-			.errorEx('array_false_null', 'array_false_null')
+			.errorEx('array_false_null', 'array_false_null'),
 	);
 
 	const validator = new System.ModelValidatorSys(req);
@@ -53,8 +54,8 @@ const arrayFalseNull = [undefined];
 const result = valid({
 	array_true: arrayTrue,
 	array_false: arrayFalse,
-    array_decimal: arrayDecimal,
-    array_false_null: arrayFalseNull,
+	array_decimal: arrayDecimal,
+	array_false_null: arrayFalseNull,
 });
 
 console.log('valid(arrayTrue) :', result.array_true);

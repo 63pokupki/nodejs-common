@@ -1,5 +1,5 @@
+import * as express from 'express';
 import { MainRequest } from './MainRequest';
-import express = require('express');
 /**
  * Функция рендера страницы
  * @param faCallback - функция контролера

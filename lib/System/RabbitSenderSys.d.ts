@@ -44,7 +44,7 @@ export declare class RabbitSenderSys {
      * Получить канал
      * @param queryName
      */
-    getChannel(queryName: string): any;
+    getChannel(queryName: string): void;
 }
 /**
  * Очередь
@@ -53,7 +53,7 @@ declare class RabbitQueue {
     sQuery: string;
     conn: any;
     sendToQueue(msg: any): void;
-    checkQueue(): Promise<unknown>;
+    checkQueue(): Promise<void>;
     channel: any;
     constructor(sQuery: any, conn: any, channel: any);
     static init(conn: any, sQuery: any): Promise<RabbitQueue>;

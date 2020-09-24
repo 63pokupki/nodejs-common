@@ -9,72 +9,69 @@ import { DbProvider } from './DbProvider';
 import { LogicSys } from './LogicSys';
 import { CacheSys } from './CacheSys';
 
-
-
 export interface MainRequest extends Request {
-    headers: { [key: string]: any };
-    body: any;
-    method: string;
+	headers: { [key: string]: any };
+	body: any;
+	method: string;
 
-    sys: {
-        apikey: string,
-		bAuth: boolean, /* флаг авторизации */
-		bMasterDB: boolean, // Для запроса использовать мастер соединение
-		bCache?: boolean, // Управление кешированием Вкл/Выкл
+	sys: {
+		apikey: string;
+		bAuth: boolean; /* флаг авторизации */
+		bMasterDB: boolean; // Для запроса использовать мастер соединение
+		bCache?: boolean; // Управление кешированием Вкл/Выкл
 
-        errorSys: ErrorSys,
-        userSys: UserSys,
-		responseSys: ResponseSys,
-		logicSys: LogicSys, // Система логики управления приложением
-		cacheSys: CacheSys, // Система кеширования
-        seo?: SeoBase;
-    };
-    conf: MainConfig,
-    infrastructure: {
+		errorSys: ErrorSys;
+		userSys: UserSys;
+		responseSys: ResponseSys;
+		logicSys: LogicSys; // Система логики управления приложением
+		cacheSys: CacheSys; // Система кеширования
+		seo?: SeoBase;
+	};
+	conf: MainConfig;
+	infrastructure: {
 		mysql: any;
 		mysqlMaster: any;
-		sphinx?:any, // Соединение sphinx
-        dbProvider: DbProvider;
-        redis: any;
-        rabbit: any;
-    },
-    errorType?: number, // тип ошибки
+		sphinx?: any; // Соединение sphinx
+		dbProvider: DbProvider;
+		redis: any;
+		rabbit: any;
+	};
+	errorType?: number; // тип ошибки
 }
 
 const Req: any = {
-    headers: null,
-    common: { // Общее
-        env: 'dev', // Тип окружения
+	headers: null,
+	common: { // Общее
+		env: 'dev', // Тип окружения
 		oldCoreURL: null, // URL адрес основного сайта
-		nameApp:'default',
-        errorMute: true,
-        hook_url_errors: 'https://', // Сообщения об ошибках mattermost
+		nameApp: 'default',
+		errorMute: true,
+		hook_url_errors: 'https://', // Сообщения об ошибках mattermost
 		hook_url_monitoring: 'https://', // Сообщения мониторинга в mattermost
 		hook_url_front_errors: 'https://', // Сообщения мониторинга ошибок в mattermost
-        port: 3005, // порт на котором будет работать нода
-    },
-    sys: {
-        apikey: '',
+		port: 3005, // порт на котором будет работать нода
+	},
+	sys: {
+		apikey: '',
 		bAuth: false, /* флаг авторизации */
 		bMasterDB: false, // По умолчанию используется maxScale
 		bCache: true, // По умолчанию кеш используется
 
-        errorSys: null, // Система ошибок
-        userSys: null, // Система пользователя
+		errorSys: null, // Система ошибок
+		userSys: null, // Система пользователя
 		responseSys: null, // Система формирвания ответа
 		logicSys: null, // Система логики управления приложением
 		cacheSys: null, // Система кеширования
-    },
-    conf: null,
-    infrastructure: {
+	},
+	conf: null,
+	infrastructure: {
 		mysql: null, // коннект к балансеру БД
 		mysqlMaster: null, // конект к мастеру
-		sphinx:null,
+		sphinx: null,
 		redis: null,
-		rabbit: null
-    }
+		rabbit: null,
+	},
 };
-
 
 export const devReq = <MainRequest>Req;
 
@@ -82,29 +79,28 @@ export const devReq = <MainRequest>Req;
  * Инициализация MainRequest для консольных запросов
  */
 export function initMainRequest(conf: any): MainRequest {
+	let mainRequest: MainRequest;
 
-    let mainRequest: MainRequest;
+	mainRequest = devReq;
+	mainRequest.conf = conf;
 
-    mainRequest = devReq;
-    mainRequest.conf = conf;
+	mainRequest.sys.errorSys = new ErrorSys(conf.common.env);
+	if (conf.common.errorMute) { // Настройка режим тищины
+		mainRequest.sys.errorSys.option({
+			bMute: true,
+		});
+	}
 
-    mainRequest.sys.errorSys = new ErrorSys(conf.common.env);
-    if(conf.common.errorMute){ // Настройка режим тищины
-        mainRequest.sys.errorSys.option({
-            bMute:true
-        })
-    }
-
-    return mainRequest;
+	return mainRequest;
 }
 
 /**
  * Типы ошибок
  */
 export enum TError {
-    None = 0,
-    PageNotFound = 404,
-    Api = 1,
-    AllBad = 500,
-    AccessDenied = 403,
+	None = 0,
+	PageNotFound = 404,
+	Api = 1,
+	AllBad = 500,
+	AccessDenied = 403,
 }

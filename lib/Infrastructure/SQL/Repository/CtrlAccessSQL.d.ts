@@ -1,11 +1,9 @@
-import { MainRequest } from '../../../System/MainRequest';
 import BaseSQL from '../../../System/BaseSQL';
 /**
  * Здесь методы для SQL запросов
  * - Группы пользователей
  */
 export declare class CtrlAccessSQL extends BaseSQL {
-    constructor(req: MainRequest);
     /**
      * Получить контроллер доступа по Alias
      *

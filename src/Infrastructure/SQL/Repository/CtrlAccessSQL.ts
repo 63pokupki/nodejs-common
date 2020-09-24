@@ -1,40 +1,27 @@
-
-// Глобальные сервисы
-
-// Системные сервисы
-import { MainRequest } from '../../../System/MainRequest';
-
-// Сущности и правила валидации
-import {CtrlAccessE} from '../Entity/CtrlAccessE';
+import { CtrlAccessE } from '../Entity/CtrlAccessE';
 import BaseSQL from '../../../System/BaseSQL';
 
 /**
  * Здесь методы для SQL запросов
  * - Группы пользователей
  */
-export class CtrlAccessSQL extends BaseSQL
-{
+export class CtrlAccessSQL extends BaseSQL {
+	// ========================================
+	// SELECT
+	// ========================================
 
-    constructor(req:MainRequest) {
-        super(req);
-    }
-
-    // ========================================
-    // SELECT
-    // ========================================
-
-    /**
+	/**
      * Получить контроллер доступа по Alias
      *
      * @param string aliasCtrlAccess
      * @return array|null
      */
-    public async getCtrlAccessByAlias(aliasCtrlAccess:string): Promise<any>{
-        let ok = this.errorSys.isOk();
-        let resp:any = null;
-        let sql = '';
+	public async getCtrlAccessByAlias(aliasCtrlAccess: string): Promise<any> {
+		let ok = this.errorSys.isOk();
+		let resp: any = null;
+		let sql = '';
 
-        sql = `
+		sql = `
             SELECT
                 ca.id,
                 ca.alias,
@@ -45,36 +32,35 @@ export class CtrlAccessSQL extends BaseSQL
             LIMIT 1
         `;
 
-        try{
-            resp = (await this.db.raw(sql, {
-                'alias': aliasCtrlAccess
-            }))[0];
+		try {
+			resp = (await this.db.raw(sql, {
+				alias: aliasCtrlAccess,
+			}))[0];
+		} catch (e) {
+			ok = false;
+			this.errorSys.error('get_ctrl_access', 'Не удалось получить контроль доступа');
+		}
 
-        } catch (e){
-            ok = false;
-            this.errorSys.error('get_ctrl_access', 'Не удалось получить контроль доступа');
-        }
+		if (ok && resp[0]) {
+			resp = resp[0];
+		} else {
+			this.errorSys.error('get_ctrl_access_not_found', 'Не удалось найти контроль доступа');
+		}
 
-        if( ok && resp[0] ){
-            resp = resp[0];
-        } else {
-            this.errorSys.error('get_ctrl_access_not_found', 'Не удалось найти контроль доступа');
-        }
+		return resp;
+	}
 
-        return resp;
-    }
-
-    /**
+	/**
      * Получить контроллер доступа по ID
      *
      * @param integer idCtrlAccess
      * @return array|null
      */
-    public async getCtrlAccessByID(idCtrlAccess:number): Promise<any>{
-        let ok = this.errorSys.isOk();
-        let resp:any = null;
+	public async getCtrlAccessByID(idCtrlAccess: number): Promise<any> {
+		let ok = this.errorSys.isOk();
+		let resp: any = null;
 
-        let sql = `
+		const sql = `
             SELECT
                 ca.id,
                 ca.alias,
@@ -85,56 +71,52 @@ export class CtrlAccessSQL extends BaseSQL
             LIMIT 1
         `;
 
-        try{
-            resp = (await this.db.raw(sql, {
-                'id_ctrl_access': idCtrlAccess
-            }))[0];
+		try {
+			resp = (await this.db.raw(sql, {
+				id_ctrl_access: idCtrlAccess,
+			}))[0];
+		} catch (e) {
+			ok = false;
+			this.errorSys.error('get_ctrl_access', 'Не удалось получить контроль доступа');
+		}
 
-        } catch (e){
-            ok = false;
-            this.errorSys.error('get_ctrl_access', 'Не удалось получить контроль доступа');
-        }
+		if (ok && resp.length > 0) {
+			resp = resp[0];
+		} else {
+			resp = null;
+			ok = false;
+			this.errorSys.error('ctrl_access_not_found', 'Контроллер доступа не найден');
+		}
+		return resp;
+	}
 
-
-        if ( ok && resp.length > 0) {
-            resp = resp[0];
-        } else {
-            resp = null;
-            ok = false;
-            this.errorSys.error('ctrl_access_not_found', 'Контроллер доступа не найден');
-        }
-        return resp;
-    }
-
-
-    /**
+	/**
      * Получить список контроллеров доступа
      *
      * @return array|null
      */
-    public async getAllCtrlAccess(): Promise<any>{
-        let ok = this.errorSys.isOk();
-        let bCache = false; // Наличие кеша
-        let sql = '';
-        let resp:any = null;
+	public async getAllCtrlAccess(): Promise<any> {
+		let ok = this.errorSys.isOk();
+		let bCache = false; // Наличие кеша
+		let sql = '';
+		const resp: any = null;
 
-        let sCache = null;
-        if( ok ){ // Пробуем получить данные из кеша
-            sCache = await this.redisSys.get("CtrlAccessSQL.getAllCtrlAccess()");
+		let sCache = null;
+		if (ok) { // Пробуем получить данные из кеша
+			sCache = await this.redisSys.get('CtrlAccessSQL.getAllCtrlAccess()');
 
+			if (sCache) {
+				bCache = true;
+				this.errorSys.devNotice(
+					'cache:CtrlAccessSQL.getAllCtrlAccess()',
+					'Значение взято из кеша',
+				);
+			}
+		}
 
-            if( sCache ){
-                bCache = true;
-                this.errorSys.devNotice(
-                    "cache:CtrlAccessSQL.getAllCtrlAccess()",
-                    'Значение взято из кеша'
-                );
-            }
-        }
-
-        let ctrlAccessList = null;
-        if( ok && !bCache ){ // Получаем весь список групп
-            sql = `
+		let ctrlAccessList = null;
+		if (ok && !bCache) { // Получаем весь список групп
+			sql = `
                 SELECT
                     ca.id,
                     ca.alias,
@@ -143,168 +125,158 @@ export class CtrlAccessSQL extends BaseSQL
                 ;
             `;
 
-            try{
-                ctrlAccessList = (await this.db.raw(sql))[0];
-            } catch (e){
-                ok = false;
-                this.errorSys.error('get_list_ctrl_access', 'Не удалось получить группы пользователя');
-            }
-        }
+			try {
+				ctrlAccessList = (await this.db.raw(sql))[0];
+			} catch (e) {
+				ok = false;
+				this.errorSys.error('get_list_ctrl_access', 'Не удалось получить группы пользователя');
+			}
+		}
 
-        if( ok && !bCache ){ // Если значения нет в кеше - добавляем его в кеш
-            this.redisSys.set(
-                "CtrlAccessSQL.getAllCtrlAccess()",
-                JSON.stringify(ctrlAccessList),
-                3600
-            );
-        }
+		if (ok && !bCache) { // Если значения нет в кеше - добавляем его в кеш
+			this.redisSys.set(
+				'CtrlAccessSQL.getAllCtrlAccess()',
+				JSON.stringify(ctrlAccessList),
+				3600,
+			);
+		}
 
-        if( ok && bCache ){ // Если значение взято из кеша - отдаем его в ответ
-            ctrlAccessList = JSON.parse(sCache);
-        }
+		if (ok && bCache) { // Если значение взято из кеша - отдаем его в ответ
+			ctrlAccessList = JSON.parse(sCache);
+		}
 
-        // Формирование ответа
-        return ctrlAccessList;
-    }
+		// Формирование ответа
+		return ctrlAccessList;
+	}
 
-    // ========================================
-    // UPDATE
-    // ========================================
+	// ========================================
+	// UPDATE
+	// ========================================
 
-    /**
+	/**
      * Сохранить контроллер доступа
      *
      * @param integer idCtrlAccess
      * @return boolean
      */
-    public async saveCtrlAccess(idCtrlAccess:number, data:{ [key: string]: any }): Promise<boolean>{
-        let ok = this.errorSys.isOk();
+	public async saveCtrlAccess(idCtrlAccess: number, data: { [key: string]: any }): Promise<boolean> {
+		let ok = this.errorSys.isOk();
 
-        let vCtrlAccessE = new CtrlAccessE();
-        if( ok && this.modelValidatorSys.fValid(vCtrlAccessE.getRulesUpdate(), data) ){
+		const vCtrlAccessE = new CtrlAccessE();
+		if (ok && this.modelValidatorSys.fValid(vCtrlAccessE.getRulesUpdate(), data)) {
+			let resp = null;
+			try {
+				resp = await this.db('ctrl_access')
+					.where({
+						id: idCtrlAccess,
+					})
+					.update(this.modelValidatorSys.getResult());
+			} catch (e) {
+				ok = false;
+				this.errorSys.error('save_ctrl_access', 'Не удалось сохранить изменения в группе');
+			}
+		}
 
-            let resp = null;
-            try{
-                resp = await this.db('ctrl_access')
-                    .where({
-                        id: idCtrlAccess
-                    })
-                    .update(this.modelValidatorSys.getResult());
+		let aRelatedKeyRedis = [];
+		if (ok) { // Удалить связанный кеш
+			aRelatedKeyRedis = await this.redisSys.keys('CtrlAccessSQL*');
+			this.redisSys.del(aRelatedKeyRedis);
+		}
 
-            } catch (e){
-                ok = false;
-                this.errorSys.error('save_ctrl_access', 'Не удалось сохранить изменения в группе');
-            }
+		return ok;
+	}
 
-        }
+	// ========================================
+	// INSERT
+	// ========================================
 
-        let aRelatedKeyRedis = [];
-        if( ok ){ // Удалить связанный кеш
-            aRelatedKeyRedis = await this.redisSys.keys('CtrlAccessSQL*');
-            this.redisSys.del(aRelatedKeyRedis);
-        }
-
-        return ok;
-    }
-
-    // ========================================
-    // INSERT
-    // ========================================
-
-    /**
+	/**
      * Добавить контроль доступа
      *
      * @return boolean
      */
-    public async addCtrlAccess(data:{ [key: string]: any }): Promise<boolean>{
-        let ok = this.errorSys.isOk();
-        let resp;
+	public async addCtrlAccess(data: { [key: string]: any }): Promise<boolean> {
+		let ok = this.errorSys.isOk();
+		let resp;
 
-        let vCtrlAccessE = new CtrlAccessE();
-        if( ok && this.modelValidatorSys.fValid(vCtrlAccessE.getRulesInsert(), data) ){
+		const vCtrlAccessE = new CtrlAccessE();
+		if (ok && this.modelValidatorSys.fValid(vCtrlAccessE.getRulesInsert(), data)) {
+			try {
+				resp = await this.db('ctrl_access')
+					.returning('id')
+					.insert(this.modelValidatorSys.getResult());
+				if (resp) {
+					resp = resp[0];
+				}
+			} catch (e) {
+				ok = false;
+				this.errorSys.error('add_ctrl_access', 'Не удалось добавить контроль доступа');
+			}
+		}
 
+		let aRelatedKeyRedis = [];
+		if (ok) { // Удалить связанный кеш
+			aRelatedKeyRedis = await this.redisSys.keys('CtrlAccessSQL*');
+			this.redisSys.del(aRelatedKeyRedis);
+		}
 
-            try{
-                resp = await this.db('ctrl_access')
-                .returning('id')
-                    .insert(this.modelValidatorSys.getResult());
-                    if(resp){
-                        resp = resp[0];
-                    }
+		return !!resp;
+	}
 
-            } catch (e){
-                ok = false;
-                this.errorSys.error('add_ctrl_access', 'Не удалось добавить контроль доступа');
-            }
+	// ========================================
+	// DELETE
+	// ========================================
 
-        }
-
-        let aRelatedKeyRedis = [];
-        if( ok ){ // Удалить связанный кеш
-            aRelatedKeyRedis = await this.redisSys.keys('CtrlAccessSQL*');
-            this.redisSys.del(aRelatedKeyRedis);
-        }
-
-        return !!resp;
-    }
-
-    // ========================================
-    // DELETE
-    // ========================================
-
-
-    /**
+	/**
      * удалить контроллер доступа по ID
      *
      * @param string aliasCtrlAccess
      * @return boolean
      */
-    public async delCtrlAccessByAlias(aliasCtrlAccess:string): Promise<boolean>{
-        let ok = this.errorSys.isOk();
+	public async delCtrlAccessByAlias(aliasCtrlAccess: string): Promise<boolean> {
+		let ok = this.errorSys.isOk();
 
-        let resp = null;
-        try{
-            resp = await this.db('ctrl_access')
-                .where({
-                    alias: aliasCtrlAccess,
-                })
-                .limit(1)
-                .del();
+		let resp = null;
+		try {
+			resp = await this.db('ctrl_access')
+				.where({
+					alias: aliasCtrlAccess,
+				})
+				.limit(1)
+				.del();
+		} catch (e) {
+			ok = false;
+			this.errorSys.error('del_ctrl_access', 'Не удалось удалить контроллер доступа');
+		}
 
-        } catch (e){
-            ok = false;
-            this.errorSys.error('del_ctrl_access', 'Не удалось удалить контроллер доступа');
-        }
+		let aRelatedKeyRedis = [];
+		if (ok) { // Удалить связанный кеш
+			aRelatedKeyRedis = await this.redisSys.keys('CtrlAccessSQL*');
+			this.redisSys.del(aRelatedKeyRedis);
+		}
 
-        let aRelatedKeyRedis = [];
-        if( ok ){ // Удалить связанный кеш
-            aRelatedKeyRedis = await this.redisSys.keys('CtrlAccessSQL*');
-            this.redisSys.del(aRelatedKeyRedis);
-        }
+		return ok;
+	}
 
-        return ok;
-    }
+	// ========================================
+	// COUNT
+	// ========================================
 
-    // ========================================
-    // COUNT
-    // ========================================
-
-    /**
+	/**
      * Проверить наличия контроллера доступа по ALIAS
      * Alias уникальное поле потому LIMIT 1
      *
      * @param string aliasCtrlAccess
      * @return integer
      */
-    public async cntCtrlAccessByAlias(aliasCtrlAccess:string): Promise<number>{
-        let ok = this.errorSys.isOk();
+	public async cntCtrlAccessByAlias(aliasCtrlAccess: string): Promise<number> {
+		let ok = this.errorSys.isOk();
 
+		let resp = null;
+		let cntCtrlAccess = 0;
 
-        let resp = null;
-        let cntCtrlAccess = 0;
-
-        if( ok ){ // Получить количество контроллеров доступа
-            let sql = `
+		if (ok) { // Получить количество контроллеров доступа
+			const sql = `
                 SELECT
                     COUNT(*) cnt
                 FROM ctrl_access ca
@@ -312,24 +284,21 @@ export class CtrlAccessSQL extends BaseSQL
                 LIMIT 1
             `;
 
-            try{
-                resp = (await this.db.raw(sql, {
-                    'alias': aliasCtrlAccess
-                }))[0];
+			try {
+				resp = (await this.db.raw(sql, {
+					alias: aliasCtrlAccess,
+				}))[0];
 
-                cntCtrlAccess = Number(resp[0]['cnt']);
-            } catch (e){
-                ok = false;
-                this.errorSys.error('cnt_ctrl_access', 'Не удалось подсчитать контроль доступа');
-            }
-        }
+				cntCtrlAccess = Number(resp[0].cnt);
+			} catch (e) {
+				ok = false;
+				this.errorSys.error('cnt_ctrl_access', 'Не удалось подсчитать контроль доступа');
+			}
+		}
 
-        if( ok ){ // Ответ
-            return cntCtrlAccess;
-        } else {
-            return -1; // В случае если произошла SQL ошибка
-        }
-
-    }
-
+		if (ok) { // Ответ
+			return cntCtrlAccess;
+		}
+		return -1; // В случае если произошла SQL ошибка
+	}
 }

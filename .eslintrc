@@ -1,0 +1,47 @@
+{
+    "env": {
+		"node": true,
+        "es2017": true
+    },
+    "extends": [
+		"airbnb-typescript/base",
+		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:@typescript-eslint/recommended-requiring-type-checking"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+		"project": "./tsconfig.json"
+    },
+    "plugins": [
+        "@typescript-eslint",
+        "prettier"
+    ],
+    "rules": {
+		"@typescript-eslint/type-annotation-spacing": "error",
+		"@typescript-eslint/space-before-function-paren": "error",
+		"@typescript-eslint/indent": ["error", "tab"],
+		"@typescript-eslint/no-namespace": "off",
+		"@typescript-eslint/camelcase": "off",
+		"@typescript-eslint/no-unsafe-assignment": 0,
+		"@typescript-eslint/no-unsafe-member-access": 0,
+		"@typescript-eslint/no-unsafe-return": 0,
+		"@typescript-eslint/no-unsafe-call": 0,
+		"import/prefer-default-export": 0,
+		"import/no-extraneous-dependencies": 0,
+		"prefer-destructuring": 0,
+		"no-tabs": 0,
+		"no-plusplus": 0,
+		"no-console": 0,
+		"import/order": 0,
+		"max-len": ["error", { "code": 150 }],
+        "quotes": ["error", "single",  { "allowTemplateLiterals": true }],
+		"no-inner-declarations": "off",
+		"no-await-in-loop": 0,
+		"class-methods-use-this": 0,
+		"no-restricted-syntax": 0,
+		"no-void": 0,
+		"max-classes-per-file": ["error", 2],
+		"space-before-blocks": "error"
+    }
+}

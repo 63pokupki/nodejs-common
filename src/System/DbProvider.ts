@@ -1,8 +1,8 @@
-import Knex = require("knex");
+import * as Knex from 'knex';
 
 export class DbProvider {
-
 	public current: Knex;
+
 	public db: Knex;
 
 	constructor(db: Knex) {
@@ -10,7 +10,7 @@ export class DbProvider {
 		this.current = db;
 	}
 
-	public async transaction<T>(func: () => Promise<T>) {
+	public async transaction<T>(func: () => Promise<T>): Promise<T> {
 		const trx = await this.db.transaction();
 		this.current = trx;
 		try {
@@ -24,5 +24,4 @@ export class DbProvider {
 			this.current = this.db;
 		}
 	}
-
 }

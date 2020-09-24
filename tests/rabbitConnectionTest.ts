@@ -1,4 +1,5 @@
-import { rabbitSender } from "../src/System/RabbitSenderSys";
+import { rabbitSender } from '../src/System/RabbitSenderSys';
+
 export const rabbit = {
 
 	// Список очередей которые будут подняты
@@ -19,6 +20,8 @@ export const rabbit = {
 
 // Отправщик картинок в очередь;
 
-async function run() {
+async function run(): Promise<void> {
 	await rabbitSender.Init(rabbit.connection, rabbit.queryList);
-} run();
+}
+
+run();

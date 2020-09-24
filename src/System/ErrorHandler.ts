@@ -1,6 +1,5 @@
 import * as express from 'express';
-import { MainRequest, Mattermost } from '..';
-
+import { MainRequest, Mattermost } from '../';
 
 /**
  * Обработчик ошибок выполнения
@@ -17,15 +16,13 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: express.Respons
 		ifDevMode = true;
 	}
 
-
-	if (err.name == 'AuthError') {
+	if (err.name === 'AuthError') {
 		res.status(500);
 		// req.sys.errorSys.error('AuthError', 'Ошибка авторизации');
-
-	} else if (err.name == 'ValidationError') {
+	} else if (err.name === 'ValidationError') {
 		res.status(200);
 		req.sys.errorSys.error('ValidationError', err.message);
-	} else if (err.name == 'AppError') {
+	} else if (err.name === 'AppError') {
 		res.status(500);
 		if (req.conf.common.env !== 'local') {
 			mattermostSys.sendErrorMsg(req.sys.errorSys, err, err.message);
@@ -54,5 +51,4 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: express.Respons
 	res.send(
 		req.sys.responseSys.response(null, err.message),
 	);
-
 };

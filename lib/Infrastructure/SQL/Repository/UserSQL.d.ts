@@ -1,11 +1,9 @@
-import { MainRequest } from '../../../System/MainRequest';
 import BaseSQL from '../../../System/BaseSQL';
 import { UserInfoI } from '../../../System/UserSys';
 /**
  * Здесь методы для SQL запросов
  */
 export declare class UserSQL extends BaseSQL {
-    constructor(req: MainRequest);
     /**
      * Получить список пользователей
      *
@@ -33,6 +31,6 @@ export declare class UserSQL extends BaseSQL {
     getUserByUsername(username: string): Promise<any[]>;
     getUserApiKey(user_id: number): Promise<string>;
     insertUserApiKey(user_id: number): Promise<string>;
-    generateApiKey(max?: number): any;
+    generateApiKey(max?: number): string;
     fGetUserInfoById(userId: number): Promise<any[]>;
 }

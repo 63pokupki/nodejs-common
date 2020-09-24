@@ -3,7 +3,7 @@
  * @param n
  */
 export function wait(n: number): Promise<boolean> {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		setTimeout(() => {
 			resolve(true);
 		}, n);

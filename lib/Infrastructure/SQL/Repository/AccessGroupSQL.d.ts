@@ -1,11 +1,9 @@
-import { MainRequest } from '../../../System/MainRequest';
 import BaseSQL from '../../../System/BaseSQL';
 /**
  * Здесь методы для SQL запросов
  * - Связка Групп пользователей с модулями
  */
 export declare class AccessGroupSQL extends BaseSQL {
-    constructor(req: MainRequest);
     /**
      * Получить список модулей доступных группе по ID Группы
      *

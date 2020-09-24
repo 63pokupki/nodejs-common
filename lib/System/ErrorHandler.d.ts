@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { MainRequest } from '..';
+import { MainRequest } from '../';
 /**
  * Обработчик ошибок выполнения
  * @param err - обязательно instanceof Error()

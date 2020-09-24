@@ -1,4 +1,6 @@
-import { Router, Response, Request, NextFunction } from 'express';
+import {
+	Router, Response, Request, NextFunction,
+} from 'express';
 import { promisify } from '../Utils/PromiseUtil';
 
 export interface ControllerClass<TCtrl> {
@@ -24,10 +26,10 @@ export interface HandlerContext<TCtrl, THandlerOptions = undefined> {
 /**
  * Оборачивает в try/catch создание контроллера и вызов обработчика роута,
  * чтобы не приходилось это делать в коде каждого обработчика роута
- * 
+ *
  * По умолчанию отправляет в ответ сериализованное значение возвращенное обработчиком
  * Но можно отнаследоваться и переопределить метод buildResponse, чтобы изменить логику ответа
- * 
+ *
  * По умолчанию если передан класс контроллера, то экземпляр класса контроллера создается через new
  * но можно изменить логику инициализации контроллера перед вызовом обработчика
  * переопределив метод initializeController
@@ -84,10 +86,10 @@ export class ExpressRouterProxy<TCtrl = {}, TCtrlClass extends ControllerClass<T
 			const handlerResult = handler.call(ctrl, data, context) as TResData;
 			const responseData = await promisify(handlerResult);
 			await this.buildResponse(responseData, context);
-			if(!res.headersSent) { // Check if response was provided
+			if (!res.headersSent) { // Check if response was provided
 				next(new Error('No content'));
 			} else {
-				next()
+				next();
 			}
 		} catch (error) {
 			next(error);
@@ -111,7 +113,7 @@ export class ExpressRouterProxy<TCtrl = {}, TCtrlClass extends ControllerClass<T
 		responseData: any,
 		context: HandlerContext<TCtrl, THandlerOptions>,
 	): Promise<any> {
-		context.res.send(JSON.stringify(responseData))
+		context.res.send(JSON.stringify(responseData));
 		return Promise.resolve();
 	}
 }

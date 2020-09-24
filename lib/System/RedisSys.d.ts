@@ -13,7 +13,7 @@ export declare class RedisSys {
      * Получить ключи по шаблону
      * @param keys
      */
-    keys(keys: string): Promise<[]>;
+    keys(keys: string): Promise<any[]>;
     /**
      * Поместить значение в редис
      * @param key
@@ -25,5 +25,5 @@ export declare class RedisSys {
      * Удалить ключи по ID
      * @param keys
      */
-    del(keys: []): void;
+    del(keys: any[]): void;
 }

@@ -4,8 +4,7 @@ import BaseM from './System/BaseM';
 import { UserSys, UserInfoI } from './System/UserSys';
 import { DbProvider } from './System/DbProvider';
 import { ResponseSys } from './System/ResponseSys';
-import { MainRequest, TError, initMainRequest } from './System/MainRequest';
-import { devReq } from './System/MainRequest';
+import { MainRequest, TError, initMainRequest, devReq } from './System/MainRequest';
 import ErrorSysMiddleware from './System/Middleware/ErrorSysMiddleware';
 import RequestSysMiddleware from './System/Middleware/RequestSysMiddleware';
 import ResponseSysMiddleware from './System/Middleware/ResponseSysMiddleware';
@@ -42,4 +41,4 @@ BaseTest, // Конструктор тестов
 Seo, // сео собственно
 HelperSys, // Вспомогательные функции которые ни к чему не привязаны
 FieldValidator, //
-Mattermost, S3DO, ExpressRouterProxy, HandlerContext, Handler, HandlerDefinition, ControllerClass };
+Mattermost, S3DO, ExpressRouterProxy, HandlerContext, Handler, HandlerDefinition, ControllerClass, };

@@ -1,48 +1,30 @@
-
-// Библиотеки
 import * as _ from 'lodash';
 
-// Глобальные сервисы
-import * as redisSys  from '../../../System/RedisSys';
-
-// Системные сервисы
-import {ErrorSys} from '@a-a-game-studio/aa-components/lib';
-import { MainRequest } from '../../../System/MainRequest';
-
-import {ModelValidatorSys} from '@a-a-game-studio/aa-components/lib';
-
-// Сущности и правила валидации
-import {AccessGroupE} from '../Entity/AccessGroupE';
+import { AccessGroupE } from '../Entity/AccessGroupE';
 import BaseSQL from '../../../System/BaseSQL';
 
 /**
  * Здесь методы для SQL запросов
  * - Связка Групп пользователей с модулями
  */
-export class AccessGroupSQL extends BaseSQL
-{
+export class AccessGroupSQL extends BaseSQL {
+	// ==================================
+	// SELECT
+	// ==================================
 
-    constructor(req:MainRequest) {
-        super(req);
-    }
-
-    // ==================================
-    // SELECT
-    // ==================================
-
-    /**
+	/**
      * Получить список модулей доступных группе по ID Группы
      *
      * @param integer idGroup
      * @return array|null
      */
-    public async getCtrlAccessOfGroupByID(idGroup:number): Promise<any>{
-        let ok = this.errorSys.isOk();
+	public async getCtrlAccessOfGroupByID(idGroup: number): Promise<any> {
+		let ok = this.errorSys.isOk();
 
-        let resp = null;
+		let resp = null;
 
-        if( ok ){ // Получить список модулей доступных группе по ID Группы
-            let sql = `
+		if (ok) { // Получить список модулей доступных группе по ID Группы
+			const sql = `
                 SELECT
                     ag.id access_group_id,
                     ag.group_id,
@@ -61,20 +43,20 @@ export class AccessGroupSQL extends BaseSQL
                 ;
             `;
 
-            try{
-                resp = (await this.db.raw(sql, {
-                    'id_group': idGroup
-                }))[0];
-            } catch (e){
-                ok = false;
-                this.errorSys.error('get_ctrl_access', 'Не удалось получить контроль доступа');
-            }
-        }
+			try {
+				resp = (await this.db.raw(sql, {
+					id_group: idGroup,
+				}))[0];
+			} catch (e) {
+				ok = false;
+				this.errorSys.error('get_ctrl_access', 'Не удалось получить контроль доступа');
+			}
+		}
 
-        return resp;
-    }
+		return resp;
+	}
 
-    /**
+	/**
      * Получить права CRUD по конкретному модулю
      * на основе групп к которым принадлежит пользователь
      *
@@ -82,21 +64,21 @@ export class AccessGroupSQL extends BaseSQL
      * @param integer idCtrlAccess
      * @return array|null
      */
-    public async getAccessCRUD(aIdsGroup:number[], idCtrlAccess:number): Promise<any>{
-        let ok = this.errorSys.isOk();
-        let sql:string = '';
+	public async getAccessCRUD(aIdsGroup: number[], idCtrlAccess: number): Promise<any> {
+		let ok = this.errorSys.isOk();
+		let sql = '';
 
-        if( aIdsGroup.length < 1){ // Если пользователь не имеет групп - значит у него нет прав
-            ok = false;
-            this.errorSys.error('user_no_has_group', 'Пользователь не состоит в группе');
-        }
+		if (aIdsGroup.length < 1) { // Если пользователь не имеет групп - значит у него нет прав
+			ok = false;
+			this.errorSys.error('user_no_has_group', 'Пользователь не состоит в группе');
+		}
 
-        // Превращаем массив Ids в строку
-        let sIdsGroup = aIdsGroup.join(',');
+		// Превращаем массив Ids в строку
+		const sIdsGroup = aIdsGroup.join(',');
 
-        let aAccessCRUD:any = {};
-        if( ok ){ // Получаем права CRUD
-            sql = `
+		let aAccessCRUD: any = {};
+		if (ok) { // Получаем права CRUD
+			sql = `
                 SELECT
                     SUM(ag.create_access) \`create\`,
                     SUM(ag.read_access) \`read\`,
@@ -111,33 +93,28 @@ export class AccessGroupSQL extends BaseSQL
                 ;
             `;
 
+			try {
+				aAccessCRUD = (await this.db.raw(sql, {
+					ctrl_access_id: idCtrlAccess,
+				}))[0];
 
+				aAccessCRUD = aAccessCRUD[0];
+			} catch (e) {
+				ok = false;
+				this.errorSys.error('get_access_crud', 'Не удалось получить доступы к модулю');
+			}
+		}
 
-            try{
-                aAccessCRUD = (await this.db.raw(sql, {
-                    'ctrl_access_id': idCtrlAccess
-                }))[0];
+		const a: {[key: string]: any} = {};
+		_.forEach(aAccessCRUD, (v, k) => {
+			a[k] = Boolean(v);
+		});
+		aAccessCRUD = a;
 
-                aAccessCRUD = aAccessCRUD[0];
+		return aAccessCRUD;
+	}
 
-            } catch (e){
-                ok = false;
-                this.errorSys.error('get_access_crud', 'Не удалось получить доступы к модулю');
-            }
-
-        }
-
-
-        let a:{[key:string]:any} = {};
-        _.forEach(aAccessCRUD, (v, k) => {
-            a[k] = Boolean(v);
-        });
-        aAccessCRUD = a;
-
-        return aAccessCRUD;
-    }
-
-    /**
+	/**
      * Получить права на доступ к модулю
      * на основе групп к которым принадлежит пользователь
      *
@@ -145,22 +122,22 @@ export class AccessGroupSQL extends BaseSQL
      * @param integer idCtrlAccess
      * @return array|null
      */
-    public async getAccess(aIdsGroup:number[], idCtrlAccess:number): Promise<boolean>{
-        let ok = this.errorSys.isOk();
+	public async getAccess(aIdsGroup: number[], idCtrlAccess: number): Promise<boolean> {
+		let ok = this.errorSys.isOk();
 
-        let sql: string = '';
+		let sql = '';
 
-        if( aIdsGroup.length < 1){ // Если пользователь не имеет групп - значит у него нет прав
-            ok = false;
-            this.errorSys.error('user_no_has_group', 'Пользователь не состоит в группе');
-        }
+		if (aIdsGroup.length < 1) { // Если пользователь не имеет групп - значит у него нет прав
+			ok = false;
+			this.errorSys.error('user_no_has_group', 'Пользователь не состоит в группе');
+		}
 
-        // Превращаем массив Ids в строку
-        let sIdsGroup = aIdsGroup.join(',');
+		// Превращаем массив Ids в строку
+		const sIdsGroup = aIdsGroup.join(',');
 
-        let bAccess = false;
-        if( ok ){
-            sql = `
+		let bAccess = false;
+		if (ok) {
+			sql = `
                 SELECT
                     count(*) cnt
                 FROM access_group ag
@@ -173,155 +150,142 @@ export class AccessGroupSQL extends BaseSQL
                 ;
             `;
 
-            let resp = [];
-            try{
-                resp = (await this.db.raw(sql, {
-                    'ctrl_access_id': idCtrlAccess
-                }))[0];
+			let resp = [];
+			try {
+				resp = (await this.db.raw(sql, {
+					ctrl_access_id: idCtrlAccess,
+				}))[0];
 
-                bAccess = Boolean(resp[0]['cnt']);
-            } catch (e){
-                ok = false;
-                this.errorSys.error('get_access_to_ctrl', 'Не удалось получить доступы к модулю');
-            }
+				bAccess = Boolean(resp[0].cnt);
+			} catch (e) {
+				ok = false;
+				this.errorSys.error('get_access_to_ctrl', 'Не удалось получить доступы к модулю');
+			}
+		}
 
-        }
+		return bAccess;
+	}
 
-        return bAccess;
-    }
+	// ========================================
+	// INSERT
+	// ========================================
 
-
-
-    // ========================================
-    // INSERT
-    // ========================================
-
-    /**
+	/**
      * Добавить контроль доступа к группе
      *
      * @return boolean
      */
-    public async addCtrlAccessToGroup(idCtrlAccess:number, idGroup:number): Promise<number>{
-        let ok = this.errorSys.isOk();
-        let sql:string = '';
+	public async addCtrlAccessToGroup(idCtrlAccess: number, idGroup: number): Promise<number> {
+		let ok = this.errorSys.isOk();
 
-        let idAccessGroup = 0;
-        if( ok ){
+		let idAccessGroup = 0;
+		if (ok) {
+			let resp = null;
+			try {
+				resp = await this.db('access_group')
+					.returning('id')
+					.insert({
+						group_id: idGroup,
+						ctrl_access_id: idCtrlAccess,
+					});
 
-            let resp = null;
-            try{
-                resp = await this.db('access_group')
-                    .returning('id')
-                    .insert({
-                        group_id: idGroup,
-                        ctrl_access_id: idCtrlAccess,
-                    });
+				idAccessGroup = resp[0];
+			} catch (e) {
+				ok = false;
+				this.errorSys.error('add_ctrl_access', 'Не удалось добавить права на модуль');
+			}
+		}
 
-                idAccessGroup = resp[0];
+		let aRelatedKeyRedis = [];
+		if (ok) { // Удалить связанный кеш
+			aRelatedKeyRedis = await this.redisSys.keys('AccessGroupSQL*');
+			this.redisSys.del(aRelatedKeyRedis);
+		}
 
-            } catch (e){
-                ok = false;
-                this.errorSys.error('add_ctrl_access', 'Не удалось добавить права на модуль');
-            }
+		return idAccessGroup;
+	}
 
-        }
+	// ========================================
+	// UPDATE
+	// ========================================
 
-        let aRelatedKeyRedis = [];
-        if( ok ){ // Удалить связанный кеш
-            aRelatedKeyRedis = await this.redisSys.keys('AccessGroupSQL*');
-            this.redisSys.del(aRelatedKeyRedis);
-        }
-
-        return idAccessGroup;
-    }
-
-    // ========================================
-    // UPDATE
-    // ========================================
-
-    /**
+	/**
      * Изменить параметры доступа
      *
      * @param integer idAccessGroup
      * @return boolean
      */
-    public async saveAccessGroup(idAccessGroup:number, data:{ [key: string]: any }): Promise<boolean>{
-        let ok = this.errorSys.isOk();
-        let sql:string = '';
+	public async saveAccessGroup(idAccessGroup: number, data: { [key: string]: any }): Promise<boolean> {
+		let ok = this.errorSys.isOk();
 
-        let vAccessGroupE = new AccessGroupE();
-        if( ok && this.modelValidatorSys.fValid(vAccessGroupE.getRulesUpdate(), data) ){
+		const vAccessGroupE = new AccessGroupE();
+		if (ok && this.modelValidatorSys.fValid(vAccessGroupE.getRulesUpdate(), data)) {
+			let resp = null;
+			try {
+				resp = await this.db('access_group')
+					.where({
+						id: idAccessGroup,
+					})
+					.update(this.modelValidatorSys.getResult());
+			} catch (e) {
+				ok = false;
+				this.errorSys.error('save_access_group', 'Не удалось сохранить изменения в группе');
+			}
+		}
 
-            let resp = null;
-            try{
-                resp = await this.db('access_group')
-                    .where({
-                        id: idAccessGroup
-                    })
-                    .update(this.modelValidatorSys.getResult());
+		let aRelatedKeyRedis = [];
+		if (ok) { // Удалить связанный кеш
+			aRelatedKeyRedis = await this.redisSys.keys('AccessGroupSQL*');
+			this.redisSys.del(aRelatedKeyRedis);
+		}
 
-            } catch (e){
-                ok = false;
-                this.errorSys.error('save_access_group', 'Не удалось сохранить изменения в группе');
-            }
+		return ok;
+	}
 
-        }
+	// ========================================
+	// DELETE
+	// ========================================
 
-        let aRelatedKeyRedis = [];
-        if( ok ){ // Удалить связанный кеш
-            aRelatedKeyRedis = await this.redisSys.keys('AccessGroupSQL*');
-            this.redisSys.del(aRelatedKeyRedis);
-        }
-
-        return ok;
-    }
-
-    // ========================================
-    // DELETE
-    // ========================================
-
-    /**
+	/**
      * удалить права на модуль у группы
      *
      * @param string idCtrlAccess
      * @param string idGroup
      * @return boolean
      */
-    public async delCtrlAccessFromGroup(idCtrlAccess:number, idGroup:number): Promise<boolean>{
-        let ok = this.errorSys.isOk();
+	public async delCtrlAccessFromGroup(idCtrlAccess: number, idGroup: number): Promise<boolean> {
+		let ok = this.errorSys.isOk();
 
-        if( ok ){
-            let resp = null;
-            try{
-                resp = await this.db('access_group')
-                    .where({
-                        group_id: idGroup,
-                        ctrl_access_id: idCtrlAccess,
-                    })
-                    .limit(1)
-                    .del();
+		if (ok) {
+			let resp = null;
+			try {
+				resp = await this.db('access_group')
+					.where({
+						group_id: idGroup,
+						ctrl_access_id: idCtrlAccess,
+					})
+					.limit(1)
+					.del();
+			} catch (e) {
+				ok = false;
+				this.errorSys.error('del_ctrl_access', 'Не удалось удалить права на модуль');
+			}
+		}
 
-            } catch (e){
-                ok = false;
-                this.errorSys.error('del_ctrl_access', 'Не удалось удалить права на модуль');
-            }
-        }
+		let aRelatedKeyRedis = [];
+		if (ok) { // Удалить связанный кеш
+			aRelatedKeyRedis = await this.redisSys.keys('AccessGroupSQL*');
+			this.redisSys.del(aRelatedKeyRedis);
+		}
 
+		return ok;
+	}
 
-        let aRelatedKeyRedis = [];
-        if( ok ){ // Удалить связанный кеш
-            aRelatedKeyRedis = await this.redisSys.keys('AccessGroupSQL*');
-            this.redisSys.del(aRelatedKeyRedis);
-        }
+	// ========================================
+	// COUNT
+	// ========================================
 
-        return ok;
-    }
-
-    // ========================================
-    // COUNT
-    // ========================================
-
-    /**
+	/**
      * Проверить наличие связи между модулем и группой
      * связь модуля и группы должна быть только одна
      *
@@ -329,16 +293,15 @@ export class AccessGroupSQL extends BaseSQL
      * @param idGroup:number
      * @return integer
      */
-    public async cntAccessGroup(idCtrlAccess:number, idGroup:number): Promise<number>{
-        let ok = this.errorSys.isOk();
+	public async cntAccessGroup(idCtrlAccess: number, idGroup: number): Promise<number> {
+		let ok = this.errorSys.isOk();
 
-        let resp = [];
-        let sql = '';
+		let resp = [];
+		let sql = '';
 
-        let cntAccessGroup:number = 0;
-        if( ok ){ // Получить количество контроллеров доступа
-
-            sql = `
+		let cntAccessGroup = 0;
+		if (ok) { // Получить количество контроллеров доступа
+			sql = `
                 SELECT
                     COUNT(*) cnt
                 FROM access_group ag
@@ -349,27 +312,24 @@ export class AccessGroupSQL extends BaseSQL
                 LIMIT 1
             `;
 
-            try{
-                resp = (await this.db.raw(sql, {
-                    'group_id': idGroup,
-                    'ctrl_access_id': idCtrlAccess
-                }))[0];
+			try {
+				resp = (await this.db.raw(sql, {
+					group_id: idGroup,
+					ctrl_access_id: idCtrlAccess,
+				}))[0];
 
-                cntAccessGroup = Number(resp[0]['cnt']);
-            } catch (e){
-                ok = false;
-                this.errorSys.error('cnt_ctrl_access', 'Не удалось подсчитать контроль доступа');
-            }
-        }
+				cntAccessGroup = Number(resp[0].cnt);
+			} catch (e) {
+				ok = false;
+				this.errorSys.error('cnt_ctrl_access', 'Не удалось подсчитать контроль доступа');
+			}
+		}
 
-        resp = null;
+		resp = null;
 
-        if( ok ){ // Ответ
-            return cntAccessGroup;
-        } else {
-            return -1; // В случае если произошла SQL ошибка
-        }
-
-    }
-
+		if (ok) { // Ответ
+			return cntAccessGroup;
+		}
+		return -1; // В случае если произошла SQL ошибка
+	}
 }

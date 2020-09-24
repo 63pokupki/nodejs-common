@@ -1,27 +1,27 @@
-import { MainRequest } from "../System/MainRequest";
+import { MainRequest } from '../System/MainRequest';
 
 /**
  * Open Graph
  */
 export interface Og {
-    type: string; //'website'
-    site_name: string;
-    title: string;
-    description: string;
-    url: string;
-    image: string;
-    imageType: string;
+	type: string; // 'website'
+	site_name: string;
+	title: string;
+	description: string;
+	url: string;
+	image: string;
+	imageType: string;
 }
 
 /**
  * Конфиг
  */
 export interface SeoConfigI {
-    defaultTitle: string;
-    defaultDescription: string;
-    defaultKeywords: string;
+	defaultTitle: string;
+	defaultDescription: string;
+	defaultKeywords: string;
 
-    defaultOg: Og;
+	defaultOg: Og;
 
 }
 
@@ -29,35 +29,37 @@ export interface SeoConfigI {
  * Вывод сео заголовков и прочего
  */
 export class SeoBase {
+	protected url: string; // входящий url
 
-    protected url: string; // входящий url
-    protected req: MainRequest;
+	protected req: MainRequest;
 
-    public title: string;
-    public description: string;
-    public keywords: string;
-    public og: Og;
+	public title: string;
 
-    public conf: SeoConfigI;
+	public description: string;
 
-    constructor(req: MainRequest, conf: SeoConfigI) {
-        this.url = req.url;
-        this.conf = conf;
-        this.req = req;
+	public keywords: string;
 
-        this.title = this.conf.defaultTitle
-        this.description = this.conf.defaultDescription
-        this.keywords = this.conf.defaultKeywords;
+	public og: Og;
 
-        /* Open Graph */
-        this.og = this.conf.defaultOg;
-    }
+	public conf: SeoConfigI;
 
-    /**
+	constructor(req: MainRequest, conf: SeoConfigI) {
+		this.url = req.url;
+		this.conf = conf;
+		this.req = req;
+
+		this.title = this.conf.defaultTitle;
+		this.description = this.conf.defaultDescription;
+		this.keywords = this.conf.defaultKeywords;
+
+		/* Open Graph */
+		this.og = this.conf.defaultOg;
+	}
+
+	/**
      * Перезагрузить на дефолтные
      */
-    public reload() {
-        this.og = this.conf.defaultOg;
-    }
-
+	public reload(): void {
+		this.og = this.conf.defaultOg;
+	}
 }
