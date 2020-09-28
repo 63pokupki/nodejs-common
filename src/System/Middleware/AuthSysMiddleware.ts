@@ -16,7 +16,7 @@ interface JwtDecodeI{
 }
 
 /* проверка аутентификации на уровне приложения */
-export default async function AuthSysMiddleware(request: MainRequest, response: any, next: any) {
+export default async function AuthSysMiddleware(request: MainRequest, response: any, next: any): Promise<void> {
 	if (request.headers.apikey && String(request.headers.apikey)) {
 		if (request.headers.apikey.length > 32) {
 			let decoded: JwtDecodeI = null;

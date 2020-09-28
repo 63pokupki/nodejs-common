@@ -1,5 +1,5 @@
 import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
-import * as express from 'express';
+import { Response } from 'express';
 
 import { MainRequest } from './MainRequest';
 import { fErrorHandler } from './ErrorHandler';
@@ -8,7 +8,7 @@ import { fErrorHandler } from './ErrorHandler';
  * Функция рендера страницы
  * @param faCallback - функция контролера
  */
-export const faSendRouter = (faCallback: Function) => async (req: MainRequest, res: express.Response, next: any): Promise<void> => {
+export const faSendRouter = (faCallback: Function) => async (req: MainRequest, res: Response, next: any): Promise<void> => {
 	try {
 		await faCallback(req, res);
 	} catch (e) {

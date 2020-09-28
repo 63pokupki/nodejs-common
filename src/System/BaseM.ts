@@ -1,4 +1,3 @@
-// Системные сервисы
 import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 import { UserSys } from './UserSys';
 import { MainRequest } from './MainRequest';

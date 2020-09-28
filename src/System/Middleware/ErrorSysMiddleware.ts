@@ -1,9 +1,8 @@
-import { MainRequest } from '../MainRequest';
 import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
-import { LogicSys } from '../LogicSys';
+import { MainRequest } from '../MainRequest';
 
 /* LEGO ошибок */
-export default function ErrorSysMiddleware(request: MainRequest, response: any, next: any) {
+export default function ErrorSysMiddleware(request: MainRequest, response: any, next: any): void {
 	request.sys = {
 		apikey: '',
 		errorSys: null,

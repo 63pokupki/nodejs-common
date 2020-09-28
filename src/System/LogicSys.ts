@@ -1,8 +1,7 @@
-// Системные сервисы
-import { MainRequest } from './MainRequest';
-
-import { UserSys } from './UserSys';
 import { ErrorSys, ModelRulesC, ModelValidatorSys } from '@a-a-game-studio/aa-components/lib';
+
+import { MainRequest } from './MainRequest';
+import { UserSys } from './UserSys';
 
 /**
  * Система логическая система
@@ -24,28 +23,28 @@ export class LogicSys {
 	/**
 	 * Включить запросы на базу данных
 	 */
-	fMasterDBOn() {
+	fMasterDBOn(): void {
 		this.req.sys.bMasterDB = true;
 	}
 
 	/**
 	 * Отключить запросы на мастер базу данных
 	 */
-	fMasterDBOff() {
+	fMasterDBOff(): void {
 		this.req.sys.bMasterDB = false;
 	}
 
 	/**
 	 * Включить кеш редиса
 	 */
-	fCacheOn() {
+	fCacheOn(): void {
 		this.req.sys.bCache = true;
 	}
 
 	/**
 	 * Выключить кеш редиса
 	 */
-	fCacheOff() {
+	fCacheOff(): void {
 		this.req.sys.bCache = false;
 	}
 

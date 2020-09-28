@@ -1,4 +1,4 @@
-import * as express from 'express';
+import { Response, NextFunction } from 'express';
 import { MainRequest, Mattermost } from '../';
 
 /**
@@ -8,7 +8,7 @@ import { MainRequest, Mattermost } from '../';
  * @param res
  * @param next
  */
-export const fErrorHandler = (err: Error, req: MainRequest, res: express.Response, next: express.NextFunction) => {
+export const fErrorHandler = (err: Error, req: MainRequest, res: Response, next: NextFunction): void => {
 	const mattermostSys = new Mattermost.MattermostSys(req);
 
 	let ifDevMode = false;

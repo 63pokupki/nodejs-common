@@ -49,7 +49,7 @@ export class ExpressRouterProxy<TCtrl = {}, TCtrlClass extends ControllerClass<T
 		url: string,
 		handlerDefinition: HandlerDefinition<TCtrl, TReqData, TResData, THandlerOptions>,
 		options?: THandlerOptions,
-	) {
+	): void {
 		this.router.get(url, async (req: Request, res: Response, next: NextFunction) => {
 			await this.runMethod(handlerDefinition, req.params as any, req, res, next, options);
 		});
@@ -59,7 +59,7 @@ export class ExpressRouterProxy<TCtrl = {}, TCtrlClass extends ControllerClass<T
 		url: string,
 		handlerDefinition: HandlerDefinition<TCtrl, TReqData, TResData, THandlerOptions>,
 		options?: THandlerOptions,
-	) {
+	): void {
 		this.router.post(url, async (req: Request, res: Response, next: NextFunction) => {
 			await this.runMethod(handlerDefinition, req.body, req, res, next, options);
 		});
@@ -72,7 +72,7 @@ export class ExpressRouterProxy<TCtrl = {}, TCtrlClass extends ControllerClass<T
 		res: Response,
 		next: NextFunction,
 		options?: THandlerOptions,
-	) {
+	): Promise<void> {
 		try {
 			const ctrl = await this.initializeController(req, res, next, options);
 			const context = {
