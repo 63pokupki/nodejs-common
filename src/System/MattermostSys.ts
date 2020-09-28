@@ -19,9 +19,7 @@ interface MattermostMsg {
 	}[];
 }
 
-/**
- * Класс для работы с MatterMost'ом
- */
+/** Класс для работы с MatterMost'ом */
 export class MattermostSys {
 	protected req: MainRequest;
 

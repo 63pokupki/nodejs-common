@@ -1,7 +1,6 @@
 import { SeoConfigI } from '../Components/Seo';
-/**
- * Подключение к S3
- */
+
+/** Подключение к S3 */
 export interface S3confI {
 	endpoint: string;
 	bucket: string;
@@ -10,60 +9,59 @@ export interface S3confI {
 	secret: string;
 }
 
-export interface MainConfig { // Конфигурация
-	// ================================
-	mysql: { // Конфиг для MySql
-		client: string; // mysql
-		connection: { // Параметры соединения
-			host: string; // "127.0.0.1"
-			user: string; // Пользователь
-			password: string; // Пароль
-			database: string; // Имя базы данных
+/** Конфигурация */
+export interface MainConfig {
+	// Настройки для MySql
+	mysql: {
+		client: string; 					// mysql
+		connection: { 						// Параметры соединения
+			host: string; 					// "127.0.0.1"
+			user: string; 					// Пользователь
+			password: string; 				// Пароль
+			database: string; 				// Имя базы данных
 		};
 		pool: { min: number; max: number }; // Количество соединений
 		migrations: {
-			tableName: string; // "knex_migrations",
-			directory: string; // "./src/Infrastructure/SQL/Migrations"
+			tableName: string; 				// "knex_migrations",
+			directory: string; 				// "./src/Infrastructure/SQL/Migrations"
 		};
 		acquireConnectionTimeout: number; // таймоут 60000
 	};
-	// ================================
-	mysqlMaster: { // Конфиг для MySql
-		client: string; // mysql
-		connection: { // Параметры соединения
-			host: string; // "127.0.0.1"
-			user: string; // Пользователь
-			password: string; // Пароль
-			database: string; // Имя базы данных
+	// Настройки для MySql
+	mysqlMaster: {
+		client: string; 					// mysql
+		connection: { 						// Параметры соединения
+			host: string; 					// "127.0.0.1"
+			user: string; 					// Пользователь
+			password: string; 				// Пароль
+			database: string; 				// Имя базы данных
 		};
 		pool: { min: number; max: number }; // Количество соединений
 		migrations: {
-			tableName: string; // "knex_migrations",
-			directory: string; // "./src/Infrastructure/SQL/Migrations"
+			tableName: string; 				// "knex_migrations",
+			directory: string; 				// "./src/Infrastructure/SQL/Migrations"
 		};
-		acquireConnectionTimeout: number; // таймоут 60000
+		acquireConnectionTimeout: number; 	// таймоут 60000
 	};
-
-	// ================================
-
-	redis: { // Конфиг для редиса
+	// Настройки редиса
+	redis: {
 		url: string; // "redis://127.0.0.1:6379"
 	};
-	// ================================
-	common: { // Общее
-		env: string; // Тип окружения
-		nameApp?: string; // Имя приложения выводится если стукнуться GET
-		oldCoreURL: string; // URL адрес основного сайта
+	// Общие настройки
+	common: {
+		env: string; 					// Тип окружения
+		nameApp?: string; 				// Имя приложения выводится если стукнуться GET
+		oldCoreURL: string; 			// URL адрес основного сайта
 		errorMute: boolean;
-		hook_url_errors?: string; // Сообщения об ошибках mattermost
-		hook_url_monitoring?: string; // Сообщения мониторинга в mattermost
+		hook_url_errors?: string; 		// Сообщения об ошибках mattermost
+		hook_url_monitoring?: string; 	// Сообщения мониторинга в mattermost
 		hook_url_front_errors?: string; // Сообещения об ошибках с фронта в mattermost
-		port: number; // порт на котором будет работать экземпляр ноды
+		port: number; 					// порт на котором будет работать экземпляр ноды
 	};
 
 	// Параметры ра
 	auth?: {
-		secret?: string; // KEY
+		secret?: string; 	// KEY
 		algorithm?: string; // Алгоритм для расшифровки
 	};
 
@@ -72,11 +70,11 @@ export interface MainConfig { // Конфигурация
 		queryList: string[];
 	};
 
-	S3DO?: S3confI; // Хранилище обзих
-	S3DO256?: S3confI; // Хранилище картинок товара x256
-	S3DO512?: S3confI; // Хранилище картинок товара x512
-	S3DOPrivMsg512?: S3confI; // Хранилище картинок приватных сообщений x512
+	S3DO?: S3confI; 			// Хранилище обзих
+	S3DO256?: S3confI; 			// Хранилище картинок товара x256
+	S3DO512?: S3confI; 			// Хранилище картинок товара x512
+	S3DO1024?: S3confI; 		// Хранилище картинок товаров x1024
+	S3DOPrivMsg512?: S3confI; 	// Хранилище картинок приватных сообщений x512
 
 	SeoConfig?: SeoConfigI;
-
 }

@@ -1,6 +1,6 @@
 import { MainRequest } from '../MainRequest';
 
-export default function RequestSysMiddleware(request: MainRequest, response: any, next: any) {
+export default function RequestSysMiddleware(request: MainRequest, response: any, next: any): void {
 	const errorSys = request.sys.errorSys;
 
 	if (request.method === 'POST') {

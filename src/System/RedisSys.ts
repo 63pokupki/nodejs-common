@@ -1,8 +1,6 @@
 import * as redis from 'redis';
 
-/**
- * Обертка над редисом которая понимает async/await
- */
+/** Обертка над редисом которая понимает async/await */
 export class RedisSys {
 	public redisClient: any;
 

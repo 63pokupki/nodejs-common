@@ -41,32 +41,32 @@ export interface MainRequest extends Request {
 
 const Req: any = {
 	headers: null,
-	common: { // Общее
-		env: 'dev', // Тип окружения
-		oldCoreURL: null, // URL адрес основного сайта
+	common: { 								// Общее
+		env: 'dev', 						// Тип окружения
+		oldCoreURL: null, 					// URL адрес основного сайта
 		nameApp: 'default',
 		errorMute: true,
-		hook_url_errors: 'https://', // Сообщения об ошибках mattermost
-		hook_url_monitoring: 'https://', // Сообщения мониторинга в mattermost
-		hook_url_front_errors: 'https://', // Сообщения мониторинга ошибок в mattermost
-		port: 3005, // порт на котором будет работать нода
+		hook_url_errors: 'https://', 		// Сообщения об ошибках mattermost
+		hook_url_monitoring: 'https://', 	// Сообщения мониторинга в mattermost
+		hook_url_front_errors: 'https://', 	// Сообщения мониторинга ошибок в mattermost
+		port: 3005, 						// порт на котором будет работать нода
 	},
 	sys: {
 		apikey: '',
-		bAuth: false, /* флаг авторизации */
-		bMasterDB: false, // По умолчанию используется maxScale
-		bCache: true, // По умолчанию кеш используется
+		bAuth: false, 			// флаг авторизации
+		bMasterDB: false, 		// По умолчанию используется maxScale
+		bCache: true, 			// По умолчанию кеш используется
 
-		errorSys: null, // Система ошибок
-		userSys: null, // Система пользователя
-		responseSys: null, // Система формирвания ответа
-		logicSys: null, // Система логики управления приложением
-		cacheSys: null, // Система кеширования
+		errorSys: null, 		// Система ошибок
+		userSys: null, 			// Система пользователя
+		responseSys: null, 		// Система формирвания ответа
+		logicSys: null, 		// Система логики управления приложением
+		cacheSys: null, 		// Система кеширования
 	},
 	conf: null,
 	infrastructure: {
-		mysql: null, // коннект к балансеру БД
-		mysqlMaster: null, // конект к мастеру
+		mysql: null, 			// коннект к балансеру БД
+		mysqlMaster: null, 		// конект к мастеру
 		sphinx: null,
 		redis: null,
 		rabbit: null,
@@ -77,6 +77,7 @@ export const devReq = <MainRequest>Req;
 
 /**
  * Инициализация MainRequest для консольных запросов
+ * @param conf
  */
 export function initMainRequest(conf: any): MainRequest {
 	let mainRequest: MainRequest;
@@ -94,9 +95,7 @@ export function initMainRequest(conf: any): MainRequest {
 	return mainRequest;
 }
 
-/**
- * Типы ошибок
- */
+/** Типы ошибок */
 export enum TError {
 	None = 0,
 	PageNotFound = 404,

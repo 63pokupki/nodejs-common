@@ -1,7 +1,5 @@
-/**
- * Очистить пробельные символы
- */
-export function removeSpecialChars(str: string) {
+/** Очистить пробельные символы */
+export function removeSpecialChars(str: string): string {
 	const aDict = [
 		'&nbsp;',
 	];

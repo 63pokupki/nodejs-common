@@ -1,13 +1,10 @@
-// Системные сервисы
-import { ResponseSys } from './ResponseSys';
 import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
-import { MainRequest } from './MainRequest';
 
+import { MainRequest } from './MainRequest';
+import { ResponseSys } from './ResponseSys';
 import { UserSys } from './UserSys';
 
-/**
- * Базовый контроллер
- */
+/** Базовый контроллер */
 export default class BaseCtrl {
 	public req: MainRequest;
 
@@ -27,7 +24,7 @@ export default class BaseCtrl {
 		this.resp = resp;
 	}
 
-	protected fClassName() {
+	protected fClassName(): string {
 		return this.constructor.name;
 	}
 
@@ -36,7 +33,7 @@ export default class BaseCtrl {
      * @param msg - Сообщение
      * @param cbAction - Анонимная функция для вызова действия
      */
-	public async faAction(msg: string, cbAction: Function) {
+	public async faAction(msg: string, cbAction: Function): Promise<void> {
 		let out = null;
 		if (this.errorSys.isOk()) {
 			out = await cbAction();

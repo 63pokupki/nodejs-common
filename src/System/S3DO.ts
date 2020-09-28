@@ -20,26 +20,20 @@ export interface S3objectParamsI {
 	Metadata?: { [key: string]: string };
 }
 
-/**
- * Параметры объекта для получения файла
- */
+/** Параметры объекта для получения файла */
 export interface getS3objectParamsI {
 	Bucket: any;
 	Key: string;
 }
 
-/**
- * Параметры объекта для смены типа приватности
- */
+/** Параметры объекта для смены типа приватности */
 export interface setS3objectAclParamsI {
 	Bucket: any;
 	Key: string;
 	ACL?: string; // private | public-read | public-read-write | authenticated-read | aws-exec-read | bucket-owner-read | bucket-owner-full-control
 }
 
-/**
- * Класс для роботы с S3 like
- */
+/** Класс для роботы с S3 like */
 export class S3DO {
 	private conf: S3confI;
 
