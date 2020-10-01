@@ -1,12 +1,3 @@
-// Глобальные сервисы
-
-import * as redisSys from '../../../System/RedisSys';
-import { MainRequest } from '../../../System/MainRequest';
-
-// Системные сервисы
-import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
-
-import { ModelValidatorSys } from '@a-a-game-studio/aa-components/lib';
 import BaseSQL from '../../../System/BaseSQL';
 
 /**
@@ -14,10 +5,6 @@ import BaseSQL from '../../../System/BaseSQL';
  * - Управление группами пользователей
  */
 export class UserGroupSQL extends BaseSQL {
-	constructor(req: MainRequest) {
-		super(req);
-	}
-
 	// ========================================
 	// SELECT
 	// ========================================

@@ -1,14 +1,20 @@
-// Компоненты
 import { ModelRulesC } from '@a-a-game-studio/aa-components/lib';
 
-export class CtrlAccessE {
-	// Имя таблицы
-	public NAME = 'ctrl_access';
+/** */
+export interface CtrlAccessI {
+	id?: number;
+	name?: string;
+	alias?: string;
+	descript?: string;
+}
 
-	/**
-     * Обновление ключевых записей таблицы
-     */
-	public getRulesUpdate() {
+/** */
+export class CtrlAccessE {
+	/** Имя таблицы */
+	public static NAME = 'ctrl_access';
+
+	/** Правила обновления записей в таблице */
+	public getRulesUpdate(): ModelRulesC {
 		const rules = new ModelRulesC();
 
 		rules.set(rules.rule('alias')
@@ -23,25 +29,17 @@ export class CtrlAccessE {
 			.typeText()
 			.error('descript - неверный формат'));
 
-		// rules.set(rules.rule('updated_at')
-		//     .type('int')
-		//     .def(time())
-		//     .error('updated_at - неверный формат')
-		// );
-
-		return rules.get();
+		return rules;
 	}
 
-	/**
-     *  Правила создания записей в таблице
-     */
-	public getRulesInsert() {
+	/** Правила создания записей в таблице */
+	public getRulesInsert(): ModelRulesC {
 		const rules = new ModelRulesC();
 
 		rules.set(rules.rule('alias')
 			.typeText()
 			.error('alias - неверный формат'));
 
-		return rules.get();
+		return rules;
 	}
 }
