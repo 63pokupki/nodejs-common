@@ -1,10 +1,20 @@
 import { ModelRulesC } from '@a-a-game-studio/aa-components/lib';
 
+/** */
+export interface UserI {
+	user_type?: number;
+	group_id?: number;
+	user_permissions?: string;
+	user_perm_from?: number;
+}
+
+/** */
 export class UserE {
-	// Имя таблицы
+	/** Имя таблицы */
 	public static NAME = 'phpbb_users';
 
-	public getRules() {
+	/** Правила создания записей в таблице */
+	public getRulesInsert(): ModelRulesC {
 		const rules = new ModelRulesC();
 
 		rules.set(rules.rule('user_id')
@@ -19,7 +29,7 @@ export class UserE {
 			.typeText()
 			.error('user_fullname - неверный формат'));
 
-		return rules.get();
+		return rules;
 	}
 
 	// return [

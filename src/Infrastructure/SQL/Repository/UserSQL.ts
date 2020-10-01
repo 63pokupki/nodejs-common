@@ -2,6 +2,7 @@ import * as utf8 from 'utf8';
 import uniqid from 'uniqid';
 import md5 from 'md5';
 
+import { UserE, UserI } from '../Entity/UserE';
 import BaseSQL from '../../../System/BaseSQL';
 import { UserInfoI } from '../../../System/UserSys';
 
@@ -10,16 +11,13 @@ import { UserInfoI } from '../../../System/UserSys';
  */
 export class UserSQL extends BaseSQL {
 	/**
-     * Получить список пользователей
-     *
-     * @param integer iOffset
-     * @param integer iLimit
-     * @param array sSearchFIO
-     * @return array|null
-     */
+	 * Получить список пользователей
+	 * @param iOffset
+	 * @param iLimit
+	 * @param aFilter
+	 */
 	public async getUserList(iOffset: number, iLimit: number, aFilter: { [key: string]: any }): Promise<any> {
 		let resp = null;
-		let sql = '';
 
 		let sSearchFIO = '';
 		if (aFilter.search_fullname) {
@@ -31,7 +29,7 @@ export class UserSQL extends BaseSQL {
 			sSearchUserName = aFilter.search_username;
 		}
 
-		sql = `
+		const sql = `
             SELECT
                 u.user_id,
                 u.user_type,
@@ -45,7 +43,7 @@ export class UserSQL extends BaseSQL {
                 u.user_mobile,
                 u.user_sig,
                 u.user_fullname
-            FROM phpbb_users u
+            FROM ${UserE.NAME} u
             WHERE
                 u.username LIKE :search_username
             AND
@@ -70,16 +68,13 @@ export class UserSQL extends BaseSQL {
 	}
 
 	/**
-     * Получить пользователя по ID
-     *
-     * @param integer idUser
-     * @return array|null
-     */
+	 * Получить пользователя по ID
+	 * @param idUser
+	 */
 	public async getUserByID(idUser: number): Promise<any> {
 		let resp = null;
-		let sql = '';
 
-		sql = `
+		const sql = `
             SELECT
                 u.user_id,
                 u.user_type,
@@ -93,15 +88,14 @@ export class UserSQL extends BaseSQL {
                 u.user_mobile,
                 u.user_sig,
                 u.user_fullname
-            FROM phpbb_users u
+            FROM ${UserE.NAME} u
             WHERE u.user_id = :user_id
-            LIMIT 1
+			LIMIT 1
+			;
         `;
 
 		try {
-			resp = (await this.db.raw(sql, {
-				user_id: idUser,
-			}))[0];
+			resp = (await this.db.raw(sql, { user_id: idUser }))[0];
 
 			if (resp.length > 0) {
 				resp = resp[0];
@@ -115,60 +109,54 @@ export class UserSQL extends BaseSQL {
 		return resp;
 	}
 
-	/* выдает инфу по юзеру по apikey */
+	/**
+	 * Получить информацию о пользователе по apikey
+	 * @param apikey
+	 */
 	public async fGetUserInfoByApiKey(apikey = ''): Promise<UserInfoI> {
-		let ok = true;
 		let resp = null;
 
-		if (ok) {
-			const sql = `
-                SELECT  u.user_id,
-                u.user_type,
-                u.group_id,
-                u.username,
-                u.username_clean,
-                u.user_email,
-                u.user_birthday,
-                u.user_avatar,
-                u.user_avatar_type,
-                u.user_mobile,
+		const sql = `
+			SELECT  
+				u.user_id,
+				u.user_type,
+				u.group_id,
+				u.username,
+				u.username_clean,
+				u.user_email,
+				u.user_birthday,
+				u.user_avatar,
+				u.user_avatar_type,
+				u.user_mobile,
 				u.user_sig,
 				u.consumer_rating
-                from phpbb_users u
+            FROM ${UserE.NAME} u
+            JOIN user_token ut ON ut.user_id = u.user_id
+            WHERE ut.token = :token
+            LIMIT 1
+        `;
 
-                join user_token ut
-                on ut.user_id=u.user_id
+		try {
+			resp = (await this.db.raw(sql, { token: apikey }))[0];
 
-                where ut.token= :token
-
-                limit 1
-            `;
-
-			try {
-				resp = (await this.db.raw(sql, {
-					token: apikey,
-				}))[0];
-
-				if (resp.length > 0) {
-					resp = resp[0];
-				} else {
-					resp = null;
-				}
-			} catch (e) {
-				ok = false;
-				this.errorSys.error('user_info_by_apikey', 'Не удалось получить информацию о пользователе');
+			if (resp.length > 0) {
+				resp = resp[0];
+			} else {
+				resp = null;
 			}
+		} catch (e) {
+			this.errorSys.error('user_info_by_apikey', 'Не удалось получить информацию о пользователе');
 		}
 
 		return resp;
 	}
 
 	/**
-     * проверка на то что есть apikey в базе
-     */
+	 * Проверка, есть ли apikey в базе
+	 * @param apikey
+	 */
 	public async isAuth(apikey = ''): Promise<boolean> {
 		let bResp = false;
-		let sql = '';
 		let resp: any[] = null;
 
 		/* если ключ больше 4 */
@@ -178,18 +166,17 @@ export class UserSQL extends BaseSQL {
 				this.errorSys.devNotice(`cache:UserSQL.isAuth(${apikey})`, 'Взято из кеша');
 			} else {
 				// Получаем одного пользователя
-				sql = `
-                    select ut.token from user_token ut
-
-                    where ut.token= :token order by ut.user_token_id desc
-
-                    limit 1;
+				const sql = `
+					SELECT 
+						ut.token 
+					FROM user_token ut
+                    WHERE ut.token = :token order by ut.user_token_id desc
+					LIMIT 1
+					;
                 `;
 
 				try {
-					resp = (await this.db.raw(sql, {
-						token: apikey,
-					}))[0];
+					resp = (await this.db.raw(sql, { token: apikey }))[0];
 
 					if (resp.length > 0) {
 						bResp = true;
@@ -204,7 +191,11 @@ export class UserSQL extends BaseSQL {
 		return bResp;
 	}
 
-	/* выдает id юзера по телефону и смс из таблицы user_mobile_code */
+	/**
+	 * Выдает id юзера по телефону и смс из таблицы user_mobile_code
+	 * @param phone
+	 * @param sms
+	 */
 	public async getUserIdByPhoneAndSms(phone: string, sms: string): Promise<number> {
 		let resp: any[] = null;
 		let idUser = 0;
@@ -222,10 +213,7 @@ export class UserSQL extends BaseSQL {
         `;
 
 		try {
-			resp = (await this.db.raw(sql, {
-				phone,
-				sms,
-			}))[0];
+			resp = (await this.db.raw(sql, { phone, sms }))[0];
 
 			if (resp.length > 0) {
 				idUser = resp[0].user_id;
@@ -239,93 +227,82 @@ export class UserSQL extends BaseSQL {
 		return idUser;
 	}
 
-	/* выдает строчку инфы из базы по логину об юзере */
+	/**
+	 * выдает строчку инфы из базы по логину об юзере
+	 * @param username
+	 */
 	public async getUserByUsername(username: string): Promise<any[]> {
-		let ok = true;
 		let resp: any[] = null;
 
-		if (ok) {
-			/* todo прикрутить reddis */
-			const sql = `
-                SELECT *
-                FROM phpbb_users
-                WHERE username_clean = :username limit 1
-                ;
-            `;
+		/* todo прикрутить reddis */
+		const sql = `
+			SELECT *
+			FROM phpbb_users
+			WHERE username_clean = :username limit 1
+			;
+		`;
 
-			try {
-				resp = (await this.db.raw(sql, {
-					username: utf8.encode(username),
-				}))[0];
+		try {
+			resp = (await this.db.raw(sql, { username: utf8.encode(username) }))[0];
 
-				if (resp.length > 0) {
-					resp = resp[0];
-				} else {
-					resp = null;
-				}
-			} catch (e) {
-				ok = false;
-				this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
+			if (resp.length > 0) {
+				resp = resp[0];
+			} else {
+				resp = null;
 			}
+		} catch (e) {
+			this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
 		}
 
 		return resp;
 	}
 
-	/* выдает apikey по user_id */
+	/**
+	 * выдает apikey по user_id
+	 * @param user_id
+	 */
 	public async getUserApiKey(user_id: number): Promise<string> {
-		let ok = true;
 		let resp: any[] = null;
 
 		let token: string = null;
-		if (ok) { /* выбираем последний из вставленных */
-			const sql = `
-                select * from user_token ut
-                where ut.user_id = :user_id
-                order by ut.user_token_id desc
-                limit 1
-                ;
-            `;
+		const sql = `
+            select * from user_token ut
+            where ut.user_id = :user_id
+            order by ut.user_token_id desc
+            limit 1
+            ;
+        `;
 
-			try {
-				resp = (await this.db.raw(sql, {
-					user_id,
-				}))[0];
+		try {
+			resp = (await this.db.raw(sql, { user_id }))[0];
 
-				if (resp.length > 0) {
-					token = resp[0].token;
-				} else {
-					token = null;
-				}
-			} catch (e) {
-				ok = false;
-				this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
+			if (resp.length > 0) {
+				token = resp[0].token;
+			} else {
+				token = null;
 			}
+		} catch (e) {
+			this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
 		}
 
 		return token;
 	}
 
-	/* вставляет ключ для юзера */
-	/* ничего не проверяет только вставляет */
+	/**
+	 * вставляет ключ для юзера
+	 * ничего не проверяет только вставляет
+	 * @param user_id
+	 */
 	public async insertUserApiKey(user_id: number): Promise<string> {
-		let ok = true;
 		const apikey = this.generateApiKey();
 
 		try {
-			await this.db('user_token').insert({
-				api_key: apikey,
-				user_id: Number(user_id),
-			});
+			await this.db('user_token').insert({ api_key: apikey, user_id: Number(user_id) });
 		} catch (e) {
-			ok = false;
 			this.errorSys.error('inser_key_for_user', 'Не удалось вставить ключ пользователя');
 		}
 
-		if (ok) {
-			return apikey;
-		}
-		return null;
+		return apikey;
 	}
 
 	/* генерирует apikey */
@@ -334,22 +311,21 @@ export class UserSQL extends BaseSQL {
 		return uniqid(md5(String(new Date().getTime())));
 	}
 
-	/* выдает инфу по юзеру по id */
+	/**
+	 * выдает инфу по юзеру по id
+	 * @param userId
+	 */
 	public async fGetUserInfoById(userId: number): Promise<any[]> {
 		let resp: any[] = null;
 
 		const sql = `
-            select u.* from phpbb_users u
-
+            select u.* from ${UserE.NAME} u
             where u.user_id= :user_id
-
             limit 1
         `;
 
 		try {
-			resp = (await this.db.raw(sql, {
-				user_id: userId,
-			}))[0];
+			resp = (await this.db.raw(sql, { user_id: userId }))[0];
 
 			if (resp.length > 0) {
 				resp = resp[0];
