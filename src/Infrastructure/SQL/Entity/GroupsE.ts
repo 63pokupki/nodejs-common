@@ -1,14 +1,38 @@
-// Компоненты
 import { ModelRulesC } from '@a-a-game-studio/aa-components/lib';
 
-export class GroupsE {
-	// Имя таблицы
-	public NAME = 'phpbb_groups';
+/** */
+export interface GroupsI {
+	group_id?: number;
+	alias?: string;
+	group_type?: number;
+	group_founder_manage?: number;
+	group_name?: string;
+	group_desc?: string;
+	group_desc_bitfield?: string;
+	group_desc_options?: number;
+	group_desc_uid?: string;
+	group_display?: number;
+	group_avatar?: string;
+	group_avatar_type?: string;
+	group_avatar_width?: number;
+	group_avatar_height?: number;
+	group_rank?: number;
+	group_colour?: string;
+	group_sig_chars?: number;
+	group_receive_pm?: number;
+	group_message_limit?: number;
+	group_legend?: number;
+	group_max_recipients?: number;
+	group_skip_auth?: number;
+}
 
-	/**
-     * Обновление ключевых записей таблицы
-     */
-	public getRulesUpdate() {
+/** */
+export class GroupsE {
+	/** Имя таблицы */
+	public static NAME = 'phpbb_groups';
+
+	/** Обновление ключевых записей таблицы */
+	public getRulesUpdate(): ModelRulesC {
 		const rules = new ModelRulesC();
 
 		rules.set(rules.rule('alias')
@@ -27,7 +51,7 @@ export class GroupsE {
 			.typeInt()
 			.error('group_type - неверный формат'));
 
-		return rules.get();
+		return rules;
 	}
 
 	// return [

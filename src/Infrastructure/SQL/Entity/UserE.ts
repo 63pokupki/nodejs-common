@@ -1,4 +1,3 @@
-// Компоненты
 import { ModelRulesC } from '@a-a-game-studio/aa-components/lib';
 
 export class UserE {
@@ -23,7 +22,7 @@ export class UserE {
 		return rules.get();
 	}
 
-    	// return [
+	// return [
 	// 	'refund_tpl_name' : ['str', "/^[0-9a-zA-Zа-яА-Я ]{2,30}/u", true, false, 'refund_tpl_name неверный формат'],
 	// 	'user_id' : ['int', "/^[0-9]{1,11}/", true, false, 'user_id не верный формат'],
 	// 	'refund_money' : ['int', "/^[0-9]{1,11}/", false, false, 'refund_money неверный формат'],
