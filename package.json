@@ -68,7 +68,7 @@
     "typescript": "^4.0.3"
   },
   "scripts": {
-    "release": "npm run build:dev && npm run build:prod",
+    "release": "./tasks/release.sh",
     "build": "tsc",
     "test": "ts-mocha",
     "lint": "./node_modules/.bin/eslint 'src/**/*.{js,ts}' --quiet",
