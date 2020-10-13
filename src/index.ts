@@ -83,21 +83,21 @@ export {
 	ResponseSys,
 	RedisSys,
 	Middleware,
-	MainRequest, // interface MainRequest,
+	MainRequest, 		// interface MainRequest,
 	TError,
 	MainConfig,
-	devReq, // Пример MainRequest
+	devReq, 			// Пример MainRequest
 	S3,
 	S3objectParamsI,
 	S3confI,
-	RabbitSenderSys, // Класс системы для работы с ребитом
-	rabbitSenderSys, // Объект система работы с ребитом
-	initMainRequest, // Инициализация Main Request для тестов
-	BaseCommand, // Конструктор консольных команд
-	BaseTest, // Конструктор тестов
-	Seo, // сео собственно
-	HelperSys, // Вспомогательные функции которые ни к чему не привязаны
-	FieldValidator, //
+	RabbitSenderSys, 	// Класс системы для работы с ребитом
+	rabbitSenderSys, 	// Объект система работы с ребитом
+	initMainRequest, 	// Инициализация Main Request для тестов
+	BaseCommand, 		// Конструктор консольных команд
+	BaseTest, 			// Конструктор тестов
+	Seo, 				// сео собственно
+	HelperSys, 			// Вспомогательные функции которые ни к чему не привязаны
+	FieldValidator,
 	Mattermost,
 	S3DO,
 	ExpressRouterProxy,

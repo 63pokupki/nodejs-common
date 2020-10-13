@@ -1,10 +1,9 @@
-// Системные сервисы
 import { RedisSys } from './RedisSys';
 import { MainRequest } from './MainRequest';
 
 import { UserSys } from './UserSys';
 import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
-import { isObject, isArray } from 'util';
+import { isObject } from 'util';
 
 /**
  * Система кеширования
@@ -57,7 +56,7 @@ export class CacheSys {
 		if (ok && !bCache) { // Если значения нет в кеше - добавляем его в кеш
 			out = await callback();
 
-			if (out && (isObject(out) || isArray(out))) {
+			if (out && (isObject(out) || Array.isArray(out))) {
 				this.redisSys.set(
 					sKey,
 					JSON.stringify(out),
@@ -220,7 +219,7 @@ export class CacheSys {
      * Очистить кеш редиса
      * @param sKey
      */
-	async clearCache(sKey: string) {
+	async clearCache(sKey: string): Promise<void> {
 		const aKeyList = await this.redisSys.keys(sKey);
 		this.redisSys.del(aKeyList);
 	}

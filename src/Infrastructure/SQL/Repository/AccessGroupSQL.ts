@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { AccessGroupE } from '../Entity/AccessGroupE';
+import { AccessGroupE, AccessGroupI } from '../Entity/AccessGroupE';
 import BaseSQL from '../../../System/BaseSQL';
 
 /**
@@ -13,11 +13,9 @@ export class AccessGroupSQL extends BaseSQL {
 	// ==================================
 
 	/**
-     * Получить список модулей доступных группе по ID Группы
-     *
-     * @param integer idGroup
-     * @return array|null
-     */
+	 * Получить список модулей доступных группе по ID Группы
+	 * @param idGroup
+	 */
 	public async getCtrlAccessOfGroupByID(idGroup: number): Promise<any> {
 		let ok = this.errorSys.isOk();
 
@@ -37,16 +35,14 @@ export class AccessGroupSQL extends BaseSQL {
                     ca.alias,
                     ca.name,
                     ca.descript
-                FROM access_group ag
+                FROM ${AccessGroupE.NAME} ag
                 JOIN ctrl_access ca ON ca.id = ag.ctrl_access_id
                 WHERE ag.group_id = :id_group
                 ;
             `;
 
 			try {
-				resp = (await this.db.raw(sql, {
-					id_group: idGroup,
-				}))[0];
+				resp = (await this.db.raw(sql, { id_group: idGroup }))[0];
 			} catch (e) {
 				ok = false;
 				this.errorSys.error('get_ctrl_access', 'Не удалось получить контроль доступа');
@@ -84,7 +80,7 @@ export class AccessGroupSQL extends BaseSQL {
                     SUM(ag.read_access) \`read\`,
                     SUM(ag.update_access) \`update\`,
                     SUM(ag.delete_access) \`delete\`
-                FROM access_group ag
+                FROM ${AccessGroupE.NAME} ag
                 JOIN ctrl_access ca ON ca.id = ag.ctrl_access_id
                 WHERE
                     ag.group_id IN (${sIdsGroup})
@@ -140,7 +136,7 @@ export class AccessGroupSQL extends BaseSQL {
 			sql = `
                 SELECT
                     count(*) cnt
-                FROM access_group ag
+                FROM ${AccessGroupE.NAME} ag
                 JOIN ctrl_access ca ON ca.id = ag.ctrl_access_id
                 WHERE
                     ag.group_id IN (${sIdsGroup})
@@ -182,7 +178,7 @@ export class AccessGroupSQL extends BaseSQL {
 		if (ok) {
 			let resp = null;
 			try {
-				resp = await this.db('access_group')
+				resp = await this.db(AccessGroupE.NAME)
 					.returning('id')
 					.insert({
 						group_id: idGroup,
@@ -210,36 +206,24 @@ export class AccessGroupSQL extends BaseSQL {
 	// ========================================
 
 	/**
-     * Изменить параметры доступа
-     *
-     * @param integer idAccessGroup
-     * @return boolean
-     */
-	public async saveAccessGroup(idAccessGroup: number, data: { [key: string]: any }): Promise<boolean> {
-		let ok = this.errorSys.isOk();
+	 * Изменить параметры доступа
+	 * @param idAccessGroup
+	 * @param data
+	 */
+	public async saveAccessGroup(idAccessGroup: number, data: AccessGroupI): Promise<boolean> {
+		const validData = this.logicSys.fValidData(new AccessGroupE().getRulesUpdate(), data);
+		let out = 0;
 
-		const vAccessGroupE = new AccessGroupE();
-		if (ok && this.modelValidatorSys.fValid(vAccessGroupE.getRulesUpdate(), data)) {
-			let resp = null;
-			try {
-				resp = await this.db('access_group')
-					.where({
-						id: idAccessGroup,
-					})
-					.update(this.modelValidatorSys.getResult());
-			} catch (e) {
-				ok = false;
-				this.errorSys.error('save_access_group', 'Не удалось сохранить изменения в группе');
-			}
-		}
+		try {
+			out = await this.db(AccessGroupE.NAME).where({ id: idAccessGroup }).update(validData);
 
-		let aRelatedKeyRedis = [];
-		if (ok) { // Удалить связанный кеш
-			aRelatedKeyRedis = await this.redisSys.keys('AccessGroupSQL*');
+			const aRelatedKeyRedis = await this.redisSys.keys('AccessGroupSQL*');
 			this.redisSys.del(aRelatedKeyRedis);
+		} catch (e) {
+			this.errorSys.error('save_access_group', 'Не удалось сохранить изменения в группе');
 		}
 
-		return ok;
+		return Boolean(out);
 	}
 
 	// ========================================
@@ -247,35 +231,25 @@ export class AccessGroupSQL extends BaseSQL {
 	// ========================================
 
 	/**
-     * удалить права на модуль у группы
-     *
-     * @param string idCtrlAccess
-     * @param string idGroup
-     * @return boolean
-     */
+	 * Удалить права на модуль у группы
+	 * @param idCtrlAccess
+	 * @param idGroup
+	 */
 	public async delCtrlAccessFromGroup(idCtrlAccess: number, idGroup: number): Promise<boolean> {
 		let ok = this.errorSys.isOk();
 
 		if (ok) {
 			let resp = null;
 			try {
-				resp = await this.db('access_group')
-					.where({
-						group_id: idGroup,
-						ctrl_access_id: idCtrlAccess,
-					})
-					.limit(1)
-					.del();
+				resp = await this.db(AccessGroupE.NAME).where({ group_id: idGroup, ctrl_access_id: idCtrlAccess })
+					.limit(1).del();
+
+				const aRelatedKeyRedis = await this.redisSys.keys('AccessGroupSQL*');
+				this.redisSys.del(aRelatedKeyRedis);
 			} catch (e) {
 				ok = false;
 				this.errorSys.error('del_ctrl_access', 'Не удалось удалить права на модуль');
 			}
-		}
-
-		let aRelatedKeyRedis = [];
-		if (ok) { // Удалить связанный кеш
-			aRelatedKeyRedis = await this.redisSys.keys('AccessGroupSQL*');
-			this.redisSys.del(aRelatedKeyRedis);
 		}
 
 		return ok;

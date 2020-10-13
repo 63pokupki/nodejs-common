@@ -182,9 +182,9 @@ export class FieldValidator {
 				} else if (lopera2 > 1) {
 					aKey = this.data.split('-');
 				}
-				const dd = parseInt(aKey[2]);
-				const mm = parseInt(aKey[1]);
-				const yy = parseInt(aKey[0]);
+				const dd = parseInt(aKey[2], 10);
+				const mm = parseInt(aKey[1], 10);
+				const yy = parseInt(aKey[0], 10);
 				// Create list of days of a month [assume there is no leap year by default]
 				const ListofDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 				if (mm === 1 || mm > 2) {
