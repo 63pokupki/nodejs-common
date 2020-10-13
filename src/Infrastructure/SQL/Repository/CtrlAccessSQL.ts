@@ -209,9 +209,7 @@ export class CtrlAccessSQL extends BaseSQL {
             `;
 
 			try {
-				resp = (await this.db.raw(sql, {
-					alias: aliasCtrlAccess,
-				}))[0];
+				resp = (await this.db.raw(sql, { alias: aliasCtrlAccess }))[0];
 
 				cntCtrlAccess = Number(resp[0].cnt);
 			} catch (e) {
@@ -220,9 +218,10 @@ export class CtrlAccessSQL extends BaseSQL {
 			}
 		}
 
-		if (ok) { // Ответ
+		if (ok) {
 			return cntCtrlAccess;
 		}
+
 		return -1; // В случае если произошла SQL ошибка
 	}
 }

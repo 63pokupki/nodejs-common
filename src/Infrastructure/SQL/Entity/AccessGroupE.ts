@@ -1,20 +1,38 @@
-// Компоненты
 import { ModelRulesC } from '@a-a-game-studio/aa-components/lib';
 
-/**
- * WorldFasa
- *
- * @ORM\Table(name="access_group")
- * @ORM\Entity
- */
-export class AccessGroupE {
-	// Имя таблицы
-	public NAME = 'access_group';
+/** */
+export interface AccessGroupI {
+	id?: number;
+	group_id?: number;
+	ctrl_access_id?: number;
+	create_access?: boolean;
+	read_access?: boolean;
+	update_access?: boolean;
+	delete_access?: boolean;
+}
 
-	/**
-     * Обновление ключевых записей таблицы
-     */
-	public getRulesUpdate() {
+/** */
+export class AccessGroupE {
+	/** Имя таблицы */
+	static NAME = 'access_group';
+
+	/** Правила создания записей в таблице */
+	public getRulesInsert(): ModelRulesC {
+		const rules = new ModelRulesC();
+
+		rules.set(rules.rule('group_id')
+			.typeInt()
+			.error('group_id - неверный формат'));
+
+		rules.set(rules.rule('ctrl_access_id')
+			.typeInt()
+			.error('ctrl_access_id - неверный формат'));
+
+		return rules;
+	}
+
+	/** Обновление ключевых записей таблицы */
+	public getRulesUpdate(): ModelRulesC {
 		const rules = new ModelRulesC();
 
 		rules.set(rules.rule('create_access')
@@ -33,23 +51,6 @@ export class AccessGroupE {
 			.typeBool()
 			.error('delete_access - неверный формат'));
 
-		return rules.get();
-	}
-
-	/**
-     *  Правила создания записей в таблице
-     */
-	public getRulesInsert() {
-		const rules = new ModelRulesC();
-
-		rules.set(rules.rule('group_id')
-			.typeInt()
-			.error('group_id - неверный формат'));
-
-		rules.set(rules.rule('ctrl_access_id')
-			.typeInt()
-			.error('ctrl_access_id - неверный формат'));
-
-		return rules.get();
+		return rules;
 	}
 }
