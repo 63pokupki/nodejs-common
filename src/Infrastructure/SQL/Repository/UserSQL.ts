@@ -72,7 +72,7 @@ export class UserSQL extends BaseSQL {
 	 * @param idUser
 	 */
 	public async getUserByID(idUser: number): Promise<any> {
-		let resp = null;
+		let resp = [];
 
 		const sql = `
             SELECT
@@ -99,8 +99,6 @@ export class UserSQL extends BaseSQL {
 
 			if (resp.length > 0) {
 				resp = resp[0];
-			} else {
-				resp = null;
 			}
 		} catch (e) {
 			this.errorSys.error('get_user', 'Не удалось получить пользователя');
@@ -114,7 +112,7 @@ export class UserSQL extends BaseSQL {
 	 * @param apikey
 	 */
 	public async fGetUserInfoByApiKey(apikey = ''): Promise<UserInfoI> {
-		let resp = null;
+		let resp = [];
 
 		const sql = `
 			SELECT  
@@ -133,7 +131,8 @@ export class UserSQL extends BaseSQL {
             FROM ${UserE.NAME} u
             JOIN user_token ut ON ut.user_id = u.user_id
             WHERE ut.token = :token
-            LIMIT 1
+			LIMIT 1
+			;
         `;
 
 		try {
@@ -141,8 +140,6 @@ export class UserSQL extends BaseSQL {
 
 			if (resp.length > 0) {
 				resp = resp[0];
-			} else {
-				resp = null;
 			}
 		} catch (e) {
 			this.errorSys.error('user_info_by_apikey', 'Не удалось получить информацию о пользователе');
@@ -157,7 +154,6 @@ export class UserSQL extends BaseSQL {
 	 */
 	public async isAuth(apikey = ''): Promise<boolean> {
 		let bResp = false;
-		let resp: any[] = null;
 
 		/* если ключ больше 4 */
 		if (apikey.length > 4) {
@@ -176,7 +172,7 @@ export class UserSQL extends BaseSQL {
                 `;
 
 				try {
-					resp = (await this.db.raw(sql, { token: apikey }))[0];
+					const resp = (await this.db.raw(sql, { token: apikey }))[0];
 
 					if (resp.length > 0) {
 						bResp = true;
@@ -197,7 +193,6 @@ export class UserSQL extends BaseSQL {
 	 * @param sms
 	 */
 	public async getUserIdByPhoneAndSms(phone: string, sms: string): Promise<number> {
-		let resp: any[] = null;
 		let idUser = 0;
 
 		/* дата создания смски сегодня или никогда */
@@ -213,12 +208,10 @@ export class UserSQL extends BaseSQL {
         `;
 
 		try {
-			resp = (await this.db.raw(sql, { phone, sms }))[0];
+			const resp = (await this.db.raw(sql, { phone, sms }))[0];
 
 			if (resp.length > 0) {
 				idUser = resp[0].user_id;
-			} else {
-				resp = null;
 			}
 		} catch (e) {
 			this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
@@ -232,7 +225,7 @@ export class UserSQL extends BaseSQL {
 	 * @param username
 	 */
 	public async getUserByUsername(username: string): Promise<any[]> {
-		let resp: any[] = null;
+		let resp: any[] = [];
 
 		/* todo прикрутить reddis */
 		const sql = `
@@ -247,8 +240,6 @@ export class UserSQL extends BaseSQL {
 
 			if (resp.length > 0) {
 				resp = resp[0];
-			} else {
-				resp = null;
 			}
 		} catch (e) {
 			this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
@@ -262,9 +253,7 @@ export class UserSQL extends BaseSQL {
 	 * @param user_id
 	 */
 	public async getUserApiKey(user_id: number): Promise<string> {
-		let resp: any[] = null;
-
-		let token: string = null;
+		let token = '';
 		const sql = `
             select * from user_token ut
             where ut.user_id = :user_id
@@ -274,12 +263,10 @@ export class UserSQL extends BaseSQL {
         `;
 
 		try {
-			resp = (await this.db.raw(sql, { user_id }))[0];
+			const resp = (await this.db.raw(sql, { user_id }))[0];
 
 			if (resp.length > 0) {
 				token = resp[0].token;
-			} else {
-				token = null;
 			}
 		} catch (e) {
 			this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
@@ -316,21 +303,13 @@ export class UserSQL extends BaseSQL {
 	 * @param userId
 	 */
 	public async fGetUserInfoById(userId: number): Promise<any[]> {
-		let resp: any[] = null;
-
-		const sql = `
-            select u.* from ${UserE.NAME} u
-            where u.user_id= :user_id
-            limit 1
-        `;
+		let resp: any[] = [];
 
 		try {
-			resp = (await this.db.raw(sql, { user_id: userId }))[0];
+			resp = await this.db(UserE.NAME).where({ user_id: userId }).select().limit(1);
 
 			if (resp.length > 0) {
 				resp = resp[0];
-			} else {
-				resp = null;
 			}
 		} catch (e) {
 			this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');

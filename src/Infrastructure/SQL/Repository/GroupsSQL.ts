@@ -12,7 +12,7 @@ export class GroupsSQL extends BaseSQL {
 	 * @param idGroup
 	 */
 	public async getGroupByID(idGroup: number): Promise<any> {
-		let resp: any[] = null;
+		let resp: any[] = [];
 
 		const sql = `
             SELECT

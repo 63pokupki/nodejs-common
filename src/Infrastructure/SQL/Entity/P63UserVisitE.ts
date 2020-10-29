@@ -10,7 +10,7 @@ export interface P63UserVisitI{
 /** Визиты пользователей */
 export class P63UserVisitE {
 	/** Имя таблицы */
-	public static NAME = 'p63_user_visit';
+	static NAME = 'p63_user_visit';
 
 	/** Правила создания записей в таблице */
 	public getRulesInsert(): ModelRulesC {

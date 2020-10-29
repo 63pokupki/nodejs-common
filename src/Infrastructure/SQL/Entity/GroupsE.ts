@@ -29,7 +29,7 @@ export interface GroupsI {
 /** */
 export class GroupsE {
 	/** Имя таблицы */
-	public static NAME = 'phpbb_groups';
+	static NAME = 'phpbb_groups';
 
 	/** Обновление ключевых записей таблицы */
 	public getRulesUpdate(): ModelRulesC {

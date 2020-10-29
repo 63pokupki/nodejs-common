@@ -194,8 +194,6 @@ export class CtrlAccessSQL extends BaseSQL {
      */
 	public async cntCtrlAccessByAlias(aliasCtrlAccess: string): Promise<number> {
 		let ok = this.errorSys.isOk();
-
-		let resp = null;
 		let cntCtrlAccess = 0;
 
 		if (ok) { // Получить количество контроллеров доступа
@@ -209,7 +207,7 @@ export class CtrlAccessSQL extends BaseSQL {
             `;
 
 			try {
-				resp = (await this.db.raw(sql, { alias: aliasCtrlAccess }))[0];
+				const resp = (await this.db.raw(sql, { alias: aliasCtrlAccess }))[0];
 
 				cntCtrlAccess = Number(resp[0].cnt);
 			} catch (e) {

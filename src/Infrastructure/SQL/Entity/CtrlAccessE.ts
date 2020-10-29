@@ -11,7 +11,7 @@ export interface CtrlAccessI {
 /** */
 export class CtrlAccessE {
 	/** Имя таблицы */
-	public static NAME = 'ctrl_access';
+	static NAME = 'ctrl_access';
 
 	/** Правила обновления записей в таблице */
 	public getRulesUpdate(): ModelRulesC {

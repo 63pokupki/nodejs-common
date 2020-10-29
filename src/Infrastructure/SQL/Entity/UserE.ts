@@ -6,12 +6,16 @@ export interface UserI {
 	group_id?: number;
 	user_permissions?: string;
 	user_perm_from?: number;
+	user_ip?: string;
+	user_regdate?: number;
+	username?: string;
+	username_clean?: string;
 }
 
 /** */
 export class UserE {
 	/** Имя таблицы */
-	public static NAME = 'phpbb_users';
+	static NAME = 'phpbb_users';
 
 	/** Правила создания записей в таблице */
 	public getRulesInsert(): ModelRulesC {
