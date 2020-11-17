@@ -65,7 +65,6 @@ export class RedisSys {
 				if (err) {
 					reject(err);
 				}
-
 				resolve(reply);
 			});
 		});

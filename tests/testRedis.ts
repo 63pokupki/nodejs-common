@@ -9,7 +9,7 @@ export const redisSys = new RedisSys(redisConf);
 
 async function run(){
 	const v = await redisSys.scan('*', 1000);
-	console.log(v);
+	await redisSys.del(v);
 }
 
 run();
