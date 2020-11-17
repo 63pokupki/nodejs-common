@@ -50,7 +50,7 @@ export class RedisSys {
 					reject(err);
 				}
 
-				resolve(reply);
+				resolve(reply[1]);
 			});
 		});
 	}
