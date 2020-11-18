@@ -382,8 +382,6 @@ export class UserSys {
 	public async isAuth(): Promise<boolean> {
 		let ok = this.errorSys.isOk();
 
-		console.log('apikey>>>',this.apikey);
-
 		if (ok && await this.userSQL.isAuth(this.apikey)) {
 			this.errorSys.devNotice('is_auth', 'Вы авторизованы');
 		} else {

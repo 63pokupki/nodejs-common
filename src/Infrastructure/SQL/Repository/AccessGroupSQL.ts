@@ -134,7 +134,7 @@ export class AccessGroupSQL extends BaseSQL {
             `;
 
 			try {
-				const resp = (await this.db.raw(sql, { trl_access_id: idCtrlAccess }))[0];
+				const resp = (await this.db.raw(sql, { ctrl_access_id: idCtrlAccess }))[0];
 				bAccess = Boolean(resp[0].cnt);
 			} catch (e) {
 				this.errorSys.errorEx(e,'get_access_to_ctrl', 'Не удалось получить доступы к модулю');
