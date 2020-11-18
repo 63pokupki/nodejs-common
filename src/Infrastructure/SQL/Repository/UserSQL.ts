@@ -115,7 +115,7 @@ export class UserSQL extends BaseSQL {
 		let resp = [];
 
 		const sql = `
-			SELECT  
+			SELECT
 				u.user_id,
 				u.user_type,
 				u.group_id,
@@ -163,8 +163,8 @@ export class UserSQL extends BaseSQL {
 			} else {
 				// Получаем одного пользователя
 				const sql = `
-					SELECT 
-						ut.token 
+					SELECT
+						ut.token
 					FROM user_token ut
                     WHERE ut.token = :token order by ut.user_token_id desc
 					LIMIT 1
@@ -179,7 +179,7 @@ export class UserSQL extends BaseSQL {
 						this.redisSys.set(`is_auth_${apikey}`, 1, 3600);
 					}
 				} catch (e) {
-					this.errorSys.error('api_key_in_db', 'Не удалось проверить apikey');
+					this.errorSys.errorEx(e, 'api_key_in_db', 'Не удалось проверить apikey');
 				}
 			}
 		}

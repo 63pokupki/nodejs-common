@@ -14,7 +14,11 @@ async function run(){
 	for (let i = 0; i < 10000; i++) {
 		for (let j = 0; j < 10000; j++) {
 
-			const v = await redisSys.set(uuidv4(), uuidv4());
+			const sKey = uuidv4();
+
+			await redisSys.set(sKey, uuidv4());
+			const v = await redisSys.get(sKey);
+			console.log(sKey, v);
 
 
 			process.stdout.write('.');
