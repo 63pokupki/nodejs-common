@@ -220,8 +220,6 @@ export class CacheSys {
      * @param sKey
      */
 	async clearCache(sKey: string): Promise<void> {
-		const iCount = await this.redisSys.dbsize();
-		const aKeyList = await this.redisSys.scan(sKey, iCount);
-		this.redisSys.del(aKeyList);
+		const aKeyList = await this.redisSys.clear(sKey, 1000);
 	}
 }

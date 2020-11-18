@@ -1,73 +1,45 @@
-import * as redis from 'redis';
+import * as redis from 'ioredis';
 
 /** Обертка над редисом которая понимает async/await */
 export class RedisSys {
-	public redisClient: redis.RedisClient;
+	public redisMaster: redis.Redis;
+	public redisSlave: redis.Redis;
 
-	constructor(conf: any) {
-		this.redisClient = redis.createClient(conf);
+	constructor(conf:string) {
+		this.redisMaster = new redis.default(conf);
+		this.redisSlave = new redis.default(conf);
 	}
 
 	/**
      * Получить значение из редиса
      * @param key
      */
-	public get(key: string): Promise<string> {
-		return new Promise((resolve) => {
-			this.redisClient.get(key, (err: any, reply: string) => {
-				if (err) {
-					resolve('');
-				}
-				resolve(reply);
-			});
-		});
+	public async get(key: string): Promise<string> {
+		return await this.redisSlave.get(key);
 	}
 
 	/**
      * Получить ключи по шаблону - медленный способ
      * @param keys
      */
-	public keys(keys: string): Promise<any[]> {
-		return new Promise((resolve, reject) => {
-			this.redisClient.keys(keys, (err: any, reply: any[]) => {
-				if (err) {
-					reject(err);
-				}
-
-				resolve(reply);
-			});
-		});
+	public async keys(keys: string): Promise<any[]> {
+		return await this.redisSlave.keys(keys);
 	}
 
 	/**
      * Получить ключи по шаблону сканированием
      * @param keys
      */
-	public scan(keys: string, count:number): Promise<any[]> {
-		return new Promise((resolve, reject) => {
-			this.redisClient.scan('0', 'MATCH', keys, 'COUNT', String(count+1000), (err: any, reply: any[]) => {
-				if (err) {
-					reject(err);
-				}
-
-				resolve(reply[1]);
-			});
-		});
+	public async scan(keys: string, count:number): Promise<any[]> {
+		return (await this.redisSlave.scan(0, 'MATCH', keys, 'COUNT', count))[1];
 	}
 
 	/**
      * Получить количество ключей базы данных
      * @param keys
      */
-	public dbsize(): Promise<number> {
-		return new Promise((resolve, reject) => {
-			this.redisClient.dbsize((err: any, reply: number) => {
-				if (err) {
-					reject(err);
-				}
-				resolve(reply);
-			});
-		});
+	public async dbsize(): Promise<number> {
+		return await this.redisSlave.dbsize();
 	}
 
 	/**
@@ -76,17 +48,29 @@ export class RedisSys {
      * @param val
      * @param time
      */
-	public set(key: string, val: string|number, time = 3600): void {
-		this.redisClient.set(key, String(val), 'EX', time);
+	public async set(key: string, val: string|number, time = 3600): Promise<any> {
+		await this.redisMaster.set(key, String(val), 'EX', time);
+	}
+
+	/**
+	 * Найти и удалить ключи по шаблону
+	 * @param sMatch
+	 * @param iCount
+	 */
+	public async clear(sMatch:string, iCount:number): Promise<any>{
+		const stream = await this.redisSlave.scanStream({match:sMatch, count:iCount});
+		stream.on("data", (aKeys) => {
+			this.del(aKeys);
+		});
 	}
 
 	/**
      * Удалить ключи по ID
      * @param keys
      */
-	public del(keys: any[]): void {
+	public async del(keys: any[]): Promise<any> {
 		if (keys.length > 0) {
-			this.redisClient.unlink(keys);
+			await this.redisMaster.del(keys);
 		}
 	}
 }
