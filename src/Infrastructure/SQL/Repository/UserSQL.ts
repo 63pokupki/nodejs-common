@@ -173,6 +173,7 @@ export class UserSQL extends BaseSQL {
 
 				try {
 					const resp = (await this.db.raw(sql, { token: apikey }))[0];
+					console.log('isAUTH_SQL', resp);
 
 					if (resp.length > 0) {
 						bResp = true;
