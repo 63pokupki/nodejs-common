@@ -220,6 +220,7 @@ export class CacheSys {
      * @param sKey
      */
 	async clearCache(sKey: string): Promise<void> {
-		const aKeyList = await this.redisSys.clear(sKey, 1000);
+		const aKeyList = await this.redisSys.keys(sKey);
+		this.redisSys.del(aKeyList);
 	}
 }
