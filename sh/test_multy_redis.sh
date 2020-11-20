@@ -1,0 +1,16 @@
+redis-server --port 6380 &> /dev/null
+redis-server --port 6381 &> /dev/null
+redis-server --port 6382 &> /dev/null
+redis-server --port 6383 &> /dev/null
+redis-server --port 6384 &> /dev/null
+redis-server --port 6385 &> /dev/null
+redis-server --port 6386 &> /dev/null
+redis-server --port 6387 &> /dev/null
+redis-server --port 6388 &> /dev/null
+redis-server --port 6389 &> /dev/null
+redis-server --port 6390 &> /dev/null
+redis-server --port 6391 &> /dev/null
+redis-server --port 6392 &> /dev/null
+redis-server --port 6393 &> /dev/null
+redis-server --port 6394 &> /dev/null
+redis-server --port 6395 &> /dev/null
