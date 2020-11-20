@@ -7,7 +7,7 @@ export const redisConf = {
 
 	// Конфигруация редиса
 	urlDbMaster: 'redis://127.0.0.1:6379/0',
-	urlDbScan: 'redis://127.0.0.1:6379/1',
+	urlDbScan: 'redis://127.0.0.1:6380/1',
 
 	// url:'redis://10.1.100.105:6381'
 	// url: 'redis://10.1.100.151:6379',
@@ -51,12 +51,12 @@ async function runSelect(){
 
 async function runScan(){
 	for (let i = 0; i < 10000; i++) {
+		let a = [];
 		for (let j = 0; j < 100; j++) {
-			const a = await redisSys.scan(uuid4().slice(0,3))
+			a = await redisSys.scan('*'+uuid4().slice(0,3)+'*')
 			cntScan++;
-
-			console.log(`|runScan|${cntScan}|`, a.length);
 		}
+		console.log(`|runScan|${cntScan}|`, a.length);
 	}
 }
 
@@ -75,12 +75,12 @@ async function runInsert(){
 }
 
 // for (let i = 0; i < 10; i++) {
-	//runInsert();
+	runInsert();
 // }
 
 
 // for (let i = 0; i < 10; i++) {
-	//runSelect();
+	runSelect();
 // }
 
 // for (let i = 0; i < 10; i++) {

@@ -23,9 +23,6 @@ export class RedisSys {
 
 	public sphinxIndex:string;
 
-	public lastInsert: number;
-	public poolQuery:any[] = [];
-
 	constructor(param:ConnectI) {
 
 		// Базы данных для чтения
@@ -52,7 +49,7 @@ export class RedisSys {
 		let kCaсheKey = await this.redisScan.get(key);
 
 		// console.log('get-redis-scan',kCaсheKey);
-		if(!kCaсheKey){
+		if(!kCaсheKey && this.sphinxDb){
 			kCaсheKey = await this.getFromSphinx(key);
 
 			if(kCaсheKey){ // Если ключ в sphinx все таки есть записываем его в редис scan
@@ -117,7 +114,7 @@ export class RedisSys {
 
 		// Записываем ключ если его нет при настройках sphinx
 		if(!kCaсheKey && this.sphinxDb){
-			kCaсheKey = await this.setInSphinx(key, val);
+			kCaсheKey = await this.setInSphinx(key);
 
 			if(kCaсheKey){ // Записываем только если смогли сделать ключ
 				await this.redisScan.set(key, kCaсheKey);
@@ -144,7 +141,7 @@ export class RedisSys {
 	 * @param iCount
 	 */
 	public async clear(sMatch:string): Promise<any>{
-		const aKeys = await this.keys(sMatch)
+		const aKeys = await this.keys(sMatch);
 		await this.del(aKeys);
 	}
 
@@ -173,7 +170,6 @@ export class RedisSys {
 	*/
 	private randomInteger():bigint {
 		let sUuid = uuid4();
-
 
 		let aSymbol:number[] = [];
 		for (let c = 0; c < sUuid.length; c++) {
@@ -212,15 +208,12 @@ export class RedisSys {
             WHERE
                 MATCH(:key)
             AND
-                ns = :ns
-            AND
                 end_at > :end_at
             LIMIT 1
             ;
         `
 ;
         const param = {
-            ns:'',
             key:sKey,
             end_at:(new Date().getTime() / 1000)
         };
@@ -246,8 +239,18 @@ export class RedisSys {
 
 		let aKey = sKey.split('*');
 
-		aKey = aKey.map(v => '(*'+String(sKey)+'*)') ;
+		let aKeyNew:string[] = [];
+		for (let i = 0; i < aKey.length; i++) {
+			const vKey = aKey[i];
+
+			if(vKey){
+				aKeyNew.push('(*'+String(sKey)+'*)');
+			}
+		}
+		aKey = aKeyNew;
+
 		sKey = aKey.join('<<');
+
         const sql = `
 
             SELECT id FROM ${this.sphinxIndex}
@@ -278,46 +281,29 @@ export class RedisSys {
 	}
 
 	/**
-
      * Поместить значение в редис
-     * @param key
+     * @param sKey
      * @param val
      * @param time
      */
-    public async setInSphinx(key: string, val: string|number): Promise<string> {
-        const aKey = key.split('.');
-        let sNamespace = '';
-        let sKey = key;
-        if(aKey.length > 1){
-            sNamespace = String(aKey[0]);
-            sKey = String(aKey[1]);
-        } else {
-            sKey = String(sKey)
-        }
+    public async setInSphinx(sKey: string): Promise<string> {
+
         const incr = this.randomInteger();
         const vData = {
             id:incr ,
-            ns: sNamespace,
             k: sKey,
-            data: val,
             created_at: (new Date().getTime() / 1000),
             end_at: (new Date().getTime() / 1000)+(24*3600)
         }
-        this.poolQuery.push(vData);
 
-        // if(this.poolQuery.length > 100 || this.lastInsert + 1000 < (new Date().getTime())){
-            this.lastInsert = (new Date().getTime());
-            const a = this.poolQuery;
-            this.poolQuery = [];
-            try {
-                (await this.sphinxDb(this.sphinxIndex)
-                    .insert(vData)
-                );
+		try {
+			(await this.sphinxDb(this.sphinxIndex)
+				.insert(vData)
+			);
 
-            } catch (e) {
-                console.log('>>>ERROR>>>', e);
-            }
-		// }
+		} catch (e) {
+			console.log('>>>ERROR>>>', e);
+		}
 
 		return String(incr);
 	}
