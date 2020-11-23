@@ -142,6 +142,7 @@ export class RedisSys {
 	 */
 	public async clear(sMatch:string): Promise<any>{
 		const aKeys = await this.keys(sMatch);
+		console.log('aKeys for del', aKeys);
 		await this.del(aKeys);
 	}
 
