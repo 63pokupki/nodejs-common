@@ -198,10 +198,12 @@ export class RedisSys {
 	/**
 
      * Получить значение из редиса
-     * @param key
+     * @param sKey
      */
-    private async getFromSphinx(key: string): Promise<string> {
-		const sKey = '(*'+String(key)+'*)';
+    private async getFromSphinx(sKey: string): Promise<string> {
+		sKey = this.clearKeyForMatch(sKey);
+
+		sKey = '(*'+String(sKey)+'*)';
         const sql = `
 
             SELECT id FROM ${this.sphinxIndex}
@@ -236,6 +238,8 @@ export class RedisSys {
      * @param keys
      */
     public async scanFromSphinx(sKey: string): Promise<number[]> {
+
+		sKey = this.clearKeyForMatch(sKey);
 
 		let aKey = sKey.split('*');
 
@@ -306,5 +310,15 @@ export class RedisSys {
 		}
 
 		return String(incr);
+	}
+
+
+	// Очистка ключа для поиска
+	public clearKeyForMatch(sKey: string): string {
+
+		sKey.replace(/[(]/g, "\\(")
+		sKey.replace(/[)]/g, "\\)")
+
+		return sKey;
 	}
 }
