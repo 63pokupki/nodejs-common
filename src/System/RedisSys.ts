@@ -53,7 +53,7 @@ export class RedisSys {
 			kCaсheKey = await this.getFromSphinx(key);
 
 			if(kCaсheKey){ // Если ключ в sphinx все таки есть записываем его в редис scan
-				await this.redisScan.set(key, kCaсheKey, 'EX', 24*3600);
+				await this.redisScan.set(key, kCaсheKey, 'EX', 30*24*3600);
 			}
 		}
 		// console.log('get-sphinx',kCaсheKey);
@@ -125,7 +125,7 @@ export class RedisSys {
 		if(!kCaсheKey && !this.sphinxDb){
 			kCaсheKey = uuid4();
 			// Кешируем на 1 день
-			await this.redisScan.set(key, kCaсheKey, 'EX', 24*3600);
+			await this.redisScan.set(key, kCaсheKey, 'EX', 30*24*3600);
 		}
 
 		if(kCaсheKey){
@@ -293,7 +293,7 @@ export class RedisSys {
             id:incr ,
             k: sKey,
             created_at: (new Date().getTime() / 1000),
-            end_at: (new Date().getTime() / 1000)+(24*3600)
+            end_at: (new Date().getTime() / 1000)+(30*24*3600)
         }
 
 		try {

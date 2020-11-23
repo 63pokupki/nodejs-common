@@ -7,7 +7,7 @@ export const redisConf = {
 
 	// Конфигруация редиса
 	urlDbMaster: 'redis://127.0.0.1:6379/0',
-	urlDbScan: 'redis://127.0.0.1:6380/1',
+	urlDbScan: 'redis://127.0.0.1:6379/1',
 
 	// url:'redis://10.1.100.105:6381'
 	// url: 'redis://10.1.100.151:6379',
@@ -38,7 +38,7 @@ let cntFind = 0;
 async function runSelect(){
 
 	for (let i = 0; i < 10000; i++) {
-		for (let j = 0; j < 100; j++) {
+		for (let j = 0; j < 200; j++) {
 			const v = await redisSys.get(uuid4().slice(0,3));
 			if(v){
 				cntFind++;
@@ -52,18 +52,31 @@ async function runSelect(){
 async function runScan(){
 	for (let i = 0; i < 10000; i++) {
 		let a = [];
-		for (let j = 0; j < 100; j++) {
+		for (let j = 0; j < 200; j++) {
 			a = await redisSys.scan('*'+uuid4().slice(0,3)+'*')
+
 			cntScan++;
 		}
 		console.log(`|runScan|${cntScan}|`, a.length);
 	}
 }
 
+async function runDel(){
+	for (let i = 0; i < 10000; i++) {
+		let a = [];
+		for (let j = 0; j < 200; j++) {
+			a = await redisSys.scan('*'+uuid4().slice(0,3)+'*')
+
+			cntScan++;
+		}
+		console.log(`|runDel|${cntScan}|`, a.length);
+	}
+}
+
 // Запуск insert
 async function runInsert(){
     for (let i = 0; i < 10000; i++) {
-		for (let j = 0; j < 100; j++) {
+		for (let j = 0; j < 200; j++) {
 			await redisSys.set(`key-${uuid4()}`, `val-${uuid4()}`, 3600);
 			cntInsert++;
 		}
@@ -85,4 +98,8 @@ async function runInsert(){
 
 // for (let i = 0; i < 10; i++) {
 	runScan();
+// }
+
+// for (let i = 0; i < 10; i++) {
+	runDel();
 // }
