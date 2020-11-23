@@ -249,7 +249,7 @@ export class RedisSys {
 			const vKey = aKey[i];
 
 			if(vKey){
-				aKeyNew.push('(*'+String(sKey)+'*)');
+				aKeyNew.push('(*'+String(vKey)+'*)');
 			}
 		}
 		aKey = aKeyNew;
