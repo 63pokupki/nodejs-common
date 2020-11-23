@@ -1,3 +1,4 @@
+import Knex from 'knex';
 import { SeoConfigI } from '../Components/Seo';
 
 /** Подключение к S3 */
@@ -45,7 +46,14 @@ export interface MainConfig {
 	};
 	// Настройки редиса
 	redis: {
-		url: string; // "redis://127.0.0.1:6379"
+
+		// Конфигруация редиса
+		urlDbMaster: string,
+		urlDbScan: string,
+
+		// Конфигурация сфинкс
+		sphinxIndex: string, // индекс sphinx для поиска ключей
+		sphinxDb: any; // Knex Конфигурайия для подключения к sphinx
 	};
 	// Общие настройки
 	common: {
