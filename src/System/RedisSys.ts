@@ -193,7 +193,7 @@ export class RedisSys {
 
 		let sSymbol2 = aSymbol.join('');
 		// console.log(sUuid, sSymbol2);
-		sSymbol2 = sSymbol2.slice(0, 18);
+		sSymbol2 = sSymbol2.slice(0, 16);
 
 		let iSymbol2 = BigInt(sSymbol2);
 		// console.log(sUuid, iSymbol2);
@@ -224,7 +224,7 @@ export class RedisSys {
         const param = {
             end_at:(new Date().getTime() / 1000)
         };
-        console.log('>>>getFromSphinx>>>', this.sphinxDb.raw(sql, param).toString());
+        // console.log('>>>getFromSphinx>>>', this.sphinxDb.raw(sql, param).toString());
         let v:any = null;
         try {
             v = (await this.sphinxDb.raw(sql, param))[0][0];
@@ -262,7 +262,7 @@ export class RedisSys {
 
         const sql = `
 
-            SELECT id FROM ${this.sphinxIndex}
+            SELECT id, v FROM ${this.sphinxIndex}
             WHERE
                 MATCH('${sKey}')
             AND
@@ -275,16 +275,16 @@ export class RedisSys {
         const param = {
             end_at:(new Date().getTime() / 1000)
         };
-        console.log('>>>scanFromSphinx>>>', this.sphinxDb.raw(sql, param).toString());
+        // console.log('>>>scanFromSphinx>>>', this.sphinxDb.raw(sql, param).toString());
         let a:any[] = null;
         try {
             a = (await this.sphinxDb.raw(sql, param))[0];
         } catch (e) {
             console.log('>>>ERROR>>>', e);
 		}
-		console.log('>>>scanFromSphinx-VAL>>>', a);
+		// console.log('>>>scanFromSphinx-VAL>>>', a);
         if(a){
-            a = a.map(v => String(v.id));
+            a = a.map(v => String(v.v));
         }
         return a;
 	}
@@ -301,8 +301,9 @@ export class RedisSys {
 		let out:string = String(incr); // Ответ
 
         const vData = {
-            id:incr ,
-            k: sKey,
+            id:String(incr),
+			k: sKey,
+			v: out,
             created_at: (new Date().getTime() / 1000),
             end_at: (new Date().getTime() / 1000)+(30*24*3600)
         }
