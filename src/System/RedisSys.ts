@@ -70,8 +70,8 @@ export class RedisSys {
      * Получить ключи по шаблону - медленный способ
      * @param sKeyPattern
      */
-	public async keys(sKeyPattern: string): Promise<number[]> {
-		let aKeys:number[] = [];
+	public async keys(sKeyPattern: string): Promise<string[]> {
+		let aKeys:string[] = [];
 		if(this.sphinxDb){
 			aKeys = await this.scanFromSphinx(sKeyPattern);
 		} else {
@@ -84,8 +84,8 @@ export class RedisSys {
      * Получить ключи по шаблону сканированием
      * @param keys
      */
-	public async scan(sKeyPattern: string): Promise<number[]> {
-		let aKeys:number[] = [];
+	public async scan(sKeyPattern: string): Promise<string[]> {
+		let aKeys:string[] = [];
 		if(this.sphinxDb){
 			aKeys = await this.scanFromSphinx(sKeyPattern);
 		} else {
@@ -109,12 +109,12 @@ export class RedisSys {
      * @param val
      * @param time
      */
-	public async set(key: string, val: string|number, time = 3600): Promise<number> {
+	public async set(key: string, val: string|number, time = 3600): Promise<string> {
 		let kCaсheKey = await this.redisScan.get(key);
 
 		// Записываем ключ если его нет при настройках sphinx
 		if(!kCaсheKey && this.sphinxDb){
-			kCaсheKey = await this.setInSphinx(key);
+				kCaсheKey = await this.setInSphinx(key);
 
 			if(kCaсheKey){ // Записываем только если смогли сделать ключ
 				await this.redisScan.set(key, kCaсheKey);
@@ -132,7 +132,7 @@ export class RedisSys {
 			await this.redisMaster.set(kCaсheKey, String(val), 'EX', time);
 		}
 
-		return Number(kCaсheKey);
+		return kCaсheKey;
 	}
 
 	/**
@@ -140,10 +140,11 @@ export class RedisSys {
 	 * @param sMatch
 	 * @param iCount
 	 */
-	public async clear(sMatch:string): Promise<any>{
+	public async clear(sMatch:string): Promise<string[]>{
 		const aKeys = await this.keys(sMatch);
-		console.log('aKeys for del', aKeys);
+		// console.log('aKeys for del', aKeys);
 		await this.del(aKeys);
+		return aKeys;
 	}
 
 	/**
@@ -204,7 +205,7 @@ export class RedisSys {
     private async getFromSphinx(sKey: string): Promise<string> {
 		sKey = this.clearKeyForMatch(sKey);
 
-		sKey = '"'+String(sKey)+'"';
+		sKey = '="'+String(sKey)+'"';
         const sql = `
 
             SELECT id FROM ${this.sphinxIndex}
@@ -238,7 +239,7 @@ export class RedisSys {
      * Получить ключи по шаблону сканированием
      * @param keys
      */
-    public async scanFromSphinx(sKey: string): Promise<number[]> {
+    public async scanFromSphinx(sKey: string): Promise<string[]> {
 
 		sKey = this.clearKeyForMatch(sKey);
 
@@ -249,7 +250,7 @@ export class RedisSys {
 			const vKey = aKey[i];
 
 			if(vKey){
-				aKeyNew.push('(*"'+String(vKey)+'"*)');
+				aKeyNew.push('"*'+String(vKey)+'*"');
 			}
 		}
 		aKey = aKeyNew;
@@ -263,8 +264,8 @@ export class RedisSys {
                 MATCH(:key)
             AND
                 end_at > :end_at
-			LIMIT 100000
-			OPTION max_matches = 100000
+			LIMIT 50000
+			OPTION max_matches = 50000
             ;
 		`;
 
@@ -280,7 +281,7 @@ export class RedisSys {
             console.log('>>>ERROR>>>', e);
         }
         if(a){
-            a = a.map(v => v.id);
+            a = a.map(v => String(v.id));
         }
         return a;
 	}
@@ -293,7 +294,9 @@ export class RedisSys {
      */
     public async setInSphinx(sKey: string): Promise<string> {
 
-        const incr = this.randomInteger();
+		let incr = this.randomInteger();
+		let out:string = String(incr); // Ответ
+
         const vData = {
             id:incr ,
             k: sKey,
@@ -307,16 +310,19 @@ export class RedisSys {
 			);
 
 		} catch (e) {
+			out = ''; // Если произошла ошибка возвращаем пустую строку
 			console.log('>>>ERROR>>>', e);
 		}
 
-		return String(incr);
+		return out;
 	}
 
 
 	// Очистка ключа для поиска
 	public clearKeyForMatch(sKey: string): string {
 
-		return sKey.replace(/["]/g, "");
+		sKey = sKey.replace(/["]/g, "");
+
+		return sKey
 	}
 }

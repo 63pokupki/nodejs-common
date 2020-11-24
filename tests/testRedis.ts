@@ -39,7 +39,7 @@ async function runSelect(){
 
 	for (let i = 0; i < 10000; i++) {
 		for (let j = 0; j < 200; j++) {
-			const v = await redisSys.get(uuid4().slice(0,3));
+			const v = await redisSys.get('key-af7a9be7-7309-442d-9b7a-fb0e3e9d5ae0');
 			if(v){
 				cntFind++;
 			}
@@ -65,7 +65,7 @@ async function runDel(){
 	for (let i = 0; i < 10000; i++) {
 		let a = [];
 		for (let j = 0; j < 200; j++) {
-			a = await redisSys.scan('*'+uuid4().slice(0,3)+'*')
+			// a = await redisSys.clear('*'+uuid4().slice(0,3)+'*')
 
 			cntScan++;
 		}
@@ -88,12 +88,12 @@ async function runInsert(){
 }
 
 // for (let i = 0; i < 10; i++) {
-	runInsert();
+	// runInsert();
 // }
 
 
 // for (let i = 0; i < 10; i++) {
-	runSelect();
+	// runSelect();
 // }
 
 // for (let i = 0; i < 10; i++) {
@@ -101,5 +101,5 @@ async function runInsert(){
 // }
 
 // for (let i = 0; i < 10; i++) {
-	runDel();
+	// runDel();
 // }
