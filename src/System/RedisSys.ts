@@ -281,7 +281,8 @@ export class RedisSys {
             a = (await this.sphinxDb.raw(sql, param))[0];
         } catch (e) {
             console.log('>>>ERROR>>>', e);
-        }
+		}
+		console.log('>>>scanFromSphinx-VAL>>>', a);
         if(a){
             a = a.map(v => String(v.id));
         }
