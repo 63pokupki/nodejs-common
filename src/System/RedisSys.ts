@@ -214,7 +214,7 @@ export class RedisSys {
 
             SELECT id FROM ${this.sphinxIndex}
             WHERE
-                MATCH(:key)
+                MATCH(${sKey})
             AND
                 end_at > :end_at
             LIMIT 1
@@ -222,7 +222,6 @@ export class RedisSys {
         `
 ;
         const param = {
-            key:sKey,
             end_at:(new Date().getTime() / 1000)
         };
         console.log('>>>getFromSphinx>>>', this.sphinxDb.raw(sql, param).toString());
@@ -265,7 +264,7 @@ export class RedisSys {
 
             SELECT id FROM ${this.sphinxIndex}
             WHERE
-                MATCH(:key)
+                MATCH(${sKey})
             AND
                 end_at > :end_at
 			LIMIT 50000
@@ -274,7 +273,6 @@ export class RedisSys {
 		`;
 
         const param = {
-            key:sKey,
             end_at:(new Date().getTime() / 1000)
         };
         console.log('>>>scanFromSphinx>>>', this.sphinxDb.raw(sql, param).toString());
