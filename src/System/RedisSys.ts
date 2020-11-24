@@ -214,7 +214,7 @@ export class RedisSys {
 
             SELECT id FROM ${this.sphinxIndex}
             WHERE
-                MATCH(${sKey})
+                MATCH('${sKey}')
             AND
                 end_at > :end_at
             LIMIT 1
@@ -264,7 +264,7 @@ export class RedisSys {
 
             SELECT id FROM ${this.sphinxIndex}
             WHERE
-                MATCH(${sKey})
+                MATCH('${sKey}')
             AND
                 end_at > :end_at
 			LIMIT 50000
