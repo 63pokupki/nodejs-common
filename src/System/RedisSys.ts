@@ -225,7 +225,7 @@ export class RedisSys {
             key:sKey,
             end_at:(new Date().getTime() / 1000)
         };
-        // console.log(this.dbMaster.raw(sql, param).toString());
+        console.log('>>>getFromSphinx>>>', this.sphinxDb.raw(sql, param).toString());
         let v:any = null;
         try {
             v = (await this.sphinxDb.raw(sql, param))[0][0];
@@ -277,7 +277,7 @@ export class RedisSys {
             key:sKey,
             end_at:(new Date().getTime() / 1000)
         };
-        // console.log(this.dbMaster.raw(sql, param).toString());
+        console.log('>>>scanFromSphinx>>>', this.sphinxDb.raw(sql, param).toString());
         let a:any[] = null;
         try {
             a = (await this.sphinxDb.raw(sql, param))[0];
