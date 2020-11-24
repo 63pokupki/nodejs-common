@@ -143,10 +143,10 @@ export class RedisSys {
 	public async clear(sMatch:string): Promise<string[]>{
 
 		const aKeys = await this.keys(sMatch);
-		console.log('=========================');
-		console.log('aKeys for match', sMatch);
-		console.log('aKeys for del', aKeys);
-		console.log('=========================');
+		// console.log('=========================');
+		// console.log('aKeys for match', sMatch);
+		// console.log('aKeys for del', aKeys);
+		// console.log('=========================');
 		await this.del(aKeys);
 		return aKeys;
 	}

@@ -6,11 +6,9 @@ import { v4 as uuid4 } from 'uuid';
 export const redisConf = {
 
 	// Конфигруация редиса
+
 	urlDbMaster: 'redis://127.0.0.1:6379/0',
 	urlDbScan: 'redis://127.0.0.1:6379/1',
-
-	// url:'redis://10.1.100.105:6381'
-	// url: 'redis://10.1.100.151:6379',
 
 	// Конфигурация сфинкс
 	sphinxIndex:'redis_core_key',
@@ -36,10 +34,11 @@ let cntScan = 0;
 let cntFind = 0;
 
 async function runSelect(){
-
+	const sKey = `key-${uuid4()}`;
+	await redisSys.set(sKey, `val-${uuid4()}`, 3600);
 	for (let i = 0; i < 10000; i++) {
-		for (let j = 0; j < 200; j++) {
-			const v = await redisSys.get('key-af7a9be7-7309-442d-9b7a-fb0e3e9d5ae0');
+		for (let j = 0; j < 100; j++) {
+			const v = await redisSys.get(sKey);
 			if(v){
 				cntFind++;
 			}
@@ -52,7 +51,7 @@ async function runSelect(){
 async function runScan(){
 	for (let i = 0; i < 10000; i++) {
 		let a = [];
-		for (let j = 0; j < 200; j++) {
+		for (let j = 0; j < 100; j++) {
 			a = await redisSys.scan('*'+uuid4().slice(0,3)+'*')
 
 			cntScan++;
@@ -64,8 +63,8 @@ async function runScan(){
 async function runDel(){
 	for (let i = 0; i < 10000; i++) {
 		let a = [];
-		for (let j = 0; j < 200; j++) {
-			// a = await redisSys.clear('*'+uuid4().slice(0,3)+'*')
+		for (let j = 0; j < 100; j++) {
+			a = await redisSys.clear('*'+uuid4().slice(0,5)+'*')
 
 			cntScan++;
 		}
@@ -76,7 +75,7 @@ async function runDel(){
 // Запуск insert
 async function runInsert(){
     for (let i = 0; i < 10000; i++) {
-		for (let j = 0; j < 200; j++) {
+		for (let j = 0; j < 10; j++) {
 			await redisSys.set(`key-${uuid4()}`, `val-${uuid4()}`, 3600);
 			cntInsert++;
 		}
@@ -87,17 +86,17 @@ async function runInsert(){
     console.log('END');
 }
 
-// for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 500; i++) {
 	runInsert();
+}
+
+
+// for (let i = 0; i < 50; i++) {
+// 	runSelect();
 // }
 
-
 // for (let i = 0; i < 10; i++) {
-	// runSelect();
-// }
-
-// for (let i = 0; i < 10; i++) {
-	runScan();
+// 	runScan();
 // }
 
 // for (let i = 0; i < 10; i++) {
