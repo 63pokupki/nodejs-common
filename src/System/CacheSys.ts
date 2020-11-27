@@ -222,9 +222,10 @@ export class CacheSys {
      */
 	async clearCache(sKey: string): Promise<void> {
 		if(indexOf('*',sKey) >=0 ){ // Если передано регулярное выражение
+
 			await this.redisSys.clear(sKey);
 		} else { // Если имеется точное совпадение
-			const kRedisCache = await this.redisSys.get(sKey);
+			const kRedisCache = await this.redisSys.redisScan.get(sKey);
 			if(kRedisCache){
 				await this.redisSys.del([kRedisCache]);
 			}
