@@ -202,14 +202,13 @@ export class RedisSys {
 
 
 	/**
-
      * Получить значение из редиса
      * @param sKey
      */
     private async getFromSphinx(sKey: string): Promise<string> {
 		sKey = this.clearKeyForMatch(sKey);
 
-		sKey = '="'+String(sKey)+'"';
+		sKey = '"'+String(sKey)+'"';
         const sql = `
 
             SELECT id FROM ${this.sphinxIndex}

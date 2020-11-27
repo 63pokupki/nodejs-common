@@ -34,10 +34,13 @@ let cntScan = 0;
 let cntFind = 0;
 
 async function runSelect(){
-	const sKey = `key-${uuid4()}`;
-	await redisSys.set(sKey, `val-${uuid4()}`, 3600);
+
 	for (let i = 0; i < 10000; i++) {
+		const sKey = `PurchasePageItemFilterExSQL.getItemOfPurchaseByFilter(547919,${i},60,863083b146be8cf8ae4eda541fc217a0)`;
+			await redisSys.set(sKey, `val-${uuid4()}`, 3600);
 		for (let j = 0; j < 100; j++) {
+
+
 			const v = await redisSys.get(sKey);
 			if(v){
 				cntFind++;
@@ -86,17 +89,17 @@ async function runInsert(){
     console.log('END');
 }
 
-for (let i = 0; i < 500; i++) {
-	runInsert();
-}
+// for (let i = 0; i < 500; i++) {
+	// runInsert();
+// }
 
 
 // for (let i = 0; i < 50; i++) {
-// 	runSelect();
+	runSelect();
 // }
 
 // for (let i = 0; i < 10; i++) {
-// 	runScan();
+	// runScan();
 // }
 
 // for (let i = 0; i < 10; i++) {
