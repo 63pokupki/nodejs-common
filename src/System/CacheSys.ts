@@ -4,7 +4,6 @@ import { MainRequest } from './MainRequest';
 import { UserSys } from './UserSys';
 import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 import { isObject } from 'util';
-import { indexOf } from 'lodash';
 
 /**
  * Система кеширования
@@ -221,7 +220,7 @@ export class CacheSys {
      * @param sKey
      */
 	async clearCache(sKey: string): Promise<void> {
-		if(indexOf('*',sKey) >=0 ){ // Если передано регулярное выражение
+		if(sKey.indexOf('*') >=0 ){ // Если передано регулярное выражение
 
 			await this.redisSys.clear(sKey);
 			console.log('clearCache-pattern>>>', sKey);
