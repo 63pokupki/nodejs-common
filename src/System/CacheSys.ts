@@ -224,8 +224,11 @@ export class CacheSys {
 		if(indexOf('*',sKey) >=0 ){ // Если передано регулярное выражение
 
 			await this.redisSys.clear(sKey);
+			console.log('clearCache-pattern>>>', sKey);
 		} else { // Если имеется точное совпадение
 			const kRedisCache = await this.redisSys.redisScan.get(sKey);
+			console.log('clearCache-one>>>', sKey, kRedisCache);
+
 			if(kRedisCache){
 				await this.redisSys.del([kRedisCache]);
 			}

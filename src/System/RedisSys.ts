@@ -211,7 +211,7 @@ export class RedisSys {
 		sKey = '"'+String(sKey)+'"';
         const sql = `
 
-            SELECT id FROM ${this.sphinxIndex}
+            SELECT id, v FROM ${this.sphinxIndex}
             WHERE
                 MATCH('${sKey}')
             AND
@@ -231,7 +231,7 @@ export class RedisSys {
             console.log('>>>ERROR>>>', e);
         }
         if(v){
-            v = v.id;
+            v = v.v;
         }
         // console.log( v);
         return v;
