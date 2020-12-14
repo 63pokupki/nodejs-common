@@ -17,9 +17,12 @@ export const redisConf = {
 		client: 'mysql2',
 		connection: {
 			host: '127.0.0.1',
-			port: '9306',
+			port: '3306',
+			user: 'root',
+			password: '2',
+			database: 'redis_key',
 			decimalNumbers: true,
-			dateStrings: 'date',
+			dateStrings: true,
 		},
 		pool: { min: 0, max: 500 },
 		acquireConnectionTimeout: 60000,
@@ -36,7 +39,7 @@ let cntFind = 0;
 async function runSelect(){
 
 	for (let i = 0; i < 10000; i++) {
-		const sKey = `PurchasePageItemFilterExSQL.getItemOfPurchaseByFilter(547919,${i},60,863083b146be8cf8ae4eda541fc217a0)`;
+		const sKey = `key-${uuid4()}-56d2941-80f7-4f73-bdb9-cc1d0e316a3b-8373663c-3e40-4ae7-8571-7c09d787ade8-3e17d7df-d301-4a05-be27-3bc7406f5725-a196b720-35e6-4d34-b06c-7ff9c3d8b206-2eae7c68-4493-4a33-813e-bf5ebaec49ff-9213e626-c2b8-4108-a9f7-e77cbf7f5827-9426814c-516a-461f-bffb-73e1262347a8`;
 			await redisSys.set(sKey, `val-${uuid4()}`, 3600);
 		for (let j = 0; j < 100; j++) {
 
@@ -55,7 +58,7 @@ async function runScan(){
 	for (let i = 0; i < 10000; i++) {
 		let a = [];
 		for (let j = 0; j < 100; j++) {
-			a = await redisSys.scan('*'+uuid4().slice(0,3)+'*')
+			a = await redisSys.scan('key-'+uuid4().slice(0,4)+'*')
 
 			cntScan++;
 		}
@@ -79,7 +82,7 @@ async function runDel(){
 async function runInsert(){
     for (let i = 0; i < 10000; i++) {
 		for (let j = 0; j < 10; j++) {
-			await redisSys.set(`key-${uuid4()}`, `val-${uuid4()}`, 3600);
+			await redisSys.set(`key-${uuid4()}-${uuid4()}-${uuid4()}-${uuid4()}-${uuid4()}-${uuid4()}-${uuid4()}`, `val-${uuid4()}`, 3600);
 			cntInsert++;
 		}
 		console.log(`|cntInsert|${cntInsert}|`);
@@ -89,9 +92,9 @@ async function runInsert(){
     console.log('END');
 }
 
-// for (let i = 0; i < 500; i++) {
+for (let i = 0; i < 100; i++) {
 	// runInsert();
-// }
+}
 
 
 // for (let i = 0; i < 50; i++) {
@@ -99,7 +102,7 @@ async function runInsert(){
 // }
 
 // for (let i = 0; i < 10; i++) {
-	// runScan();
+	runScan();
 // }
 
 // for (let i = 0; i < 10; i++) {
