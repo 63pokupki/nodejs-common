@@ -385,10 +385,10 @@ export class UserSys {
 		let ok = this.errorSys.isOk();
 
 		if (ok && this.userGroupsList.global_moderators) {
-			this.errorSys.devNotice('is_admin', 'Вы модератор');
+			this.errorSys.devNotice('is_moderator', 'Вы модератор');
 		} else {
 			ok = false;
-			this.errorSys.error('is_admin', 'Вы не модератор');
+			this.errorSys.error('is_moderator', 'Вы не модератор');
 		}
 
 		return ok;
