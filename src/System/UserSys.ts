@@ -377,6 +377,24 @@ export class UserSys {
 	}
 
 	/**
+	 * Проверка является ли пользователь модератором
+	 *
+	 * @return boolean
+	 */
+	public isModerator(): boolean {
+		let ok = this.errorSys.isOk();
+
+		if (ok && this.userGroupsList.global_moderators) {
+			this.errorSys.devNotice('is_moderator', 'Вы модератор');
+		} else {
+			ok = false;
+			this.errorSys.error('is_moderator', 'Вы не модератор');
+		}
+
+		return ok;
+	}
+
+	/**
 	 * Проверка является ли пользователь авторизированным
 	 */
 	public async isAuth(): Promise<boolean> {
