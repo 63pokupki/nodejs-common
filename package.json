@@ -74,10 +74,11 @@
     "release": "./tasks/release.sh",
     "build": "tsc",
     "test": "ts-mocha",
-    "lint": "./node_modules/.bin/eslint 'src/**/*.{js,ts}' --quiet",
-    "lint:fix": "./node_modules/.bin/eslint 'src/**/*.{js,ts}' --fix"
+    "lint": "eslint 'src/**/*.{js,ts}' --quiet",
+    "lint:fix": "eslint 'src/**/*.{js,ts}' --fix"
   },
   "directories": {
+    "lib": "lib",
     "test": "tests"
   }
 }
