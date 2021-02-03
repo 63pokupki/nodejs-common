@@ -14,6 +14,8 @@ interface ConnectI{
 	sphinxIndex?:string;
 }
 
+
+
 /** Обертка над редисом которая понимает async/await */
 export class RedisSys {
 
