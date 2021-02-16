@@ -35,6 +35,7 @@ export interface MainRequest extends Request {
 		dbProvider: DbProvider;
 		redis: any;
 		rabbit: any;
+		sphinxErrors?: any; // Соединение sphinx c ошибками
 	};
 	errorType?: number; // тип ошибки
 }
