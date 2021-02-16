@@ -66,7 +66,7 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: Response, next:
 	try { // отправка ошибки в апи
 		axios.post(req.conf.common.hook_url_errors_api, vErrorForAPI);
 	} catch (e) {
-		req.sys.errorSys.throw(e, 'Не удалось отправить ошибку');
+		console.warn(e, 'Не удалось отправить ошибку');
 	}
 
 	res.send(
