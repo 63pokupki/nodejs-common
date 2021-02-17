@@ -1,5 +1,6 @@
 import { Response, NextFunction } from 'express';
-import { MainRequest, Mattermost } from '../';
+import { MainRequest, Mattermost } from '..';
+import axios from 'axios';
 
 /**
  * Обработчик ошибок выполнения
@@ -46,6 +47,26 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: Response, next:
 			'=================================== \r\n',
 			'\r\n',
 		);
+	}
+
+	const arrError = req.sys.errorSys.getErrors();
+
+	const vErrorForAPI = { // собираем ошибку
+		api_key: req.sys.apikey || null,
+		type: 'backend',
+		env: req.conf.common.env || null,
+		user_id: req.sys.userSys.idUser || null,
+		url: req.originalUrl || null,
+		message: err.message || null,
+		stack: err.stack || null,
+		request_body: JSON.stringify(req.body) || null,
+		fields: JSON.stringify(arrError),
+	};
+
+	try { // отправка ошибки в апи
+		axios.post(req.conf.common.hook_url_errors_api, vErrorForAPI);
+	} catch (e) {
+		console.warn(e, 'Не удалось отправить ошибку');
 	}
 
 	res.send(

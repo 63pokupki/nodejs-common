@@ -48,11 +48,11 @@ export interface MainConfig {
 	redis: {
 
 		// Конфигруация редиса
-		urlDbMaster: string,
-		urlDbScan: string,
+		urlDbMaster: string;
+		urlDbScan: string;
 
 		// Конфигурация сфинкс
-		sphinxIndex: string, // индекс sphinx для поиска ключей
+		sphinxIndex: string; // индекс sphinx для поиска ключей
 		sphinxDb: any; // Knex Конфигурайия для подключения к sphinx
 	};
 	// Общие настройки
@@ -65,6 +65,7 @@ export interface MainConfig {
 		hook_url_monitoring?: string; 	// Сообщения мониторинга в mattermost
 		hook_url_front_errors?: string; // Сообещения об ошибках с фронта в mattermost
 		port: number; 					// порт на котором будет работать экземпляр ноды
+		hook_url_errors_api: string;	// url для миграции ошибок в сфинкс
 	};
 
 	// Параметры ра
