@@ -71,6 +71,7 @@ const Req: any = {
 		sphinx: null,
 		redis: null,
 		rabbit: null,
+		sphinxErrors: null,
 	},
 };
 
