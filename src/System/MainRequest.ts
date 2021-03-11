@@ -36,7 +36,7 @@ export interface MainRequest extends Request {
 		redis: any;
 		rabbit: any;
 		sphinxErrors?: any; // Соединение sphinx c ошибками
-		vendor?: any; // Соединение с базой интеграции поставщиков
+		dbVendor?: any; // Соединение с базой интеграции поставщиков
 	};
 	errorType?: number; // тип ошибки
 }
@@ -73,7 +73,7 @@ const Req: any = {
 		redis: null,
 		rabbit: null,
 		sphinxErrors: null,
-		vendor: null,
+		dbVendor: null,
 	},
 };
 
