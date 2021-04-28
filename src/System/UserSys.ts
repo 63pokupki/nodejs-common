@@ -395,7 +395,27 @@ export class UserSys {
 	}
 
 	/**
+	 * Проверка имеет ли пользователь доступ к ПВЗ
+	 *
+	 * @return boolean
+	 */
+	public isPvzUser(): boolean {
+		let ok = this.errorSys.isOk();
+
+		if (ok && this.userGroupsList.pvz_users) {
+			this.errorSys.devNotice('is_pvz_user', 'Вы пользователь ПВЗ');
+		} else {
+			ok = false;
+			this.errorSys.error('is_pvz_user', 'Вы не пользователь ПВЗ');
+		}
+
+		return ok;
+	}
+
+	/**
 	 * Проверка является ли пользователь авторизированным
+	 *
+	 * @return boolean
 	 */
 	public async isAuth(): Promise<boolean> {
 		let ok = this.errorSys.isOk();
