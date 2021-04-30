@@ -421,7 +421,7 @@ export class UserSys {
 	public isPvzModerator(): boolean {
 		let ok = this.errorSys.isOk();
 
-		if (ok && this.userGroupsList[RolesT.pvz_moderators]) {
+		if (ok && this.userGroupsList[RolesT.pvz_moderator]) {
 			this.errorSys.devNotice('is_pvz_moderator', 'Вы модератор ПВЗ');
 		} else {
 			ok = false;
