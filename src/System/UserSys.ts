@@ -414,6 +414,24 @@ export class UserSys {
 	}
 
 	/**
+	 * Проверка является ли пользователь модератором ПВЗ
+	 *
+	 * @return boolean
+	 */
+	public isPvzModerator(): boolean {
+		let ok = this.errorSys.isOk();
+
+		if (ok && this.userGroupsList[RolesT.pvz_moderators]) {
+			this.errorSys.devNotice('is_pvz_moderator', 'Вы модератор ПВЗ');
+		} else {
+			ok = false;
+			this.errorSys.error('is_pvz_moderator', 'Вы не модератор ПВЗ');
+		}
+
+		return ok;
+	}
+
+	/**
 	 * Проверка является ли пользователь авторизированным
 	 *
 	 * @return boolean
