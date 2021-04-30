@@ -62,6 +62,7 @@ import {
 	ControllerClass,
 } from './System/ExpressRouterProxy';
 import { CacheSys } from './System/CacheSys';
+import { RolesT } from './System/RolesI';
 
 const Middleware = {
 	ErrorSysMiddleware,
@@ -105,4 +106,5 @@ export {
 	Handler,
 	HandlerDefinition,
 	ControllerClass,
+	RolesT,				// Роли пользователей
 };

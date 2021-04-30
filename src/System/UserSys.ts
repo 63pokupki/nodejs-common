@@ -11,6 +11,7 @@ import { UserGroupSQL } from '../Infrastructure/SQL/Repository/UserGroupSQL';
 import { AccessGroupSQL } from '../Infrastructure/SQL/Repository/AccessGroupSQL';
 import { CtrlAccessSQL } from '../Infrastructure/SQL/Repository/CtrlAccessSQL';
 import { P63UserVisitSQL } from '../Infrastructure/SQL/Repository/P63UserVisitSQL';
+import { RolesT } from './RolesI';
 
 export interface UserInfoI {
 	user_id: number;
@@ -339,7 +340,7 @@ export class UserSys {
 	public isOrg(): boolean {
 		let ok = this.errorSys.isOk();
 
-		if (ok && this.userGroupsList.organizers) {
+		if (ok && this.userGroupsList[RolesT.organizers]) {
 			this.errorSys.devNotice('is_org', 'Вы организатор');
 		} else {
 			ok = false;
@@ -366,7 +367,7 @@ export class UserSys {
 	public isAdmin(): boolean {
 		let ok = this.errorSys.isOk();
 
-		if (ok && this.userGroupsList.administrators) {
+		if (ok && this.userGroupsList[RolesT.administrators]) {
 			this.errorSys.devNotice('is_admin', 'Вы администратор');
 		} else {
 			ok = false;
@@ -384,7 +385,7 @@ export class UserSys {
 	public isModerator(): boolean {
 		let ok = this.errorSys.isOk();
 
-		if (ok && this.userGroupsList.global_moderators) {
+		if (ok && this.userGroupsList[RolesT.global_moderators]) {
 			this.errorSys.devNotice('is_moderator', 'Вы модератор');
 		} else {
 			ok = false;
@@ -402,7 +403,7 @@ export class UserSys {
 	public isPvzUser(): boolean {
 		let ok = this.errorSys.isOk();
 
-		if (ok && this.userGroupsList.pvz_users) {
+		if (ok && this.userGroupsList[RolesT.pvz_users]) {
 			this.errorSys.devNotice('is_pvz_user', 'Вы пользователь ПВЗ');
 		} else {
 			ok = false;
