@@ -63,6 +63,7 @@ import {
 } from './System/ExpressRouterProxy';
 import { CacheSys } from './System/CacheSys';
 import { RolesT } from './System/RolesI';
+import { PvzSys } from './System/PvzSys';
 
 const Middleware = {
 	ErrorSysMiddleware,
@@ -81,6 +82,7 @@ export {
 	UserInfoI as UserInfo,
 	LogicSys,
 	CacheSys,
+	PvzSys,
 	ResponseSys,
 	RedisSys,
 	Middleware,

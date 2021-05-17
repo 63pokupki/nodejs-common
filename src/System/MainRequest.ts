@@ -8,6 +8,7 @@ import { MainConfig } from './MainConfig';
 import { DbProvider } from './DbProvider';
 import { LogicSys } from './LogicSys';
 import { CacheSys } from './CacheSys';
+import { PvzSys } from './PvzSys';
 
 export interface MainRequest extends Request {
 	headers: { [key: string]: any };
@@ -25,6 +26,7 @@ export interface MainRequest extends Request {
 		responseSys: ResponseSys;
 		logicSys: LogicSys; // Система логики управления приложением
 		cacheSys: CacheSys; // Система кеширования
+		pvzSys: PvzSys; // Система для ПВЗ
 		seo?: SeoBase;
 	};
 	conf: MainConfig;
@@ -63,6 +65,7 @@ const Req: any = {
 		responseSys: null, 		// Система формирвания ответа
 		logicSys: null, 		// Система логики управления приложением
 		cacheSys: null, 		// Система кеширования
+		pvzSys: null, 			// Система для ПВЗ
 	},
 	conf: null,
 	infrastructure: {
