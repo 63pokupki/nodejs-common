@@ -52,8 +52,8 @@ export interface MainConfig {
 		urlDbScan: string;
 
 		// Конфигурация сфинкс
-		sphinxIndex: string; // индекс sphinx для поиска ключей
-		sphinxDb: any; // Knex Конфигурайия для подключения к sphinx
+		sphinxIndex?: string; // индекс sphinx для поиска ключей
+		sphinxDb?: any; // Knex Конфигурайия для подключения к sphinx
 	};
 	// Общие настройки
 	common: {
