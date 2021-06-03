@@ -28,7 +28,7 @@
   "dependencies": {
     "@a-a-game-studio/aa-components": "^1.0.39",
     "amqplib": "^0.5.6",
-    "aws-sdk": "^2.781.0",
+    "aws-sdk": "^2.906.0",
     "axios": "^0.21.1",
     "express": "^4.17.1",
     "ioredis": "^4.19.2",
