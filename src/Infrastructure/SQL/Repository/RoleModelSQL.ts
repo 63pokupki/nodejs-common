@@ -1,8 +1,11 @@
 import BaseSQL from '../../../System/BaseSQL';
-import { UserRoleE, RouteOfUserI, UserOrgroleE, 
-	OrgRouteOfUserI, RoleOfRouteGroupE, OrgroleOfRouteGroupE,
-	RouteOfRouteGroupE, RouteE, PhpbbUserGroupE
-  } from '../Entity/RoleModelE';
+import { RouteE } from '../Entity/RouteE';
+import { RouteOfRouteGroupE } from '../Entity/RouteOfRouteGroupE';
+import { UserGroupE } from '../Entity/UserGroupE';
+import { UserRoleE, RouteOfUserI } from '../Entity/UserRoleE';
+import { UserOrgroleE, OrgRouteOfUserI } from '../Entity/UserOrgroleE';
+import { OrgroleOfRouteGroupE } from '../Entity/OrgroleOfRouteGroupE';
+import { RoleOfRouteGroupE } from '../Entity/RoleOfRouteGroupE';
 import { AccessGroupE } from '../Entity/AccessGroupE';
 import { CtrlAccessE, CtrlAccessI } from '../Entity/CtrlAccessE';
 
@@ -11,7 +14,7 @@ export class RoleModelSQL extends BaseSQL {
 	 * получить роуты пользователя по роли на сайте
 	 * @param userId
 	 */
-	public async listRoutesForRoleByUserId(userId: number): Promise<RouteOfUserI[]> {
+	public async listRouteForRoleByUserId(userId: number): Promise<RouteOfUserI[]> {
 		let resp: RouteOfUserI[] = null;
 		const sKeyCahce = `RoleModelExSQL.listRoutesForRoleByUserId(${userId})`;
 		resp = await this.autoCache(sKeyCahce, 3600, async () => {
@@ -39,7 +42,7 @@ export class RoleModelSQL extends BaseSQL {
 	 * получить роуты пользователя по роли в организациях
 	 * @param userId
 	 */
-	public async listRoutesForOrgroleByUserId(userId: number): Promise<OrgRouteOfUserI[]> {
+	public async listRouteForOrgroleByUserId(userId: number): Promise<OrgRouteOfUserI[]> {
 		let resp: OrgRouteOfUserI[] = null;
 		const sKeyCahce = `RoleModelExSQL.listRoutesForOrgroleByUserId(${userId})`;
 		resp = await this.autoCache(sKeyCahce, 3600, async () => {
@@ -67,12 +70,12 @@ export class RoleModelSQL extends BaseSQL {
 	 * получить список доступных контроллеров по userId
 	 * @param userId
 	 */
-	public async getCtrlsByUserId(userId: number): Promise<CtrlAccessI[]> {
+	public async listCtrlByUserId(userId: number): Promise<CtrlAccessI[]> {
 		let resp: CtrlAccessI[] = null;
-		const sKeyCahce = `RoleModelExSQL.getCtrlsByUserId(${userId})`;
+		const sKeyCahce = `RoleModelExSQL.listCtrlByUserId(${userId})`;
 		resp = await this.autoCache(sKeyCahce, 3600, async () => {
 			try {
-				resp = await this.db({ ug: PhpbbUserGroupE.NAME })
+				resp = await this.db({ ug: UserGroupE.NAME })
 					.select('c.alias')
 					.leftJoin({ g: AccessGroupE.NAME }, 'g.group_id', 'ug.group_id')
 					.leftJoin({ c: CtrlAccessE.NAME }, 'c.id', 'g.ctrl_access_id')

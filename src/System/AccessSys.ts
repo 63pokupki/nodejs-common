@@ -31,9 +31,9 @@ export class AccessSys {
 	/**
 	 * сохранение массива доступных роутов по роли
 	 */
-	private async faGetRoleRoutes(): Promise<void> {
+	private async faListRouteForRole(): Promise<void> {
 		// массив ролей пользователя
-		const routesByRole = await this.roleModelSQL.listRoutesForRoleByUserId(this.userId);
+		const routesByRole = await this.roleModelSQL.listRouteForRoleByUserId(this.userId);
 
 		const sortedRoutes: Record<string, boolean> = {};
 		if (routesByRole && routesByRole.length) {
@@ -49,8 +49,8 @@ export class AccessSys {
 	/**
 	 * получение массива доступных роутов по оргроли + редис
 	 */
-	private async faGetOrgroleRoutes(): Promise<void> {
-		const routesByOrgrole = await this.roleModelSQL.listRoutesForOrgroleByUserId(this.userId);
+	private async faListRouteForOrgrole(): Promise<void> {
+		const routesByOrgrole = await this.roleModelSQL.listRouteForOrgroleByUserId(this.userId);
 		const grouproutesByOrgrole = _.groupBy(routesByOrgrole, 'org_id');
 
 		const sortedroutesByOrgrole: Record<string | number, Record<string, boolean>> = {};
@@ -70,8 +70,8 @@ export class AccessSys {
 	/**
 	 * получение массива доступных контроллеров по группе
 	 */
-	private async faGetGroupRoutes(): Promise<void> {
-		const ctrls = await this.roleModelSQL.getCtrlsByUserId(this.userId);
+	private async faListCtrlByGroup(): Promise<void> {
+		const ctrls = await this.roleModelSQL.listCtrlByUserId(this.userId);
 
 		const sortedCtrls: Record<string, boolean> = {};
 
@@ -90,7 +90,7 @@ export class AccessSys {
 	 * проверка доступа к роуту по роли
 	 */
 	public async accessAction(): Promise<void> {
-		await this.faGetRoleRoutes();
+		await this.faListRouteForRole();
 
 		const route = this.req.path;
 
@@ -106,7 +106,7 @@ export class AccessSys {
 	public async accessActionOrg(orgId: number): Promise<void> {
 		let res: boolean;
 
-		await this.faGetOrgroleRoutes();
+		await this.faListRouteForOrgrole();
 
 		const route = this.req.path;
 
@@ -126,7 +126,7 @@ export class AccessSys {
 	 * @param ctrlName
 	 */
 	public async accessCtrl(ctrlName: string): Promise<void> {
-		await this.faGetGroupRoutes();
+		await this.faListCtrlByGroup();
 
 		if (!this.ctrls[ctrlName]) {
 			throw this.errorSys.throwAccess('У вас нет доступа к данному контроллеру');
