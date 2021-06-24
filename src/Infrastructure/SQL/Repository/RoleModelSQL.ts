@@ -14,9 +14,9 @@ export class RoleModelSQL extends BaseSQL {
 	 * получить роуты пользователя по роли на сайте
 	 * @param userId
 	 */
-	public async listRouteForRoleByUserId(userId: number): Promise<RouteOfUserI[]> {
+	public async listRouteForRoleByUserId(idUser: number): Promise<RouteOfUserI[]> {
 		let resp: RouteOfUserI[] = null;
-		const sKeyCahce = `RoleModelExSQL.listRoutesForRoleByUserId(${userId})`;
+		const sKeyCahce = `RoleModelExSQL.listRoutesForRoleByUserId(${idUser})`;
 		resp = await this.autoCache(sKeyCahce, 3600, async () => {
 			try {
 				resp = await this.db({ ur: UserRoleE.NAME })
@@ -24,11 +24,11 @@ export class RoleModelSQL extends BaseSQL {
 					.leftJoin({ rlrg: RoleOfRouteGroupE.NAME }, 'ur.role_id', 'rlrg.role_id')
 					.leftJoin({ rrg: RouteOfRouteGroupE.NAME }, 'rlrg.route_group_id', 'rrg.route_group_id')
 					.leftJoin({ r: RouteE.NAME }, 'rrg.route_id', 'r.id')
-					.where('ur.user_id', userId);
+					.where('ur.user_id', idUser);
 			} catch (e) {
 				this.errorSys.errorEx(
 					e,
-					'RoleModelExSQL.listRoutesForRoleByUserId',
+					'RoleModelExSQL.listRouteForRoleByUserId',
 					'Не удалось получить роли пользователя по сайту'
 				);
 			}
@@ -42,9 +42,9 @@ export class RoleModelSQL extends BaseSQL {
 	 * получить роуты пользователя по роли в организациях
 	 * @param userId
 	 */
-	public async listRouteForOrgroleByUserId(userId: number): Promise<OrgRouteOfUserI[]> {
+	public async listRouteForOrgroleByUserId(idUser: number): Promise<OrgRouteOfUserI[]> {
 		let resp: OrgRouteOfUserI[] = null;
-		const sKeyCahce = `RoleModelExSQL.listRoutesForOrgroleByUserId(${userId})`;
+		const sKeyCahce = `RoleModelExSQL.listRoutesForOrgroleByUserId(${idUser})`;
 		resp = await this.autoCache(sKeyCahce, 3600, async () => {
 			try {
 				resp = await this.db({ uo: UserOrgroleE.NAME })
@@ -52,11 +52,11 @@ export class RoleModelSQL extends BaseSQL {
 					.leftJoin({ org: OrgroleOfRouteGroupE.NAME }, 'uo.orgrole_id', 'org.orgrole_id')
 					.leftJoin({ rg: RouteOfRouteGroupE.NAME }, 'org.route_group_id', 'rg.route_group_id')
 					.leftJoin({ r: RouteE.NAME }, 'rg.route_id', 'r.id')
-					.where('uo.user_id', userId);
+					.where('uo.user_id', idUser);
 			} catch (e) {
 				this.errorSys.errorEx(
 					e,
-					'RoleModelExSQL.listRoutesForOrgroleByUserId',
+					'RoleModelExSQL.listRouteForOrgroleByUserId',
 					'Не удалось получить роли пользователя по организациям'
 				);
 			}
@@ -70,20 +70,20 @@ export class RoleModelSQL extends BaseSQL {
 	 * получить список доступных контроллеров по userId
 	 * @param userId
 	 */
-	public async listCtrlByUserId(userId: number): Promise<CtrlAccessI[]> {
+	public async listCtrlByUserId(idUser: number): Promise<CtrlAccessI[]> {
 		let resp: CtrlAccessI[] = null;
-		const sKeyCahce = `RoleModelExSQL.listCtrlByUserId(${userId})`;
+		const sKeyCahce = `RoleModelExSQL.listCtrlByUserId(${idUser})`;
 		resp = await this.autoCache(sKeyCahce, 3600, async () => {
 			try {
 				resp = await this.db({ ug: UserGroupE.NAME })
 					.select('c.alias')
 					.leftJoin({ g: AccessGroupE.NAME }, 'g.group_id', 'ug.group_id')
 					.leftJoin({ c: CtrlAccessE.NAME }, 'c.id', 'g.ctrl_access_id')
-					.where('ug.user_id', userId);
+					.where('ug.user_id', idUser);
 			} catch (e) {
 				this.errorSys.errorEx(
 					e,
-					'RoleModelExSQL.getCtrlsUserId',
+					'RoleModelExSQL.listCtrlByUserId',
 					'Не удалось получить доступ к контроллерам по user id'
 				);
 			}

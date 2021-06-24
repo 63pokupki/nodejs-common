@@ -1,5 +1,4 @@
 import { MainRequest } from './MainRequest';
-import { UserSys } from './UserSys';
 import { RoleModelSQL } from '../Infrastructure/SQL/Repository/RoleModelSQL';
 import _ from 'lodash';
 import { ErrorSys } from '@a-a-game-studio/aa-components';
@@ -14,7 +13,7 @@ export class AccessSys {
 
 	private routesByRole: Record<string, boolean>;
 
-	private userId: number;
+	private idUser: number;
 
 	private ctrls: Record<string, boolean>;
 
@@ -24,7 +23,7 @@ export class AccessSys {
 	constructor(req: MainRequest) {
 		this.req = req;
 		this.errorSys = req.sys.errorSys;
-		this.userId = req.sys.userSys.idUser;
+		this.idUser = req.sys.userSys.idUser;
 		this.roleModelSQL = new RoleModelSQL(req);
 	}
 
@@ -33,7 +32,7 @@ export class AccessSys {
 	 */
 	private async faListRouteForRole(): Promise<void> {
 		// массив ролей пользователя
-		const routesByRole = await this.roleModelSQL.listRouteForRoleByUserId(this.userId);
+		const routesByRole = await this.roleModelSQL.listRouteForRoleByUserId(this.idUser);
 
 		const sortedRoutes: Record<string, boolean> = {};
 		if (routesByRole && routesByRole.length) {
@@ -50,7 +49,7 @@ export class AccessSys {
 	 * получение массива доступных роутов по оргроли + редис
 	 */
 	private async faListRouteForOrgrole(): Promise<void> {
-		const routesByOrgrole = await this.roleModelSQL.listRouteForOrgroleByUserId(this.userId);
+		const routesByOrgrole = await this.roleModelSQL.listRouteForOrgroleByUserId(this.idUser);
 		const grouproutesByOrgrole = _.groupBy(routesByOrgrole, 'org_id');
 
 		const sortedroutesByOrgrole: Record<string | number, Record<string, boolean>> = {};
@@ -71,7 +70,7 @@ export class AccessSys {
 	 * получение массива доступных контроллеров по группе
 	 */
 	private async faListCtrlByGroup(): Promise<void> {
-		const ctrls = await this.roleModelSQL.listCtrlByUserId(this.userId);
+		const ctrls = await this.roleModelSQL.listCtrlByUserId(this.idUser);
 
 		const sortedCtrls: Record<string, boolean> = {};
 
