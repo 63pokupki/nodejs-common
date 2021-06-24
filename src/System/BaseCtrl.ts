@@ -3,6 +3,7 @@ import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 import { MainRequest } from './MainRequest';
 import { ResponseSys } from './ResponseSys';
 import { UserSys } from './UserSys';
+import { AccessSys } from './AccessSys';
 
 /** Базовый контроллер */
 export default class BaseCtrl {
@@ -16,12 +17,15 @@ export default class BaseCtrl {
 
 	protected resp: any;
 
+	public accessSys: AccessSys;
+
 	constructor(req: MainRequest, resp: any) {
 		this.req = req;
 		this.responseSys = req.sys.responseSys;
 		this.errorSys = req.sys.errorSys;
 		this.userSys = req.sys.userSys;
 		this.resp = resp;
+		this.accessSys = new AccessSys(req);
 	}
 
 	protected fClassName(): string {
