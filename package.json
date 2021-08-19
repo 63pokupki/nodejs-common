@@ -31,7 +31,7 @@
     "aws-sdk": "^2.781.0",
     "axios": "^0.21.1",
     "express": "^4.17.1",
-    "ioredis": "^4.19.2",
+    "ioredis": "^4.27.8",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.8",
     "lodash": "^4.17.20",
