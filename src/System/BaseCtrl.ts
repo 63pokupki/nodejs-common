@@ -25,7 +25,7 @@ export default class BaseCtrl {
 		this.errorSys = req.sys.errorSys;
 		this.userSys = req.sys.userSys;
 		this.resp = resp;
-		this.accessSys = new AccessSys(req);
+		this.accessSys = req.sys.accessSys;
 	}
 
 	protected fClassName(): string {

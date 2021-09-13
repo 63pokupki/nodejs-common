@@ -27,6 +27,6 @@ export default class BaseM {
 		this.logicSys = req.sys.logicSys;
 		this.cacheSys = req.sys.cacheSys;
 		this.req = req;
-		this.accessSys = new AccessSys(req);
+		this.accessSys = req.sys.accessSys;
 	}
 }

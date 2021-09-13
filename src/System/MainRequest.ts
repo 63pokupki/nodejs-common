@@ -8,6 +8,7 @@ import { MainConfig } from './MainConfig';
 import { DbProvider } from './DbProvider';
 import { LogicSys } from './LogicSys';
 import { CacheSys } from './CacheSys';
+import { AccessSys } from './AccessSys';
 
 export interface MainRequest extends Request {
 	headers: { [key: string]: any };
@@ -25,6 +26,7 @@ export interface MainRequest extends Request {
 		responseSys: ResponseSys;
 		logicSys: LogicSys; // Система логики управления приложением
 		cacheSys: CacheSys; // Система кеширования
+		accessSys: AccessSys;
 		seo?: SeoBase;
 	};
 	conf: MainConfig;
@@ -62,7 +64,8 @@ const Req: any = {
 		userSys: null, 			// Система пользователя
 		responseSys: null, 		// Система формирвания ответа
 		logicSys: null, 		// Система логики управления приложением
-		cacheSys: null, 		// Система кеширования
+		cacheSys: null, 		// Система кеширования\
+		accessSys: null,
 	},
 	conf: null,
 	infrastructure: {
