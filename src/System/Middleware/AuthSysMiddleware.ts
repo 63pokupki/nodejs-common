@@ -2,6 +2,7 @@ import { MainRequest } from '../MainRequest';
 import { UserSys } from '../UserSys';
 import * as jwt from 'jsonwebtoken';
 import type { Response, NextFunction } from 'express';
+import { AccessSys } from '../AccessSys';
 
 /**
  * Ответ декодиирования тикена
@@ -76,6 +77,7 @@ export default async function AuthSysMiddleware(
 
 	// }
 	request.sys.userSys = userSys;
+	request.sys.accessSys = new AccessSys(request);
 
 	next();
 }
