@@ -4,7 +4,6 @@ import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 import { UserSys } from './UserSys';
 import { ResponseSys } from './ResponseSys';
 import { SeoBase } from '../Components/Seo';
-import { MainConfig } from './MainConfig';
 import { DbProvider } from './DbProvider';
 import { LogicSys } from './LogicSys';
 import { CacheSys } from './CacheSys';
@@ -29,7 +28,6 @@ export interface MainRequest extends Request {
 		accessSys: AccessSys;
 		seo?: SeoBase;
 	};
-	conf: MainConfig;
 	infrastructure: {
 		mysql: any;
 		mysqlMaster: any;

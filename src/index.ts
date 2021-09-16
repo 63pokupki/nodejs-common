@@ -49,7 +49,6 @@ import * as HelperSys from './System/HelperSys';
 import { FieldValidator } from './System/FieldValidator';
 
 import * as Mattermost from './System/MattermostSys';
-import { MainConfig, S3confI } from './System/MainConfig';
 import * as S3DO from './System/S3DO';
 import { LogicSys } from './System/LogicSys';
 import SubSysMiddleware from './System/Middleware/SubSysMiddleware';
@@ -86,11 +85,9 @@ export {
 	Middleware,
 	MainRequest, 		// interface MainRequest,
 	TError,
-	MainConfig,
 	devReq, 			// Пример MainRequest
 	S3,
 	S3objectParamsI,
-	S3confI,
 	RabbitSenderSys, 	// Класс системы для работы с ребитом
 	rabbitSenderSys, 	// Объект система работы с ребитом
 	initMainRequest, 	// Инициализация Main Request для тестов
