@@ -1,4 +1,5 @@
 import * as AWS from 'aws-sdk';
+import { S3confI } from './MainConfig';
 import { MainRequest } from './MainRequest';
 
 /**
@@ -33,8 +34,8 @@ export class S3 {
 
 	protected spacesEndpoint: any;
 
-	constructor(req: MainRequest) {
-		this.conf = req.conf.S3DO;
+	constructor(conf: S3confI) {
+		this.conf = conf;
 	}
 
 	/**

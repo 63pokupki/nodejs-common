@@ -13,7 +13,7 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: Response, next:
 	const mattermostSys = new Mattermost.MattermostSys(req);
 
 	let ifDevMode = false;
-	if (req.conf.common.env === 'dev' || req.conf.common.env === 'local') {
+	if (req.common.env === 'dev' || req.common.env === 'local') {
 		ifDevMode = true;
 	}
 
@@ -25,7 +25,7 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: Response, next:
 		req.sys.errorSys.error('ValidationError', err.message);
 	} else if (err.name === 'AppError') {
 		res.status(500);
-		if (req.conf.common.env !== 'local') {
+		if (req.common.env !== 'local') {
 			mattermostSys.sendErrorMsg(req.sys.errorSys, err, err.message);
 		}
 	} else {
@@ -54,7 +54,7 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: Response, next:
 	const vErrorForAPI = { // собираем ошибку
 		api_key: req.sys.apikey || null,
 		type: 'backend',
-		env: req.conf.common.env || null,
+		env: req.common.env || null,
 		user_id: req.sys.userSys.idUser || null,
 		url: req.originalUrl || null,
 		message: err.message || null,
@@ -64,7 +64,7 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: Response, next:
 	};
 
 	try { // отправка ошибки в апи
-		axios.post(req.conf.common.hook_url_errors_api, vErrorForAPI);
+		axios.post(req.common.hook_url_errors_api, vErrorForAPI);
 	} catch (e) {
 		console.warn(e, 'Не удалось отправить ошибку');
 	}

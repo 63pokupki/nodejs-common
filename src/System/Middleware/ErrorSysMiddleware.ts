@@ -15,10 +15,11 @@ export default function ErrorSysMiddleware(request: MainRequest, response: any, 
 		bMasterDB: false,
 		bCache: true,
 	};
-	if (request.conf) {
-		request.sys.errorSys = new ErrorSys(request.conf.common.env);
-		if (request.conf.common.errorMute) {
-			request.sys.errorSys;
+	if (request) {
+		request.sys.errorSys = new ErrorSys(request.common.env);
+		if (request.common.errorMute) {
+			// Здесь были настройки по игнорировнию ошибок
+			// request.sys.errorSys;
 		}
 	} else {
 		request.sys.errorSys = new ErrorSys();

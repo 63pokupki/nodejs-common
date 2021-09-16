@@ -14,7 +14,7 @@ export default class BaseCommand {
 	public userSys: UserSys;
 
 	constructor(req: MainRequest) {
-		this.db = require('knex')(req.conf.mysql);
+		this.db = req.infrastructure.mysql;
 
 		this.errorSys = req.sys.errorSys;
 		this.userSys = req.sys.userSys;

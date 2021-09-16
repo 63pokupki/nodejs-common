@@ -8,12 +8,27 @@ import { DbProvider } from './DbProvider';
 import { LogicSys } from './LogicSys';
 import { CacheSys } from './CacheSys';
 import { AccessSys } from './AccessSys';
+import * as Knex from 'knex';
 
 export interface MainRequest extends Request {
 	headers: { [key: string]: any };
 	body: any;
 	method: string;
-
+	auth: {
+		algorithm: string;
+		secret: string;
+	};
+	common: { 								// Общее
+		env: string; 						// Тип окружения
+		oldCoreURL: string; 					// URL адрес основного сайта
+		nameApp: string;
+		errorMute: boolean;
+		hook_url_errors: string; 		// Сообщения об ошибках mattermost
+		hook_url_monitoring: string; 	// Сообщения мониторинга в mattermost
+		hook_url_front_errors: string; 	// Сообщения мониторинга ошибок в mattermost FRONT
+		hook_url_errors_api: string; // Сообщения мониторинга ошибок в mattermost API
+		port: number; 						// порт на котором будет работать нода
+	};
 	sys: {
 		apikey: string;
 		bAuth: boolean; /* флаг авторизации */
@@ -29,13 +44,12 @@ export interface MainRequest extends Request {
 		seo?: SeoBase;
 	};
 	infrastructure: {
-		mysql: any;
-		mysqlMaster: any;
-		sphinx?: any; // Соединение sphinx
-		dbProvider: DbProvider;
+		mysql: Knex;
+		mysqlMaster: Knex;
+		sphinx?: Knex; // Соединение sphinx
 		redis: any;
 		rabbit: any;
-		sphinxErrors?: any; // Соединение sphinx c ошибками
+		sphinxErrors?: Knex; // Соединение sphinx c ошибками
 	};
 	errorType?: number; // тип ошибки
 }
@@ -65,7 +79,6 @@ const Req: any = {
 		cacheSys: null, 		// Система кеширования\
 		accessSys: null,
 	},
-	conf: null,
 	infrastructure: {
 		mysql: null, 			// коннект к балансеру БД
 		mysqlMaster: null, 		// конект к мастеру
@@ -76,7 +89,7 @@ const Req: any = {
 	},
 };
 
-export const devReq = <MainRequest>Req;
+export const devReq = Req;
 
 /**
  * Инициализация MainRequest для консольных запросов
@@ -86,7 +99,6 @@ export function initMainRequest(conf: any): MainRequest {
 	let mainRequest: MainRequest;
 
 	mainRequest = devReq;
-	mainRequest.conf = conf;
 
 	mainRequest.sys.errorSys = new ErrorSys(conf.common.env);
 	if (conf.common.errorMute) { // Настройка режим тищины

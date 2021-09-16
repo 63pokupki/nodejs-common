@@ -33,16 +33,6 @@ export default class BaseSQL {
 
 	protected dbBalancer: Knex;
 
-	/**
-     * Отличие между dbProvider и db заключается в том,
-     * что dbProvider умеет переключать поле current на транзакцию
-     * и обратно после завешения транзакции
-     *
-     * Т.е. если в SQL классах использовать this.dbProvider.current вместо this.db
-     * такой класс можно будет вызвать как внутри транзакции, так и отдельно
-     */
-	protected dbProvider: DbProvider;
-
 	protected redisSys: RedisSys;
 
 	protected modelValidatorSys: ModelValidatorSys;
@@ -66,7 +56,6 @@ export default class BaseSQL {
 		this.logicSys = req.sys.logicSys;
 		this.cacheSys = req.sys.cacheSys;
 
-		this.dbProvider = req.infrastructure.dbProvider;
 		if (req.infrastructure.mysql) {
 			this.dbBalancer = req.infrastructure.mysql;
 		} else {
@@ -98,7 +87,7 @@ export default class BaseSQL {
      * нужно в SQL файлах вместо this.db использовать this.dbProvider.current
      */
 	async transaction<T>(func: () => Promise<T>): Promise<T> {
-		const result = await this.dbProvider.transaction(func);
+		const result = await this.db.transaction(func);
 		return result;
 	}
 

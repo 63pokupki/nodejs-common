@@ -45,7 +45,7 @@ export class MattermostSys {
 					fallback: 'test',
 					color: 'danger',
 					text: `:boom: :trollface: Apikey: ${this.req.sys.apikey}`,
-					title: `Ошибка на ${this.req.conf.common.env}`,
+					title: `Ошибка на ${this.req.common.env}`,
 					fields: [
 						{
 							short: true,
@@ -82,7 +82,7 @@ export class MattermostSys {
 			});
 		}
 
-		this.send(msg, this.req.conf.common.hook_url_errors);
+		this.send(msg, this.req.common.hook_url_errors);
 	}
 
 	/**
@@ -98,7 +98,7 @@ export class MattermostSys {
 					fallback: 'test',
 					color: 'danger',
 					text: `:boom: :trollface: ApiKey:${this.req.sys.apikey} - ID:${this.req.sys.userSys.idUser}`,
-					title: `Ошибка на ${this.req.conf.common.env}`,
+					title: `Ошибка на ${this.req.common.env}`,
 					fields: [
 					],
 				},
@@ -122,7 +122,7 @@ export class MattermostSys {
 		}
 
 		if (this.errorSys.isOk()) {
-			this.send(msg, this.req.conf.common.hook_url_front_errors);
+			this.send(msg, this.req.common.hook_url_front_errors);
 		}
 	}
 
@@ -138,7 +138,7 @@ export class MattermostSys {
 					fallback: 'test',
 					color: 'info',
 					text: `:boom: :trollface: ${sTitle}`,
-					title: `Мониторинг на ${this.req.conf.common.env}`,
+					title: `Мониторинг на ${this.req.common.env}`,
 					fields: [
 						{
 							short: true,
@@ -150,7 +150,7 @@ export class MattermostSys {
 			],
 		};
 
-		this.send(msg, this.req.conf.common.hook_url_monitoring);
+		this.send(msg, this.req.common.hook_url_monitoring);
 	}
 
 	/**

@@ -30,9 +30,9 @@ export default async function AuthSysMiddleware(
 			let decoded: JwtDecodeI = null;
 
 			try {
-				decoded = jwt.verify(apikey, request.conf.auth.secret, {
+				decoded = jwt.verify(apikey, request.auth.secret, {
 					algorithms: [
-						request.conf.auth.algorithm,
+						request.auth.algorithm,
 					] as jwt.Algorithm[],
 				}) as JwtDecodeI;
 			} catch (e) {

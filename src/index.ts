@@ -39,9 +39,6 @@ import { rabbitSenderSys, RabbitSenderSys } from './System/RabbitSenderSys';
 /* Конструктор Консольной команды */
 import BaseCommand from './System/BaseCommand';
 
-/* Конструктор теста */
-import BaseTest from './System/BaseTest';
-
 import * as Seo from './Components/Seo';
 
 /* Хелпер полезных функций */
@@ -92,7 +89,6 @@ export {
 	rabbitSenderSys, 	// Объект система работы с ребитом
 	initMainRequest, 	// Инициализация Main Request для тестов
 	BaseCommand, 		// Конструктор консольных команд
-	BaseTest, 			// Конструктор тестов
 	Seo, 				// сео собственно
 	HelperSys, 			// Вспомогательные функции которые ни к чему не привязаны
 	FieldValidator,
