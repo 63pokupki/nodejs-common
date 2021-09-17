@@ -2,9 +2,9 @@
  * интерфейс таблицы p63_user_role
  */
 export interface UserRoleI {
-	id?: number;
-	user_id?: number;
-	role_id?: number;
+	id: number;
+	user_id: number;
+	role_id: number;
 }
 
 /**

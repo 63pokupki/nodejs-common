@@ -1,13 +1,13 @@
 /**
  * интерфейс таблицы p63_route
  */
-interface RouteI {
-	id?: number;
-	url?: string;
-	name?: string;
-	descript?: string;
-	created_at?: string;
-	updated_at?: string;
+export interface RouteI {
+	id: number;
+	url: string;
+	name: string;
+	descript: string;
+	created_at: string;
+	updated_at: string;
 
 }
 

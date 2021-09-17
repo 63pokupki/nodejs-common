@@ -2,9 +2,9 @@
  * интерфейс таблицы p63_role_of_route_group
  */
 export interface RoleOfRouteGroupI {
-	id?: number;
-	role_id?:number;
-	route_group_id?: number;
+	id: number;
+	role_id: number;
+	route_group_id: number;
 }
 
 /**

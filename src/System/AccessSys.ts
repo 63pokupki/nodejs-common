@@ -2,6 +2,7 @@ import { MainRequest } from './MainRequest';
 import { RoleModelSQL } from '../Infrastructure/SQL/Repository/RoleModelSQL';
 import _ from 'lodash';
 import { ErrorSys } from '@a-a-game-studio/aa-components';
+import { RouteI } from '../Infrastructure/SQL/Entity/RouteE';
 
 /**  */
 export class AccessSys {
@@ -39,6 +40,41 @@ export class AccessSys {
 			for (let i = 0; i < routesByRole.length; i++) {
 				if (routesByRole[i].url) {
 					sortedRoutes[routesByRole[i].url] = true;
+				}
+			}
+		}
+		this.routesByRole = sortedRoutes;
+	}
+
+	/**
+	 * сохранение массива доступных роутов по роли
+	 */
+	private async faListRouteForRole2(): Promise<void> {
+		/** IDs ролей */
+		const aIdRole = await this.roleModelSQL.listRoleIdByUserId(this.idUser);
+
+		/** IDs доступных роутгрупп */
+		let aidRouteGroup: number[] = [];
+		await Promise.all(aIdRole.map(async (idRole) => {
+			const res = await this.roleModelSQL.listRouteGroupIdByRoleId(idRole);
+			aidRouteGroup.push(...res);
+		}));
+		aidRouteGroup = _.uniq(aidRouteGroup);
+
+		/** */
+		let aRoute: RouteI[] = [];
+		await Promise.all(aidRouteGroup.map(async (idRouteGroup) => {
+			const res = await this.roleModelSQL.listRouteByRouteGroupId(idRouteGroup);
+			aRoute.push(...res);
+		}));
+
+		aRoute = _.uniq(aRoute);
+
+		const sortedRoutes: Record<string, boolean> = {};
+		if (aRoute && aRoute.length) {
+			for (let i = 0; i < aRoute.length; i++) {
+				if (aRoute[i].url) {
+					sortedRoutes[aRoute[i].url] = true;
 				}
 			}
 		}
