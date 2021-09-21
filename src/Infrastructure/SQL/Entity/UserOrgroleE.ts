@@ -9,15 +9,6 @@ export interface UserOrgroleI {
 }
 
 /**
- * интерфейс роута, доступного по орг роли пользователя
- */
-export interface OrgRouteOfUserI {
-	orgrole_id?: number;
-	name?: string;
-	url?: string;
-}
-
-/**
  * таблица ролей пользователей в организациях
  */
 export class UserOrgroleE {

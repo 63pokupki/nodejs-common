@@ -70,7 +70,7 @@ export class RoleModelSQL extends BaseSQL {
 	 * Получить роли пользователя в организациях
 	 */
 	public async listOrgRoleByUserId(idUser: number): Promise<UserOrgroleI[]> {
-		const sKeyCahce = `RoleModelExSQL.listOrgRoleByUserId(${idUser})`;
+		const sKeyCahce = `RoleModelSQL.listOrgRoleByUserId(${idUser})`;
 		const cacheRes: UserOrgroleI[] = await this.autoCache(sKeyCahce, 3600, async () => {
 			let res;
 			try {
@@ -123,7 +123,7 @@ export class RoleModelSQL extends BaseSQL {
 	 */
 	public async listCtrlByUserId(idUser: number): Promise<CtrlAccessI[]> {
 		let resp: CtrlAccessI[] = null;
-		const sKeyCahce = `RoleModelExSQL.listCtrlByUserId(${idUser})`;
+		const sKeyCahce = `RoleModelSQL.listCtrlByUserId(${idUser})`;
 		resp = await this.autoCache(sKeyCahce, 3600, async () => {
 			try {
 				resp = await this.db({ ug: UserGroupE.NAME })
@@ -134,7 +134,7 @@ export class RoleModelSQL extends BaseSQL {
 			} catch (e) {
 				this.errorSys.errorEx(
 					e,
-					'RoleModelExSQL.listCtrlByUserId',
+					'RoleModelSQL.listCtrlByUserId',
 					'Не удалось получить доступ к контроллерам по user id',
 				);
 			}
