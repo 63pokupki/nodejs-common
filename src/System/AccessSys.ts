@@ -29,39 +29,21 @@ export class AccessSys {
 	}
 
 	/**
-	 * сохранение массива доступных роутов по роли
+	 * Получить роуты, доступные по роли
 	 */
 	private async faListRouteForRole(): Promise<void> {
-		// массив ролей пользователя
-		const routesByRole = await this.roleModelSQL.listRouteForRoleByUserId(this.idUser);
-
-		const sortedRoutes: Record<string, boolean> = {};
-		if (routesByRole && routesByRole.length) {
-			for (let i = 0; i < routesByRole.length; i++) {
-				if (routesByRole[i].url) {
-					sortedRoutes[routesByRole[i].url] = true;
-				}
-			}
-		}
-		this.routesByRole = sortedRoutes;
-	}
-
-	/**
-	 * сохранение массива доступных роутов по роли
-	 */
-	private async faListRouteForRole2(): Promise<void> {
 		/** IDs ролей */
-		const aIdRole = await this.roleModelSQL.listRoleIdByUserId(this.idUser);
+		const aidRole = await this.roleModelSQL.listRoleIdByUserId(this.idUser);
 
 		/** IDs доступных роутгрупп */
 		let aidRouteGroup: number[] = [];
-		await Promise.all(aIdRole.map(async (idRole) => {
+		await Promise.all(aidRole.map(async (idRole) => {
 			const res = await this.roleModelSQL.listRouteGroupIdByRoleId(idRole);
 			aidRouteGroup.push(...res);
 		}));
 		aidRouteGroup = _.uniq(aidRouteGroup);
 
-		/** */
+		/** Доступные роуты */
 		let aRoute: RouteI[] = [];
 		await Promise.all(aidRouteGroup.map(async (idRouteGroup) => {
 			const res = await this.roleModelSQL.listRouteByRouteGroupId(idRouteGroup);
@@ -82,19 +64,50 @@ export class AccessSys {
 	}
 
 	/**
-	 * получение массива доступных роутов по оргроли + редис
+	 * Получить роуты, доступные по оргроли
 	 */
 	private async faListRouteForOrgrole(): Promise<void> {
-		const routesByOrgrole = await this.roleModelSQL.listRouteForOrgroleByUserId(this.idUser);
-		const grouproutesByOrgrole = _.groupBy(routesByOrgrole, 'org_id');
+		const aUserOrgrole = await this.roleModelSQL.listOrgRoleByUserId(this.idUser);
 
-		const sortedroutesByOrgrole: Record<string | number, Record<string, boolean>> = {};
-		for (const key in grouproutesByOrgrole) {
-			sortedroutesByOrgrole[key] = {};
-			if(grouproutesByOrgrole[key].length) {
-				const oneGroupOfRoutes = grouproutesByOrgrole[key];
-				for (let i = 0; i < oneGroupOfRoutes.length; i++) {	
-					sortedroutesByOrgrole[key][oneGroupOfRoutes[i].url] = true;
+		/** Роутгруппы, доступные в рамках организаций */
+		const aRouteGroupInOrg: { idOrg: number; idRouteGroup: number }[] = [];
+		await Promise.all(aUserOrgrole.map(async (userOrgole) => {
+			const aidRouteGroup = await this.roleModelSQL.listRouteGroupIdByOrgoleId(userOrgole.orgrole_id);
+			for (let i = 0; i < aidRouteGroup.length; i++) {
+				const idRouteGroup = aidRouteGroup[i];
+				aRouteGroupInOrg.push({
+					idOrg: userOrgole.org_id,
+					idRouteGroup,
+				});
+			}
+		}));
+
+		/** Роуты, доступные в рамках организаций */
+		const aRouteByOrgrole: { idOrg: number; name: string; url: string}[] = [];
+		await Promise.all(aRouteGroupInOrg.map(async (routeGroupInOrg) => {
+			const aRoute = await this.roleModelSQL.listRouteByRouteGroupId(routeGroupInOrg.idRouteGroup);
+			for (let i = 0; i < aRoute.length; i++) {
+				const route = aRoute[i];
+				aRouteByOrgrole.push({
+					idOrg: routeGroupInOrg.idOrg,
+					name: route.name,
+					url: route.url,
+				});
+			}
+		}));
+
+		/** Роуты, доступные в рамках организаций, сгруппированные по организациям */
+		const aGroupedRouteInOrg = _.groupBy(aRouteByOrgrole, 'idOrg');
+
+		const sortedroutesByOrgrole: Record<string, Record<string, boolean>> = {};
+
+		for (const idOrg of Object.keys(aGroupedRouteInOrg)) {
+			sortedroutesByOrgrole[idOrg] = {};
+			if (aGroupedRouteInOrg[idOrg].length > 0) {
+				/** роуты, доступнын в рамках одной организации */
+				const aRoute = aGroupedRouteInOrg[idOrg];
+				for (let i = 0; i < aRoute.length; i++) {
+					sortedroutesByOrgrole[idOrg][aRoute[i].url] = true;
 				}
 			}
 		}
