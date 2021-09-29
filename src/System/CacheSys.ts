@@ -35,7 +35,7 @@ export class CacheSys {
      * @param iTimeSec - Время кеширования
      * @param callback - функция получающая данные из БД
      */
-	async autoCache(sKey: string, iTimeSec: number, callback: any): Promise<any> {
+	async autoCache<RequestT>(sKey: string, iTimeSec: number, callback: () => Promise<RequestT>): Promise<RequestT> {
 		const ok = this.errorSys.isOk();
 
 		let bCache = false; // Наличие кеша
