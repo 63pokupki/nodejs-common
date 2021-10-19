@@ -4,11 +4,10 @@ import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 import { UserSys } from './UserSys';
 import { ResponseSys } from './ResponseSys';
 import { SeoBase } from '../Components/Seo';
-import { DbProvider } from './DbProvider';
 import { LogicSys } from './LogicSys';
 import { CacheSys } from './CacheSys';
 import { AccessSys } from './AccessSys';
-import * as Knex from 'knex';
+import { Knex } from 'knex';
 
 export interface MainRequest extends Request {
 	headers: { [key: string]: any };

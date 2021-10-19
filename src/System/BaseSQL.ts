@@ -1,12 +1,11 @@
 import { ModelValidatorSys, ErrorSys } from '@a-a-game-studio/aa-components/lib';
-import * as Knex from 'knex';
+import { Knex } from 'knex';
 
 // Системные сервисы
 import { RedisSys } from './RedisSys';
 import { MainRequest } from './MainRequest';
 
 import { UserSys } from './UserSys';
-import { DbProvider } from './DbProvider';
 import { CacheSys } from './CacheSys';
 import { LogicSys } from './LogicSys';
 

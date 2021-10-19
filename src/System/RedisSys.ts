@@ -1,8 +1,7 @@
-
 import redis from 'ioredis';
-import Knex = require('knex');
+import { knex, Knex } from 'knex';
 import _ from 'lodash';
-import {v4 as uuid4 } from 'uuid'
+import { v4 as uuid4 } from 'uuid';
 
 interface ConnectI{
 	// Конфигруация редиса
@@ -10,28 +9,28 @@ interface ConnectI{
 	urlDbScan: string;
 
 	// Если сканирование ключей настроено через sphinx
-	sphinxDb?:Knex.Config;
-	sphinxIndex?:string;
+	sphinxDb?: Knex.Config;
+	sphinxIndex?: string;
 }
 
 /** Обертка над редисом которая понимает async/await */
 export class RedisSys {
-
 	public redisMaster: redis.Redis;
+
 	public redisScan: redis.Redis;
+
 	public sphinxDb: Knex;
 
-	public sphinxIndex:string;
+	public sphinxIndex: string;
 
-	constructor(param:ConnectI) {
-
+	constructor(param: ConnectI) {
 		// Базы данных для чтения
 		this.redisMaster = new redis(param.urlDbMaster);
 		this.redisScan = new redis(param.urlDbScan);
 
 		// Насрройки sphinx
-		if(param.sphinxDb && param.sphinxIndex){
-			this.sphinxDb = Knex(param.sphinxDb);
+		if (param.sphinxDb && param.sphinxIndex) {
+			this.sphinxDb = knex(param.sphinxDb);
 			this.sphinxIndex = param.sphinxIndex;
 		} else {
 			console.log('Параметры sphinx для кеша не указаны!!!');
@@ -49,17 +48,17 @@ export class RedisSys {
 		let kCaсheKey = await this.redisScan.get(key);
 
 		// console.log('get-redis-scan',kCaсheKey);
-		if(!kCaсheKey && this.sphinxDb){
+		if (!kCaсheKey && this.sphinxDb) {
 			kCaсheKey = await this.getFromSphinx(key);
 
-			if(kCaсheKey){ // Если ключ в sphinx все таки есть записываем его в редис scan
-				await this.redisScan.set(key, kCaсheKey, 'EX', 30*24*3600);
+			if (kCaсheKey) { // Если ключ в sphinx все таки есть записываем его в редис scan
+				await this.redisScan.set(key, kCaсheKey, 'EX', 30 * 24 * 3600);
 			}
 		}
 		// console.log('get-sphinx',kCaсheKey);
 
 		let vData = null;
-		if(kCaсheKey){ // Если ключ есть - можем запросить данные
+		if (kCaсheKey) { // Если ключ есть - можем запросить данные
 			vData = await this.redisMaster.get(kCaсheKey);
 		}
 
@@ -71,11 +70,11 @@ export class RedisSys {
      * @param sKeyPattern
      */
 	public async keys(sKeyPattern: string): Promise<string[]> {
-		let aKeys:string[] = [];
-		if(this.sphinxDb){
+		let aKeys: string[] = [];
+		if (this.sphinxDb) {
 			aKeys = await this.scanFromSphinx(sKeyPattern);
 		} else {
-			aKeys = <any>await this.redisScan.keys(sKeyPattern);
+			aKeys = <any> await this.redisScan.keys(sKeyPattern);
 		}
 		return aKeys;
 	}
@@ -85,12 +84,12 @@ export class RedisSys {
      * @param keys
      */
 	public async scan(sKeyPattern: string): Promise<string[]> {
-		let aKeys:string[] = [];
-		if(this.sphinxDb){
+		let aKeys: string[] = [];
+		if (this.sphinxDb) {
 			aKeys = await this.scanFromSphinx(sKeyPattern);
 		} else {
 			const iRedisSize = await this.redisScan.dbsize();
-			aKeys = <any>(await this.redisScan.scan(0, 'MATCH', sKeyPattern, 'COUNT', iRedisSize))[1]
+			aKeys = <any>(await this.redisScan.scan(0, 'MATCH', sKeyPattern, 'COUNT', iRedisSize))[1];
 		}
 		return aKeys;
 	}
@@ -113,22 +112,22 @@ export class RedisSys {
 		let kCaсheKey = await this.redisScan.get(key);
 
 		// Записываем ключ если его нет при настройках sphinx
-		if(!kCaсheKey && this.sphinxDb){
-				kCaсheKey = await this.setInSphinx(key);
+		if (!kCaсheKey && this.sphinxDb) {
+			kCaсheKey = await this.setInSphinx(key);
 
-			if(kCaсheKey){ // Записываем только если смогли сделать ключ
+			if (kCaсheKey) { // Записываем только если смогли сделать ключ
 				await this.redisScan.set(key, kCaсheKey);
 			}
 		}
 
 		// Записываем ключ если настроек сфинкс нет
-		if(!kCaсheKey && !this.sphinxDb){
+		if (!kCaсheKey && !this.sphinxDb) {
 			kCaсheKey = uuid4();
 			// Кешируем на 1 день
-			await this.redisScan.set(key, kCaсheKey, 'EX', 30*24*3600);
+			await this.redisScan.set(key, kCaсheKey, 'EX', 30 * 24 * 3600);
 		}
 
-		if(kCaсheKey){
+		if (kCaсheKey) {
 			await this.redisMaster.set(kCaсheKey, String(val), 'EX', time);
 		}
 
@@ -140,8 +139,7 @@ export class RedisSys {
 	 * @param sMatch
 	 * @param iCount
 	 */
-	public async clear(sMatch:string): Promise<string[]>{
-
+	public async clear(sMatch: string): Promise<string[]> {
 		const aKeys = await this.keys(sMatch);
 		// console.log('=========================');
 		// console.log('aKeys for match', sMatch);
@@ -174,18 +172,18 @@ export class RedisSys {
 	* @param min
 	* @param max
 	*/
-	private randomInteger():bigint {
-		let sUuid = uuid4();
+	private randomInteger(): bigint {
+		const sUuid = uuid4();
 
-		let aSymbol:number[] = [];
+		const aSymbol: number[] = [];
 		for (let c = 0; c < sUuid.length; c++) {
-			if(sUuid[c] !== '-'){
+			if (sUuid[c] !== '-') {
 				let iSymbol = sUuid.charCodeAt(c);
-				if(iSymbol >= 200){
-					iSymbol = iSymbol % 200;
+				if (iSymbol >= 200) {
+					iSymbol %= 200;
 				}
-				if(iSymbol >= 100){
-					iSymbol = iSymbol % 100;
+				if (iSymbol >= 100) {
+					iSymbol %= 100;
 				}
 				aSymbol.push(iSymbol);
 			}
@@ -195,21 +193,20 @@ export class RedisSys {
 		// console.log(sUuid, sSymbol2);
 		sSymbol2 = sSymbol2.slice(0, 16);
 
-		let iSymbol2 = BigInt(sSymbol2);
+		const iSymbol2 = BigInt(sSymbol2);
 		// console.log(sUuid, iSymbol2);
-		return iSymbol2
+		return iSymbol2;
 	}
-
 
 	/**
      * Получить значение из редиса
      * @param sKey
      */
-    private async getFromSphinx(sKey: string): Promise<string> {
+	private async getFromSphinx(sKey: string): Promise<string> {
 		sKey = this.clearKeyForMatch(sKey);
 
 		sKey = String(sKey);
-        const sql = `
+		const sql = `
 
             SELECT id FROM ${this.sphinxIndex}
 			WHERE
@@ -218,35 +215,33 @@ export class RedisSys {
 				end_at > :end_at
             LIMIT 1
             ;
-        `
-;
-        const param = {
-			key:sKey,
-			end_at:(new Date().getTime() / 1000),
-        };
-        // console.log('>>>getFromSphinx>>>', this.sphinxDb.raw(sql, param).toString());
-        let v:any = null;
-        try {
-            v = (await this.sphinxDb.raw(sql, param))[0][0];
-        } catch (e) {
-            console.log('>>>ERROR>>>', e);
-        }
-        if(v){
-            v = v.id;
-        }
-        // console.log( v);
-        return v;
+        `;
+		const param = {
+			key: sKey,
+			end_at: (new Date().getTime() / 1000),
+		};
+		// console.log('>>>getFromSphinx>>>', this.sphinxDb.raw(sql, param).toString());
+		let v: any = null;
+		try {
+			v = (await this.sphinxDb.raw(sql, param))[0][0];
+		} catch (e) {
+			console.log('>>>ERROR>>>', e);
+		}
+		if (v) {
+			v = v.id;
+		}
+		// console.log( v);
+		return v;
 	}
 
 	/**
      * Получить ключи по шаблону сканированием
      * @param keys
      */
-    public async scanFromSphinx(sKey: string): Promise<string[]> {
-
+	public async scanFromSphinx(sKey: string): Promise<string[]> {
 		sKey = this.clearKeyForMatch(sKey);
 
-		sKey = sKey .replace(/[*]/g,'%');
+		sKey = sKey.replace(/[*]/g, '%');
 
 		// let aKeyNew:string[] = [];
 		// for (let i = 0; i < aKey.length; i++) {
@@ -260,7 +255,7 @@ export class RedisSys {
 
 		// sKey = aKey.join('<<');
 
-        const sql = `
+		const sql = `
 
             SELECT id FROM ${this.sphinxIndex}
 			WHERE
@@ -271,22 +266,22 @@ export class RedisSys {
             ;
 		`;
 
-        const param = {
-			key:sKey,
-            end_at:(new Date().getTime() / 1000)
-        };
-        // console.log('>>>scanFromSphinx>>>', this.sphinxDb.raw(sql, param).toString());
-        let a:any[] = null;
-        try {
-            a = (await this.sphinxDb.raw(sql, param))[0];
-        } catch (e) {
-            console.log('>>>ERROR>>>', e);
+		const param = {
+			key: sKey,
+			end_at: (new Date().getTime() / 1000),
+		};
+		// console.log('>>>scanFromSphinx>>>', this.sphinxDb.raw(sql, param).toString());
+		let a: any[] = null;
+		try {
+			a = (await this.sphinxDb.raw(sql, param))[0];
+		} catch (e) {
+			console.log('>>>ERROR>>>', e);
 		}
 		// console.log('>>>scanFromSphinx-VAL>>>', a);
-        if(a){
-            a = a.map(v => String(v.id));
-        }
-        return a;
+		if (a) {
+			a = a.map((v) => String(v.id));
+		}
+		return a;
 	}
 
 	/**
@@ -295,26 +290,23 @@ export class RedisSys {
      * @param val
      * @param time
      */
-    public async setInSphinx(sKey: string): Promise<string> {
+	public async setInSphinx(sKey: string): Promise<string> {
+		let out = ''; // Ответ
 
-
-		let out:string = '' // Ответ
-
-        const vData = {
+		const vData = {
 			k: sKey,
-            created_at: (new Date().getTime() / 1000),
-            end_at: (new Date().getTime() / 1000)+(30*24*3600)
-        }
+			created_at: (new Date().getTime() / 1000),
+			end_at: (new Date().getTime() / 1000) + (30 * 24 * 3600),
+		};
 
 		try {
 			const idKey = (await this.sphinxDb(this.sphinxIndex)
 				.insert(vData)
 			)[0];
 
-			if(idKey){
-				out = String(idKey)
+			if (idKey) {
+				out = String(idKey);
 			}
-
 		} catch (e) {
 			out = ''; // Если произошла ошибка возвращаем пустую строку
 			console.log('>>>ERROR>>>', e);
@@ -323,12 +315,10 @@ export class RedisSys {
 		return out;
 	}
 
-
 	// Очистка ключа для поиска
 	public clearKeyForMatch(sKey: string): string {
+		sKey = sKey.replace(/["]/g, '');
 
-		sKey = sKey.replace(/["]/g, "");
-
-		return sKey
+		return sKey;
 	}
 }
