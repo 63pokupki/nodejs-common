@@ -321,4 +321,10 @@ export class RedisSys {
 
 		return sKey;
 	}
+
+	/** Ждет выполнения запросов и закрывает соединение */
+	public quit() {
+		this.redisMaster.quit();
+		this.redisScan.quit();
+	}
 }
