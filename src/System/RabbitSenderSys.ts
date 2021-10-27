@@ -1,6 +1,7 @@
 import * as amqp from 'amqplib/callback_api';
 import { reject } from 'bluebird';
 import { Connection, Replies } from 'amqplib/callback_api';
+import { Message } from 'amqplib/properties';
 
 /** Отправщик сообщений в очередь */
 export class RabbitSenderSys {
@@ -99,7 +100,7 @@ export class RabbitSenderSys {
 					vCannel.prefetch(vWatchCannel.channelCount);
 					console.log(' [*] Waiting for messages in %s. To exit press CTRL+C', vWatchCannel.queryName);
 					/* Запускаем обработчик */
-					vCannel.consume(vWatchCannel.queryName, async (msg: any) => {
+					vCannel.consume(vWatchCannel.queryName, async (msg: Message) => {
 						await vWatchCannel.faAction(msg, vCannel);
 					}, {
 						noAck: false,
