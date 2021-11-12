@@ -12,21 +12,9 @@ import { AccessGroupSQL } from '../Infrastructure/SQL/Repository/AccessGroupSQL'
 import { CtrlAccessSQL } from '../Infrastructure/SQL/Repository/CtrlAccessSQL';
 import { P63UserVisitSQL } from '../Infrastructure/SQL/Repository/P63UserVisitSQL';
 import { RolesT } from './RolesI';
+import { AuthR, UserInfoI } from '../Interface.ts/AuthUser';
+import { QuerySys } from '@a-a-game-studio/aa-front';
 
-export interface UserInfoI {
-	user_id: number;
-	user_type: number;
-	group_id: number;
-	username: string;
-	username_clean: string;
-	user_email: string;
-	user_birthday: string;
-	user_avatar: string;
-	user_avatar_type: string;
-	user_mobile: string;
-	user_sig: string;
-	consumer_rating: number;
-}
 
 /**
  * Класс который глобально знает все данные пользователя
@@ -172,6 +160,32 @@ export class UserSys {
 		} else {
 			this.errorSys.devWarning('is_user_init', 'Авторизация провалилась');
 		}
+	}
+
+	/**
+	 * Новая инициализация пользовательских данных через сервис аутенфикации
+	 * todo поменять старую на эту
+	 */
+	private async initByAuthCore(): Promise<void> {
+		const reqData: AuthR.authByApikey.RequestI = {
+			apikey: this.apikey,
+		};
+
+		const querySys = new QuerySys();
+		querySys.fInit();
+		querySys.fActionOk((data: AuthR.authByApikey.ResponseI)=> {
+			this.idUser = data.user_info.user_id;
+			this.req.sys.bAuth = true;
+			if (this.req.common.env !== 'prod') console.log('au Auth.core done');
+			this.req.sys.errorSys.devNotice(
+				'is_user_init_by_auth', `Авторизация через Auth.Core прошла успешно, пользователь - ${data.user_info.username}`
+			);
+		});
+		querySys.fActionErr((e: Record<string, string>) => {
+			this.errorSys.devWarning('is_user_init', 'Авторизация провалилась');
+		});
+
+		await querySys.faSend(`${this.req.common.auth_url}`, reqData);
 	}
 
 	/**

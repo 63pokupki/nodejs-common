@@ -16,6 +16,7 @@ export interface MainRequest extends Request {
 	auth: {
 		algorithm: string;
 		secret: string;
+		auth_url: string;				// URL сервиса авторизации
 	};
 	common: { 							// Общее
 		env: string; 					// Тип окружения
@@ -27,7 +28,7 @@ export interface MainRequest extends Request {
 		hook_url_front_errors: string; 	// Сообщения мониторинга ошибок в mattermost FRONT
 		hook_url_errors_api: string; 	// Сообщения мониторинга ошибок в mattermost API
 		port: number; 					// порт на котором будет работать нода
-		auth_url: string;				// URL сервиса авторизации
+		
 	};
 	sys: {
 		apikey: string;
@@ -54,7 +55,7 @@ export interface MainRequest extends Request {
 	errorType?: number; // тип ошибки
 }
 
-const Req: Pick<MainRequest, 'common' |'headers'| 'sys' | 'infrastructure'> = {
+const Req: any = {
 	headers: null,
 	common: { 								// Общее
 		env: 'dev', 						// Тип окружения
@@ -65,7 +66,6 @@ const Req: Pick<MainRequest, 'common' |'headers'| 'sys' | 'infrastructure'> = {
 		hook_url_errors_api: null,		// Сообщения мониторинга ошибок в mattermost API
 		hook_url_monitoring: 'https://', 	// Сообщения мониторинга в mattermost
 		hook_url_front_errors: 'https://', 	// Сообщения мониторинга ошибок в mattermost
-		auth_url: null,						// URL сервиса авторизации
 		port: 3005, 						// порт на котором будет работать нода
 	},
 	sys: {
@@ -98,9 +98,7 @@ export const devReq = Req;
  * @param conf
  */
 export function initMainRequest(conf: any): MainRequest {
-	let mainRequest: MainRequest;
-
-	mainRequest = devReq;
+	const mainRequest: MainRequest = devReq;
 
 	mainRequest.sys.errorSys = new ErrorSys(conf.common.env);
 	if (conf.common.errorMute) { // Настройка режим тищины

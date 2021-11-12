@@ -7,7 +7,7 @@ import BaseSQL from './System/BaseSQL';
 import BaseM from './System/BaseM';
 // export { BaseM as BaseM };
 
-import { UserSys, UserInfoI } from './System/UserSys';
+import { UserSys } from './System/UserSys';
 import { DbProvider } from './System/DbProvider';
 
 import { ResponseSys } from './System/ResponseSys';
@@ -59,6 +59,7 @@ import {
 } from './System/ExpressRouterProxy';
 import { CacheSys } from './System/CacheSys';
 import { RolesT } from './System/RolesI';
+import { UserInfoI } from './Interface.ts/AuthUser';
 
 const Middleware = {
 	ErrorSysMiddleware,
