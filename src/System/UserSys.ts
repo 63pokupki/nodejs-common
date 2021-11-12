@@ -185,7 +185,7 @@ export class UserSys {
 			this.errorSys.devWarning('is_user_init', 'Авторизация провалилась');
 		});
 
-		await querySys.faSend(`${this.req.common.auth_url}`, reqData);
+		await querySys.faSend(`${this.req.auth.auth_url}`, reqData);
 	}
 
 	/**
