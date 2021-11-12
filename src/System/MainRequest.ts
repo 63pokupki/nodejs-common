@@ -17,16 +17,17 @@ export interface MainRequest extends Request {
 		algorithm: string;
 		secret: string;
 	};
-	common: { 								// Общее
-		env: string; 						// Тип окружения
-		oldCoreURL: string; 					// URL адрес основного сайта
-		nameApp: string;
+	common: { 							// Общее
+		env: string; 					// Тип окружения
+		oldCoreURL: string; 			// URL адрес основного сайта
+		nameApp: string;				// Имя приложения
 		errorMute: boolean;
 		hook_url_errors: string; 		// Сообщения об ошибках mattermost
 		hook_url_monitoring: string; 	// Сообщения мониторинга в mattermost
 		hook_url_front_errors: string; 	// Сообщения мониторинга ошибок в mattermost FRONT
-		hook_url_errors_api: string; // Сообщения мониторинга ошибок в mattermost API
-		port: number; 						// порт на котором будет работать нода
+		hook_url_errors_api: string; 	// Сообщения мониторинга ошибок в mattermost API
+		port: number; 					// порт на котором будет работать нода
+		auth_url: string;				// URL сервиса авторизации
 	};
 	sys: {
 		apikey: string;
@@ -53,16 +54,18 @@ export interface MainRequest extends Request {
 	errorType?: number; // тип ошибки
 }
 
-const Req: any = {
+const Req: Pick<MainRequest, 'common' |'headers'| 'sys' | 'infrastructure'> = {
 	headers: null,
 	common: { 								// Общее
 		env: 'dev', 						// Тип окружения
 		oldCoreURL: null, 					// URL адрес основного сайта
 		nameApp: 'default',
 		errorMute: true,
-		hook_url_errors: 'https://', 		// Сообщения об ошибках mattermost
+		hook_url_errors: 'https://', 		// Сообщения об ошибках mattermost,
+		hook_url_errors_api: null,		// Сообщения мониторинга ошибок в mattermost API
 		hook_url_monitoring: 'https://', 	// Сообщения мониторинга в mattermost
 		hook_url_front_errors: 'https://', 	// Сообщения мониторинга ошибок в mattermost
+		auth_url: null,						// URL сервиса авторизации
 		port: 3005, 						// порт на котором будет работать нода
 	},
 	sys: {
