@@ -12,7 +12,7 @@ import { AccessGroupSQL } from '../Infrastructure/SQL/Repository/AccessGroupSQL'
 import { CtrlAccessSQL } from '../Infrastructure/SQL/Repository/CtrlAccessSQL';
 import { P63UserVisitSQL } from '../Infrastructure/SQL/Repository/P63UserVisitSQL';
 import { RolesT } from './RolesI';
-import { AuthR, UserInfoI } from '../Interface.ts/AuthUser';
+import { AuthR, UserInfoI } from '../Interface/AuthUser';
 import { QuerySys } from '@a-a-game-studio/aa-front';
 
 

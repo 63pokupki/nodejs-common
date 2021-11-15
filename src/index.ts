@@ -59,7 +59,7 @@ import {
 } from './System/ExpressRouterProxy';
 import { CacheSys } from './System/CacheSys';
 import { RolesT } from './System/RolesI';
-import { UserInfoI } from './Interface.ts/AuthUser';
+import { UserInfoI } from './Interface/AuthUser';
 
 const Middleware = {
 	ErrorSysMiddleware,

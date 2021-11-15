@@ -4,7 +4,7 @@ import md5 from 'md5';
 
 import { UserE, UserI } from '../Entity/UserE';
 import BaseSQL from '../../../System/BaseSQL';
-import { UserInfoI } from '../../../Interface.ts/AuthUser';
+import { UserInfoI } from '../../../Interface/AuthUser';
 
 /**
  * Здесь методы для SQL запросов
