@@ -85,7 +85,7 @@ export class UserSys {
 				this.req.sys.bAuth = true;
 				if (this.req.common.env !== 'prod') console.log('au Auth.core done');
 				this.req.sys.errorSys.devNotice(
-					'is_user_init_by_auth', `Авторизация через Auth.Core прошла успешно, пользователь - ${data.user_info.username}`
+					'is_user_init', `Авторизация через Auth.Core прошла успешно, пользователь - ${data.user_info.username}`
 				);
 
 				// сохраняем группы пользователя
@@ -101,15 +101,20 @@ export class UserSys {
 				}
 
 			} else {
-				this.errorSys.devWarning('is_user_init', 'Пользователь не авторизован');
+				this.errorSys.devWarning('is_user_init', 'Авторизация провалилась');
 			}
 			
 		});
 		querySys.fActionErr((e: Record<string, string>) => {
-			this.errorSys.devWarning('is_user_init', 'Авторизация провалилась');
+			// TODO: отправка в мм и систему ошибок в core
+			this.errorSys.devWarning('is_user_init', 'Ошибка авторизации');
 		});
 
-		await querySys.faSend(`${this.req.auth.auth_url}`, reqData);
+		if (this.apikey) {
+			await querySys.faSend(`${this.req.auth.auth_url}`, reqData);
+		} else {
+			this.errorSys.devWarning('is_user_init', 'Пользователь не авторизован');
+		}
 	}
 
 	/**
