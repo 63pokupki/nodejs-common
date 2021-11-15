@@ -56,7 +56,6 @@ export class UserSys {
 			if (data.user_info) {
 				// Основная информация о пользователе:
 				this.idUser = data.user_info.user_id;
-				this.req.sys.bAuth = true;
 				if (this.req.common.env !== 'prod') console.log('au Auth.core done');
 				this.req.sys.errorSys.devNotice(
 					'is_user_init', `Авторизация через Auth.Core прошла успешно, пользователь - ${data.user_info.username}`
