@@ -1,15 +1,11 @@
 // Библиотеки
 import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
-import * as _ from 'lodash';
 
 // Системные сервисы
 import { MainRequest } from './MainRequest';
-
-// SQL Запросы=
 import { RolesT } from './RolesI';
 import { AuthR, UserInfoI } from '../Interface/AuthUser';
 import { QuerySys } from '@a-a-game-studio/aa-front';
-
 
 /**
  * Класс который глобально знает все данные пользователя
@@ -21,9 +17,9 @@ export class UserSys {
 
 	private userInfo: UserInfoI; // Информация о пользователе
 
-	private userGroupsList: any; // Роли пользователя
+	private userGroupsList: Record<string, number>; // Роли пользователя
 
-	private ctrlAccessList: any; // Список модулей
+	private ctrlAccessList: Record<string, number>; // Список модулей
 
 	private req: MainRequest; // Объект запроса пользователя
 
@@ -36,8 +32,7 @@ export class UserSys {
 		this.userGroupsList = {};
 
 		/* вылавливаем apikey */
-
-		this.apikey = req.sys.apikey;
+		this.apikey = req.cookies.apikey || req.headers.apikey;
 
 		if (!this.apikey) {
 			this.apikey = '';
