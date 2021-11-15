@@ -42,9 +42,6 @@ export class UserSys {
 
 	/**
 	 * Инициализация данных пользователя
-	 * только если this.isAuth() == true
-	 *
-	 * @return void
 	 */
 	public async init(): Promise<void> {
 		const querySys = new QuerySys();
@@ -87,6 +84,7 @@ export class UserSys {
 			this.errorSys.devWarning('is_user_init', 'Ошибка авторизации');
 		});
 
+		// если есть апикей, то пытаемся авторизовать пользователя
 		if (this.apikey) {
 			await querySys.faSend(`${this.req.auth.auth_url}`, reqData);
 		} else {
