@@ -7,10 +7,7 @@ import { MainRequest } from './MainRequest';
 
 // SQL Запросы
 import { UserSQL } from '../Infrastructure/SQL/Repository/UserSQL';
-import { UserGroupSQL } from '../Infrastructure/SQL/Repository/UserGroupSQL';
 import { AccessGroupSQL } from '../Infrastructure/SQL/Repository/AccessGroupSQL';
-import { CtrlAccessSQL } from '../Infrastructure/SQL/Repository/CtrlAccessSQL';
-import { P63UserVisitSQL } from '../Infrastructure/SQL/Repository/P63UserVisitSQL';
 import { RolesT } from './RolesI';
 import { AuthR, UserInfoI } from '../Interface/AuthUser';
 import { QuerySys } from '@a-a-game-studio/aa-front';
@@ -42,13 +39,7 @@ export class UserSys {
 
 	private errorSys: ErrorSys;
 
-	private userGroupSQL: UserGroupSQL;
-
 	private accessGroupSQL: AccessGroupSQL;
-
-	private ctrlAccessSQL: CtrlAccessSQL;
-
-	private p63UserVisitSQL: P63UserVisitSQL;
 
 	public constructor(req: MainRequest) {
 		this.req = req;
@@ -56,10 +47,7 @@ export class UserSys {
 		this.errorSys = req.sys.errorSys;
 
 		this.userSQL = new UserSQL(req);
-		this.userGroupSQL = new UserGroupSQL(req);
 		this.accessGroupSQL = new AccessGroupSQL(req);
-		this.ctrlAccessSQL = new CtrlAccessSQL(req);
-		this.p63UserVisitSQL = new P63UserVisitSQL(req);
 
 		this.ctrlAccessList = {};
 		this.userGroupsList = {};
