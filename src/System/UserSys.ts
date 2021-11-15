@@ -82,104 +82,40 @@ export class UserSys {
 	 * @return void
 	 */
 	public async init(): Promise<void> {
-		let ok = this.errorSys.isOk(); // По умолчанию true
-
-		// Проверяем apikey
-		const ifAuth = await this.userSQL.isAuth(this.apikey);
-
-		if (ifAuth) { // Ставим в общий слой видимости флаг авторизации
-			this.req.sys.bAuth = true;
-		}
-
-		let userInfoList: any = {};
-		if (ok && ifAuth) { // Получаем информацию о пользователе по apikey
-			userInfoList = await this.userSQL.fGetUserInfoByApiKey(this.apikey);
-
-			if (!userInfoList) {
-				ok = false;
-				this.errorSys.error('get_user_info_in_auth', 'Не возможно получить данные пользователя при авторизации');
-			} else {
-				this.userInfo = userInfoList;
-				this.idUser = userInfoList.user_id;
-			}
-		}
-
-		if (ifAuth) { // Проверяем визиты пользователя
-			const vUserVisit = await this.p63UserVisitSQL.oneLastUserVisit(this.idUser);
-
-			if (!vUserVisit) { // Если за час небыло посещений и пользователь существует добавляем визит
-				await this.p63UserVisitSQL.addUserVisit(this.idUser);
-			}
-		}
-
-		let userGroupsList = {};
-		if (ok && ifAuth) { // Получаем роли пользователя
-			userGroupsList = await this.userGroupSQL.getUserGroupsByUserID(this.idUser);
-
-			if (!userGroupsList) {
-				ok = false;
-				this.errorSys.error('get_user_roles_in_auth', 'Не возможно получить роли пользователя при авторизации');
-			}
-		}
-
-		this.userGroupsList = {};
-		if (ok && ifAuth) { // Проиндексировать группы по: имени группы
-			_.forEach(userGroupsList, (v: any) => {
-				const idGroup = v.group_id;
-				const aliasGroup = v.alias;
-
-				if (aliasGroup) {
-					this.userGroupsList[aliasGroup] = idGroup;
-				}
-			});
-		}
-
-		let ctrlAccessListTemp = {};
-		if (ok) { // Получаем все модули
-			ctrlAccessListTemp = await this.ctrlAccessSQL.getAllCtrlAccess();
-
-			if (!userGroupsList) {
-				ok = false;
-				this.errorSys.error('get_all_ctrl_access', 'Не получилось получить список модулей');
-			}
-		}
-
-		if (ok) { // Проиндексировать модули по: alias модуля
-			_.forEach(ctrlAccessListTemp, (v: any) => {
-				const idCtrlAccess = v.id;
-				const aliasCtrlAccess = v.alias;
-
-				if (aliasCtrlAccess) {
-					this.ctrlAccessList[aliasCtrlAccess] = idCtrlAccess;
-				}
-			});
-		}
-
-		if (ok && ifAuth) { // Уведомление об успешной авторизации пользователя в DEV режиме
-			this.errorSys.devNotice('is_user_init', `Авторизация прошла успешно, пользователь - ${userInfoList.username}`);
-		} else {
-			this.errorSys.devWarning('is_user_init', 'Авторизация провалилась');
-		}
-	}
-
-	/**
-	 * Новая инициализация пользовательских данных через сервис аутенфикации
-	 * todo поменять старую на эту
-	 */
-	private async initByAuthCore(): Promise<void> {
+		const querySys = new QuerySys();
+		querySys.fInit();
+		
 		const reqData: AuthR.authByApikey.RequestI = {
 			apikey: this.apikey,
 		};
 
-		const querySys = new QuerySys();
-		querySys.fInit();
+		// Запрос к сервису авторизации
 		querySys.fActionOk((data: AuthR.authByApikey.ResponseI)=> {
-			this.idUser = data.user_info.user_id;
-			this.req.sys.bAuth = true;
-			if (this.req.common.env !== 'prod') console.log('au Auth.core done');
-			this.req.sys.errorSys.devNotice(
-				'is_user_init_by_auth', `Авторизация через Auth.Core прошла успешно, пользователь - ${data.user_info.username}`
-			);
+			if (data.user_info) {
+				// Основная информация о пользователе:
+				this.idUser = data.user_info.user_id;
+				this.req.sys.bAuth = true;
+				if (this.req.common.env !== 'prod') console.log('au Auth.core done');
+				this.req.sys.errorSys.devNotice(
+					'is_user_init_by_auth', `Авторизация через Auth.Core прошла успешно, пользователь - ${data.user_info.username}`
+				);
+
+				// сохраняем группы пользователя
+				for (let i = 0; i < data.list_group.length; i++) {
+					const group = data.list_group[i];
+					this.userGroupsList[group.group_alias] = group.group_id;
+				}
+
+				// сохраняем доступные пользователю контроллеры
+				for (let i = 0; i < data.list_ctrl.length; i++) {
+					const ctrl = data.list_ctrl[i];
+					this.ctrlAccessList[ctrl.ctrl_alias] = ctrl.ctrl_id;
+				}
+
+			} else {
+				this.errorSys.devWarning('is_user_init', 'Пользователь не авторизован');
+			}
+			
 		});
 		querySys.fActionErr((e: Record<string, string>) => {
 			this.errorSys.devWarning('is_user_init', 'Авторизация провалилась');
