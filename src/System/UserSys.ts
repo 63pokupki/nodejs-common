@@ -5,9 +5,7 @@ import * as _ from 'lodash';
 // Системные сервисы
 import { MainRequest } from './MainRequest';
 
-// SQL Запросы
-import { UserSQL } from '../Infrastructure/SQL/Repository/UserSQL';
-import { AccessGroupSQL } from '../Infrastructure/SQL/Repository/AccessGroupSQL';
+// SQL Запросы=
 import { RolesT } from './RolesI';
 import { AuthR, UserInfoI } from '../Interface/AuthUser';
 import { QuerySys } from '@a-a-game-studio/aa-front';
@@ -27,31 +25,15 @@ export class UserSys {
 
 	private ctrlAccessList: any; // Список модулей
 
-	private aliasCtrlAccess: string; // Псевдоним модуля где мы находимся
-
-	private idCtrlAccess: number; // ID модуля где мы находимся
-
-	private accessCRUDList: any; // Доступ CRUD к модулю
-
 	private req: MainRequest; // Объект запроса пользователя
-
-	private userSQL: UserSQL;
 
 	private errorSys: ErrorSys;
 
-	private accessGroupSQL: AccessGroupSQL;
-
 	public constructor(req: MainRequest) {
 		this.req = req;
-
 		this.errorSys = req.sys.errorSys;
-
-		this.userSQL = new UserSQL(req);
-		this.accessGroupSQL = new AccessGroupSQL(req);
-
 		this.ctrlAccessList = {};
 		this.userGroupsList = {};
-		this.accessCRUDList = {};
 
 		/* вылавливаем apikey */
 
@@ -115,164 +97,6 @@ export class UserSys {
 		} else {
 			this.errorSys.devWarning('is_user_init', 'Пользователь не авторизован');
 		}
-	}
-
-	/**
-	 * Получения доступа на контроллер
-	 *
-	 * @param string alias
-	 * @return boolean
-	 */
-	public async isAccessCtrl(alias: string): Promise<boolean> {
-		let ok = true;
-
-		if (this.ctrlAccessList[alias]) { // Проверяем существование модуля
-			this.errorSys.devNotice('ctrl_access_exist', `Модуль - ${alias} найден`);
-			this.idCtrlAccess = this.ctrlAccessList[alias];
-			this.aliasCtrlAccess = alias;
-		} else {
-			ok = false;
-			this.errorSys.error('ctrl_access_no_exist', `Модуля ${alias} - не существует`);
-		}
-
-		let idsGroupList = [];
-		if (ok) { // Получаем ID групп в которых состоит пользователь
-			idsGroupList = _.values(this.userGroupsList);
-		}
-
-		let ifCtrlAccess = false;
-		if (ok) { // Проверяем имеет ли пользователь доступ к модулю
-			ifCtrlAccess = await this.accessGroupSQL.getAccess(idsGroupList, this.idCtrlAccess);
-
-			if (!ifCtrlAccess) {
-				ok = false;
-				this.errorSys.error('get_access', 'Не возможно получить права на контрллер');
-			}
-		}
-
-		let accessCRUDList = [];
-		if (ok) { // Получаем CRUD права на модуль
-			accessCRUDList = await this.accessGroupSQL.getAccessCRUD(idsGroupList, this.idCtrlAccess);
-
-			if (!accessCRUDList) {
-				ok = false;
-				this.errorSys.error('get_access_crud', 'Не возможно получить CRUD права на контроллер');
-			}
-		}
-
-		this.accessCRUDList = accessCRUDList;
-
-		if (ifCtrlAccess) {
-			this.errorSys.devNotice('ctrl_access', `Доступ к ${alias} получен`);
-		} else {
-			this.errorSys.error('ctrl_access', `У вас нет доступа к ${alias}`);
-		}
-
-		return ifCtrlAccess;
-	}
-
-	/**
-	 * Доступ на CRUD
-	 * - Создание
-	 *
-	 * @return boolean
-	 */
-	public isAccessCreate(): boolean {
-		let ok = this.errorSys.isOk();
-
-		if (!this.accessCRUDList) {
-			ok = false;
-			this.errorSys.error('crud_access_list', 'Нет списка прав');
-		}
-
-		if (ok) {
-			if (this.accessCRUDList.create) {
-				this.errorSys.devNotice('access_create', 'Проверка прав на create прошла успешно');
-			} else {
-				ok = false;
-				this.errorSys.error('access_create', 'У вас нет прав на create');
-			}
-		}
-
-		return ok;
-	}
-
-	/**
-	 * Доступ на CRUD
-	 * - Чтение
-	 *
-	 * @return boolean
-	 */
-	public isAccessRead(): boolean {
-		let ok = this.errorSys.isOk();
-
-		if (!this.accessCRUDList) {
-			ok = false;
-			this.errorSys.error('crud_access_list', 'Нет списка прав');
-		}
-
-		if (ok) {
-			if (this.accessCRUDList.read) {
-				this.errorSys.devNotice('access_read', 'Проверка прав на read прошла успешно');
-			} else {
-				ok = false;
-				this.errorSys.error('access_read', 'У вас нет прав на read');
-			}
-		}
-
-		return ok;
-	}
-
-	/**
-	 * Доступ на CRUD
-	 * - Обновление
-	 *
-	 * @return boolean
-	 */
-	public isAccessUpdate(): boolean {
-		let ok = this.errorSys.isOk();
-
-		if (!this.accessCRUDList) {
-			ok = false;
-			this.errorSys.error('crud_access_list', 'Нет списка прав');
-		}
-
-		if (ok) {
-			if (this.accessCRUDList.update) {
-				this.errorSys.devNotice('access_update', 'Проверка прав на update прошла успешно');
-			} else {
-				ok = false;
-				this.errorSys.error('access_update', 'У вас нет прав на обновление');
-			}
-		}
-
-		return ok;
-	}
-
-	/**
-	 * Доступ на CRUD
-	 * - Удаление
-	 *
-	 * @return boolean
-	 */
-	public isAccessDelete(): boolean {
-		let ok = this.errorSys.isOk();
-
-		if (!this.accessCRUDList) {
-			ok = false;
-			this.errorSys.error('crud_access_list', 'Нет списка прав');
-		}
-
-		if (ok) {
-			if (this.accessCRUDList.delete) {
-				this.errorSys.devNotice('access_delete', 'Проверка прав на delete прошла успешно');
-			} else {
-				ok = false;
-				this.errorSys.error('access_delete', 'У вас нет прав на delete');
-			}
-		}
-
-		return ok;
 	}
 
 	/**
@@ -376,13 +200,12 @@ export class UserSys {
 
 	/**
 	 * Проверка является ли пользователь авторизированным
-	 *
-	 * @return boolean
+	 * @maybe добавить throw
 	 */
-	public async isAuth(): Promise<boolean> {
+	public isAuth(): boolean {
 		let ok = this.errorSys.isOk();
 
-		if (ok && await this.userSQL.isAuth(this.apikey)) {
+		if (ok && this.idUser) {
 			this.errorSys.devNotice('is_auth', 'Вы авторизованы');
 		} else {
 			ok = false;
