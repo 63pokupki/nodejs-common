@@ -16,7 +16,24 @@ export namespace AuthR {
 
 		/** Параметры api ответа */
 		export interface ResponseI {
-			user_info: UserInfoI | null; // Инормация о пользователе
+			/** основная информация о пользователе */
+			user_info: UserInfoI | null;
+			/** доступные пользователю группы */
+			list_user_group: {
+				/** ID группы */
+				group_id: number;
+				/** Имя группы */
+				group_name: string;
+				/** Псевдоним группы */
+				alias: string;
+			}
+			/** доступные пользователю контроллеры */
+			list_user_ctrl: {
+				/** Id контроллера */
+				ctrl_id: number;
+				/** Псевдоним пользователя */
+				ctrl_alias: number;
+			}
 		}
 	}
 }
