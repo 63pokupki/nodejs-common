@@ -1,5 +1,4 @@
 import { MainRequest } from './MainRequest';
-import { RoleModelSQL } from '../Infrastructure/SQL/Repository/RoleModelSQL';
 import _ from 'lodash';
 import { ErrorSys } from '@a-a-game-studio/aa-components';
 import { QuerySys } from '@a-a-game-studio/aa-front';
@@ -8,8 +7,6 @@ import { AuthR } from '../Interface/AuthUser';
 /**  */
 export class AccessSys {
 	req: MainRequest;
-
-	roleModelSQL: RoleModelSQL;
 
 	errorSys: ErrorSys;
 
@@ -28,7 +25,6 @@ export class AccessSys {
 		this.req = req;
 		this.errorSys = req.sys.errorSys;
 		this.idUser = req.sys.userSys.idUser;
-		this.roleModelSQL = new RoleModelSQL(req);
 	}
 
 	/**
