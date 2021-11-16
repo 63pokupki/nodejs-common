@@ -11,6 +11,7 @@ export default function ErrorSysMiddleware(request: MainRequest, response: any, 
 		logicSys: null,
 		cacheSys: null,
 		accessSys: null,
+		bAuth: false,
 		bMasterDB: false,
 		bCache: true,
 	};

@@ -28,9 +28,11 @@ export interface MainRequest extends Request {
 		hook_url_front_errors: string; 	// Сообщения мониторинга ошибок в mattermost FRONT
 		hook_url_errors_api: string; 	// Сообщения мониторинга ошибок в mattermost API
 		port: number; 					// порт на котором будет работать нода
+		
 	};
 	sys: {
 		apikey: string;
+		bAuth: boolean; /* флаг авторизации */
 		bMasterDB: boolean; // Для запроса использовать мастер соединение
 		bCache?: boolean; // Управление кешированием Вкл/Выкл
 

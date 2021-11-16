@@ -9,6 +9,7 @@ export default async function AuthSysMiddleware(
 	response: Response,
 	next: NextFunction,
 ): Promise<void> {
+	request.sys.bAuth = false;
 	const userSys = new UserSys(request);
 
 	// Инициализируем систему аутенфикации пользователя
