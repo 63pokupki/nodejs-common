@@ -36,6 +36,68 @@ export namespace AuthR {
 			}[];
 		}
 	}
+
+	/**
+	 * Получить роут, доступные пользователю по ролям на сайте
+	 */
+	export namespace getListRouteByRole {
+		/** APIURL */
+		export const route = '/auth/get-list-route-by-role';
+
+		/** Параметры api запроса */
+		export interface RequestI {
+			user_id: number; // Или поменять на apikey для безопасности
+		}
+
+		/** Параметры api ответа */
+		export interface ResponseI {
+			/** */
+			list_route_url: string[];
+		}
+	}
+
+	/**
+	 * Получить роут, доступные пользователю по орг ролям
+	 */
+	export namespace getListRouteByOrgRole {
+		/** APIURL */
+		export const route = '/auth/get-list-route-by-role';
+
+		/** Параметры api запроса */
+		export interface RequestI {
+			user_id: number; // Или поменять на apikey для безопасности
+		}
+
+		/** Параметры api ответа */
+		export interface ResponseI {
+			/** список роутов, доступных по орг ролям */
+			list_org_route: {
+				/** ID организации */
+				org_id: number;
+				/** Url роута */
+				route_url: string;
+			}[];
+		}
+	}
+
+	/**
+	 * Получить контроллеры, доступные пользователю по его группам
+	 */
+	export namespace getListCtrl {
+		/** APIURL */
+		export const route = '/auth/get-list-ctrl';
+
+		/** Параметры api запроса */
+		export interface RequestI {
+			user_id: number; // Или поменять на apikey для безопасности
+		}
+
+		/** Параметры api ответа */
+		export interface ResponseI {
+			/** Псевдонимы контроллеров, доступные пользователю */
+			list_ctrl_alias: string[];
+		}
+	}
 }
 
 /**
