@@ -61,7 +61,7 @@ export namespace AuthR {
 	 */
 	export namespace getListRouteByOrgRole {
 		/** APIURL */
-		export const route = '/auth/get-list-route-by-role';
+		export const route = '/auth/get-list-route-by-orgrole';
 
 		/** Параметры api запроса */
 		export interface RequestI {
