@@ -57,7 +57,11 @@ export class UserSys {
 				// Основная информация о пользователе:
 				this.idUser = data.user_info.user_id;
 				this.req.sys.bAuth = true;
-				if (this.req.common.env !== 'prod') console.log('au Auth.core done');
+
+				if (this.req.common.env !== 'prod') {
+					console.log(`Авторизация через Auth.Core прошла успешно, пользователь - ${data.user_info.username}`);
+				}
+				
 				this.req.sys.errorSys.devNotice(
 					'is_user_init', `Авторизация через Auth.Core прошла успешно, пользователь - ${data.user_info.username}`
 				);
@@ -73,7 +77,6 @@ export class UserSys {
 					const ctrl = data.list_ctrl[i];
 					this.ctrlAccessList[ctrl.ctrl_alias] = ctrl.ctrl_id;
 				}
-
 			} else {
 				this.errorSys.devWarning('is_user_init', 'Авторизация провалилась');
 			}
@@ -86,7 +89,7 @@ export class UserSys {
 
 		// если есть апикей, то пытаемся авторизовать пользователя
 		if (this.apikey) {
-			await querySys.faSend(`${this.req.auth.auth_url}`, reqData);
+			await querySys.faSend(`${this.req.auth.auth_url}/${AuthR.authByApikey.route}`, reqData);
 		} else {
 			this.errorSys.devWarning('is_user_init', 'Пользователь не авторизован');
 		}
