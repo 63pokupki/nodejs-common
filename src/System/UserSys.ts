@@ -6,6 +6,8 @@ import { MainRequest } from './MainRequest';
 import { RolesT } from './RolesI';
 import { AuthR, UserInfoI } from '../Interface/AuthUser';
 import { QuerySys } from '@a-a-game-studio/aa-front';
+import { AuthQuerySys } from '../Common/AuthQuerySys';
+
 
 /**
  * Класс который глобально знает все данные пользователя
@@ -25,11 +27,14 @@ export class UserSys {
 
 	private errorSys: ErrorSys;
 
+	private readonly authQuerySys: AuthQuerySys;
+
 	public constructor(req: MainRequest) {
 		this.req = req;
 		this.errorSys = req.sys.errorSys;
 		this.ctrlAccessList = {};
 		this.userGroupsList = {};
+		this.authQuerySys = new AuthQuerySys(req);
 
 		/* вылавливаем apikey */
 		this.apikey = req.cookies.apikey || req.headers.apikey;
@@ -44,20 +49,14 @@ export class UserSys {
 	 * Инициализация данных пользователя
 	 */
 	public async init(): Promise<void> {
-		const querySys = new QuerySys();
-		querySys.fConfig({
-			baseURL: this.req.auth.auth_url,
-			withCredentials: true,
-			timeout: 5000,
-		});
-		querySys.fInit();
+		this.authQuerySys.fInit();
 		
 		const reqData: AuthR.authByApikey.RequestI = {
 			apikey: this.apikey,
 		};
 
 		// Запрос к сервису авторизации
-		querySys.fActionOk((data: AuthR.authByApikey.ResponseI)=> {
+		this.authQuerySys.fActionOk((data: AuthR.authByApikey.ResponseI)=> {
 			if (data.user_info) {
 				// Основная информация о пользователе:
 				this.idUser = data.user_info.user_id;
@@ -87,14 +86,14 @@ export class UserSys {
 			}
 			
 		});
-		querySys.fActionErr((e: Record<string, string>) => {
+		this.authQuerySys.fActionErr((e: Record<string, string>) => {
 			// TODO: отправка в мм и систему ошибок в core
 			this.errorSys.devWarning('is_user_init', 'Ошибка авторизации');
 		});
 
 		// если есть апикей, то пытаемся авторизовать пользователя
 		if (this.apikey) {
-			await querySys.faSend(AuthR.authByApikey.route, reqData);
+			await this.authQuerySys.faSend(AuthR.authByApikey.route, reqData);
 		} else {
 			this.errorSys.devWarning('is_user_init', 'Пользователь не авторизован');
 		}

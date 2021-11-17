@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { ErrorSys } from '@a-a-game-studio/aa-components';
 import { QuerySys } from '@a-a-game-studio/aa-front';
 import { AuthR } from '../Interface/AuthUser';
+import { AuthQuerySys } from '../Common/AuthQuerySys';
 
 /**  */
 export class AccessSys {
@@ -18,21 +19,22 @@ export class AccessSys {
 
 	private aRouteByOrgRole: Record<string | number, Record<string, boolean>> = {};
 
-	private readonly querySys = new QuerySys();
+	private readonly authQuerySys: AuthQuerySys;
 
 	/**  */
 	constructor(req: MainRequest) {
 		this.req = req;
 		this.errorSys = req.sys.errorSys;
 		this.idUser = req.sys.userSys.idUser;
+		this.authQuerySys = new AuthQuerySys(req);
 	}
 
 	/**
 	 * Получить роуты, доступные по роли
 	 */
 	private async faListRouteForRole(): Promise<void> {
-		this.querySys.fInit();
-		this.querySys.fAction((data: AuthR.getListRouteByRole.ResponseI)=> {
+		this.authQuerySys.fInit();
+		this.authQuerySys.fAction((data: AuthR.getListRouteByRole.ResponseI)=> {
 			for (let i = 0; i < data.list_route_url.length; i++) {
 				const route = data.list_route_url[i];
 				this.aRouteByRole[route] = true;
@@ -40,7 +42,7 @@ export class AccessSys {
 			this.req.sys.errorSys.devNotice('access_by_roles', 'Доступые по ролям роуты получены из auth.core');
 		});
 
-		this.querySys.fActionErr(() => {
+		this.authQuerySys.fActionErr(() => {
 			this.errorSys.error('AccessSys.faListRouteForRole', 'Не удалось получить доступные по ролям роуты');
 		});
 
@@ -48,15 +50,15 @@ export class AccessSys {
 			user_id: this.idUser,
 		};
 
-		await this.querySys.faSend(`${this.req.auth.auth_url}/${AuthR.getListRouteByRole.route}`, reqData);
+		await this.authQuerySys.faSend(`${this.req.auth.auth_url}/${AuthR.getListRouteByRole.route}`, reqData);
 	}
 
 	/**
 	 * Получить роуты, доступные по оргроли
 	 */
 	private async faListRouteForOrgrole(): Promise<void> {
-		this.querySys.fInit();
-		this.querySys.fAction((data: AuthR.getListRouteByOrgRole.ResponseI)=> {
+		this.authQuerySys.fInit();
+		this.authQuerySys.fAction((data: AuthR.getListRouteByOrgRole.ResponseI)=> {
 			for (let i = 0; i < data.list_org_route.length; i++) {
 				const orgRole = data.list_org_route[i];
 				this.aRouteByOrgRole[orgRole.org_id][orgRole.route_url] = true;
@@ -64,7 +66,7 @@ export class AccessSys {
 			this.req.sys.errorSys.devNotice('access_by_orgroles', 'Доступые по оргролям роуты полоучены из auth.core');
 		});
 
-		this.querySys.fActionErr(() => {
+		this.authQuerySys.fActionErr(() => {
 			this.errorSys.error('AccessSys.faListRouteForOrgrole', 'Не удалось получить доступные по оргролям роуты');
 		});
 
@@ -72,15 +74,15 @@ export class AccessSys {
 			user_id: this.idUser,
 		};
 
-		await this.querySys.faSend(`${this.req.auth.auth_url}/${AuthR.getListRouteByOrgRole.route}`, reqData);
+		await this.authQuerySys.faSend(`${this.req.auth.auth_url}/${AuthR.getListRouteByOrgRole.route}`, reqData);
 	}
 
 	/**
 	 * получение массива доступных контроллеров по группе
 	 */
 	private async faListCtrlByGroup(): Promise<void> {
-		this.querySys.fInit();
-		this.querySys.fAction((data: AuthR.getListCtrl.ResponseI)=> {
+		this.authQuerySys.fInit();
+		this.authQuerySys.fAction((data: AuthR.getListCtrl.ResponseI)=> {
 			for (let i = 0; i < data.list_ctrl_alias.length; i++) {
 				const ctrlAlias = data.list_ctrl_alias[i];
 				this.aCtrl[ctrlAlias] = true;
@@ -88,7 +90,7 @@ export class AccessSys {
 			this.req.sys.errorSys.devNotice('access_by_groups', 'Доступые контроллеры получены из auth.core');
 		});
 
-		this.querySys.fActionErr(() => {
+		this.authQuerySys.fActionErr(() => {
 			this.errorSys.error('AccessSys.faListCtrlByGroup', 'Не удалось получить доступные контроллеры');
 		});
 
@@ -96,7 +98,7 @@ export class AccessSys {
 			user_id: this.idUser,
 		};
 
-		await this.querySys.faSend(`${this.req.auth.auth_url}/${AuthR.getListCtrl.route}`, reqData);
+		await this.authQuerySys.faSend(`${this.req.auth.auth_url}/${AuthR.getListCtrl.route}`, reqData);
 	}
 
 	/**
