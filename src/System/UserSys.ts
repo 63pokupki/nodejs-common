@@ -45,6 +45,11 @@ export class UserSys {
 	 */
 	public async init(): Promise<void> {
 		const querySys = new QuerySys();
+		querySys.fConfig({
+			baseURL: this.req.auth.auth_url,
+			withCredentials: true,
+			timeout: 5000,
+		});
 		querySys.fInit();
 		
 		const reqData: AuthR.authByApikey.RequestI = {
@@ -89,7 +94,7 @@ export class UserSys {
 
 		// если есть апикей, то пытаемся авторизовать пользователя
 		if (this.apikey) {
-			await querySys.faSend(`${this.req.auth.auth_url}/${AuthR.authByApikey.route}`, reqData);
+			await querySys.faSend(AuthR.authByApikey.route, reqData);
 		} else {
 			this.errorSys.devWarning('is_user_init', 'Пользователь не авторизован');
 		}
