@@ -36,13 +36,11 @@ export class CacheSys {
      * @param callback - функция получающая данные из БД
      */
 	async autoCache<RequestT>(sKey: string, iTimeSec: number, callback: () => Promise<RequestT>): Promise<RequestT> {
-		const ok = this.errorSys.isOk();
-
 		let bCache = false; // Наличие кеша
 
 		let sCache = null;
 		let out: any = null;
-		if (ok && this.req.sys.bCache) { // Пробуем получить данные из кеша
+		if (this.req.sys.bCache) { // Пробуем получить данные из кеша
 			sCache = await this.redisSys.get(sKey);
 
 			if (sCache) {
@@ -53,7 +51,7 @@ export class CacheSys {
 			}
 		}
 
-		if (ok && !bCache) { // Если значения нет в кеше - добавляем его в кеш
+		if (!bCache) { // Если значения нет в кеше - добавляем его в кеш
 			out = await callback();
 
 			if (out && (isObject(out) || Array.isArray(out))) {
@@ -69,7 +67,7 @@ export class CacheSys {
 			}
 		}
 
-		if (ok && bCache) { // Если значение взято из кеша - отдаем его в ответ
+		if (bCache) { // Если значение взято из кеша - отдаем его в ответ
 			out = JSON.parse(sCache);
 		}
 
@@ -83,13 +81,11 @@ export class CacheSys {
      * @param callback - функция получающая данные из БД
      */
 	async autoCacheStr(sKey: string, iTimeSec: number, callback: any): Promise<string> {
-		const ok = this.errorSys.isOk();
-
 		let bCache = false; // Наличие кеша
 
 		let sCache = null;
 		let out: any = null;
-		if (ok && this.req.sys.bCache) { // Пробуем получить данные из кеша
+		if (this.req.sys.bCache) { // Пробуем получить данные из кеша
 			sCache = await this.redisSys.get(sKey);
 
 			if (sCache) {
@@ -100,7 +96,7 @@ export class CacheSys {
 			}
 		}
 
-		if (ok && !bCache) { // Если значения нет в кеше - добавляем его в кеш
+		if (!bCache) { // Если значения нет в кеше - добавляем его в кеш
 			out = await callback();
 
 			if (out && !Number(out) && String(out)) {
@@ -116,7 +112,7 @@ export class CacheSys {
 			}
 		}
 
-		if (ok && bCache) { // Если значение взято из кеша - отдаем его в ответ
+		if (bCache) { // Если значение взято из кеша - отдаем его в ответ
 			out = sCache;
 		}
 
@@ -130,13 +126,11 @@ export class CacheSys {
      * @param callback - функция получающая данные из БД
      */
 	async autoCacheInt(sKey: string, iTimeSec: number, callback: any): Promise<number> {
-		const ok = this.errorSys.isOk();
-
 		let bCache = false; // Наличие кеша
 
 		let sCache = null;
 		let out: number = null;
-		if (ok && this.req.sys.bCache) { // Пробуем получить данные из кеша
+		if (this.req.sys.bCache) { // Пробуем получить данные из кеша
 			sCache = await this.redisSys.get(sKey);
 
 			if (sCache) {
@@ -147,7 +141,7 @@ export class CacheSys {
 			}
 		}
 
-		if (ok && !bCache) { // Если значения нет в кеше - добавляем его в кеш
+		if (!bCache) { // Если значения нет в кеше - добавляем его в кеш
 			out = Number(await callback());
 			if (out || out === 0) {
 				this.redisSys.set(
@@ -162,7 +156,7 @@ export class CacheSys {
 			}
 		}
 
-		if (ok && bCache) { // Если значение взято из кеша - отдаем его в ответ
+		if (bCache) { // Если значение взято из кеша - отдаем его в ответ
 			out = Number(sCache);
 		}
 
@@ -176,13 +170,11 @@ export class CacheSys {
      * @param callback - функция получающая данные из БД
      */
 	async autoCacheID(sKey: string, iTimeSec: number, callback: any): Promise<number> {
-		const ok = this.errorSys.isOk();
-
 		let bCache = false; // Наличие кеша
 
 		let sCache = null;
 		let out: number = null;
-		if (ok && this.req.sys.bCache) { // Пробуем получить данные из кеша
+		if (this.req.sys.bCache) { // Пробуем получить данные из кеша
 			sCache = await this.redisSys.get(sKey);
 
 			if (sCache) {
@@ -193,7 +185,7 @@ export class CacheSys {
 			}
 		}
 
-		if (ok && !bCache) { // Если значения нет в кеше - добавляем его в кеш
+		if (!bCache) { // Если значения нет в кеше - добавляем его в кеш
 			out = Number(await callback());
 			if (out || out > 0) {
 				this.redisSys.set(
@@ -208,7 +200,7 @@ export class CacheSys {
 			}
 		}
 
-		if (ok && bCache) { // Если значение взято из кеша - отдаем его в ответ
+		if (bCache) { // Если значение взято из кеша - отдаем его в ответ
 			out = Number(sCache);
 		}
 
@@ -220,15 +212,14 @@ export class CacheSys {
      * @param sKey
      */
 	async clearCache(sKey: string): Promise<void> {
-		if(sKey.indexOf('*') >=0 ){ // Если передано регулярное выражение
-
+		if (sKey.includes('*')) { // Если передано регулярное выражение
 			await this.redisSys.clear(sKey);
 			// console.log('clearCache-pattern>>>', sKey);
 		} else { // Если имеется точное совпадение
 			const kRedisCache = await this.redisSys.redisScan.get(sKey);
 			// console.log('clearCache-one>>>', sKey, kRedisCache);
 
-			if(kRedisCache){
+			if (kRedisCache) {
 				await this.redisSys.del([kRedisCache]);
 			}
 		}
