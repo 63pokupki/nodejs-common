@@ -10,7 +10,7 @@ import axios from 'axios';
  * @param next
  */
 export const fErrorHandler = (err: Error, req: MainRequest, res: Response, next: NextFunction): void => {
-	const mattermostSys = new Mattermost.MattermostSys(req);
+	// const mattermostSys = new Mattermost.MattermostSys(req);
 
 	let ifDevMode = false;
 	if (req.common.env === 'dev' || req.common.env === 'local') {
@@ -26,13 +26,13 @@ export const fErrorHandler = (err: Error, req: MainRequest, res: Response, next:
 	} else if (err.name === 'AppError') {
 		res.status(500);
 		if (req.common.env !== 'local') {
-			mattermostSys.sendErrorMsg(req.sys.errorSys, err, err.message);
+			// mattermostSys.sendErrorMsg(req.sys.errorSys, err, err.message);
 		}
 	} else {
 		res.status(500);
 		/* у нас в err что-то не то */
 		req.sys.errorSys.error('server_error', 'Ошибка сервера');
-		mattermostSys.sendErrorMsg(req.sys.errorSys, err, `${String(err)}`);
+		// mattermostSys.sendErrorMsg(req.sys.errorSys, err, `${String(err)}`);
 	}
 
 	if (ifDevMode) {
