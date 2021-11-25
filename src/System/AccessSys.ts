@@ -26,7 +26,7 @@ export class AccessSys {
 		this.req = req;
 		this.errorSys = req.sys.errorSys;
 		this.idUser = req.sys.userSys.idUser;
-		this.authQuerySys = new AuthQuerySys(req);
+		this.authQuerySys = new AuthQuerySys(req.auth.auth_url);
 	}
 
 	/**
