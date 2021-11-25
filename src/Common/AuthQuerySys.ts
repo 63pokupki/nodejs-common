@@ -5,10 +5,10 @@ import { MainRequest } from '../System/MainRequest';
  * Запросы к сервису авторизации
  */
 export class AuthQuerySys extends QuerySys {
-	constructor(req: MainRequest) {
+	constructor(authUrl: string) {
 		super();
 		this.fConfig({
-			baseURL: req.auth.auth_url,
+			baseURL: authUrl,
 			withCredentials: true,
 			timeout: 5000,
 		});

@@ -34,7 +34,7 @@ export class UserSys {
 		this.errorSys = req.sys.errorSys;
 		this.ctrlAccessList = {};
 		this.userGroupsList = {};
-		this.authQuerySys = new AuthQuerySys(req);
+		this.authQuerySys = new AuthQuerySys(req.auth.auth_url);
 
 		/* вылавливаем apikey */
 		this.apikey = req.cookies.apikey || req.headers.apikey;
