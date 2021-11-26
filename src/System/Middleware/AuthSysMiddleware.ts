@@ -1,8 +1,9 @@
-import { MainRequest } from '../MainRequest';
+
 import { UserSys } from '../UserSys';
 import * as jwt from 'jsonwebtoken';
 import type { Response, NextFunction } from 'express';
 import { AccessSys } from '../AccessSys';
+import { P63Context } from '../P63Context';
 
 /**
  * Ответ декодиирования тикена
@@ -18,25 +19,21 @@ interface JwtDecodeI {
 }
 
 /* проверка аутентификации на уровне приложения */
-export default async function AuthSysMiddleware(
-	request: MainRequest,
-	response: Response,
-	next: NextFunction,
-): Promise<void> {
-	const apikey = request.cookies.apikey || request.headers.apikey;
+export default async function AuthSysMiddleware(ctx:P63Context): Promise<void> {
+	const apikey = ctx.cookies.apikey || ctx.headers.apikey;
 
 	if (apikey) {
 		if (apikey.length > 32) {
 			let decoded: JwtDecodeI = null;
 
 			try {
-				decoded = jwt.verify(apikey, request.auth.secret, {
+				decoded = jwt.verify(apikey, ctx.auth.secret, {
 					algorithms: [
-						request.auth.algorithm,
+						ctx.auth.algorithm,
 					] as jwt.Algorithm[],
 				}) as JwtDecodeI;
 			} catch (e) {
-				request.sys.errorSys.error(
+				ctx.sys.errorSys.error(
 					'token_expired_error',
 					'Время жизни токена закончилось',
 				);
@@ -47,25 +44,25 @@ export default async function AuthSysMiddleware(
 				// Проверяем время жизни токена
 				if (Date.now() / 1000 < decoded.exp) {
 					// TODO это условие скорей всего не нужно поскольку выскакивает ошибка
-					request.sys.apikey = decoded.token;
+					ctx.sys.apikey = decoded.token;
 				} else {
-					request.sys.apikey = '';
+					ctx.sys.apikey = '';
 				}
 			} else {
-				request.sys.apikey = '';
+				ctx.sys.apikey = '';
 			}
 		} else {
 			// Временное решение пока идет разработка
 			// Дает возможность использовать старый токен
-			request.sys.apikey = apikey;
+			ctx.sys.apikey = apikey;
 		}
 	} else {
-		request.sys.apikey = '';
+		ctx.sys.apikey = '';
 	}
 
 	/* юзерь не авторизован */
-	request.sys.bAuth = false;
-	const userSys = new UserSys(request);
+	ctx.sys.bAuth = false;
+	const userSys = new UserSys(ctx);
 
 	// Инициализируем систему для пользователей
 	await userSys.init();
@@ -76,8 +73,8 @@ export default async function AuthSysMiddleware(
 	//     request.sys.bAuth = true;
 
 	// }
-	request.sys.userSys = userSys;
-	request.sys.accessSys = new AccessSys(request);
+	ctx.sys.userSys = userSys;
+	ctx.sys.accessSys = new AccessSys(ctx);
 
-	next();
+	ctx.next();
 }

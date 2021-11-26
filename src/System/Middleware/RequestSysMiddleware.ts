@@ -1,18 +1,19 @@
-import { MainRequest } from '../MainRequest';
+import { P63Context } from "../P63Context";
 
-export default function RequestSysMiddleware(request: MainRequest, response: any, next: any): void {
-	const errorSys = request.sys.errorSys;
 
-	if (request.method === 'POST') {
-		if (request.body.data) {
+export default function RequestSysMiddleware(ctx:P63Context): void {
+	const errorSys = ctx.sys.errorSys;
+
+	if (ctx.method === 'POST') {
+		if (ctx.body.data) {
 			try {
-				request.body.data = JSON.parse(request.body.data);
+				ctx.body.data = JSON.parse(ctx.body.data);
 			} catch (e) {
 				errorSys.errorEx(e, 'data', 'Неправильный формат входных данных');
-				request.body.data = null;
+				ctx.body.data = null;
 			}
 		}
 	}
 
-	next();
+	ctx.next();
 }

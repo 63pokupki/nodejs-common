@@ -1,9 +1,9 @@
 import { RedisSys } from './RedisSys';
-import { MainRequest } from './MainRequest';
 
 import { UserSys } from './UserSys';
 import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 import { isObject } from 'util';
+import { P63Context } from './P63Context';
 
 /**
  * Система кеширования
@@ -15,15 +15,15 @@ export class CacheSys {
 
 	protected userSys: UserSys;
 
-	protected req: MainRequest;
+	protected ctx: P63Context;
 
-	constructor(req: MainRequest) {
-		this.req = req;
-		this.errorSys = req.sys.errorSys;
-		this.userSys = req.sys.userSys;
+	constructor(ctx: P63Context) {
+		this.ctx = ctx;
+		this.errorSys = ctx.sys.errorSys;
+		this.userSys = ctx.sys.userSys;
 
-		if (req.infrastructure.redis) {
-			this.redisSys = req.infrastructure.redis;
+		if (ctx.infrastructure.redis) {
+			this.redisSys = ctx.infrastructure.redis;
 		} else {
 			this.errorSys.error('db_redis', 'Отсутствует подключение к redis');
 		}
@@ -40,7 +40,7 @@ export class CacheSys {
 
 		let sCache = null;
 		let out: any = null;
-		if (this.req.sys.bCache) { // Пробуем получить данные из кеша
+		if (this.ctx.sys.bCache) { // Пробуем получить данные из кеша
 			sCache = await this.redisSys.get(sKey);
 
 			if (sCache) {
@@ -85,7 +85,7 @@ export class CacheSys {
 
 		let sCache = null;
 		let out: any = null;
-		if (this.req.sys.bCache) { // Пробуем получить данные из кеша
+		if (this.ctx.sys.bCache) { // Пробуем получить данные из кеша
 			sCache = await this.redisSys.get(sKey);
 
 			if (sCache) {
@@ -130,7 +130,7 @@ export class CacheSys {
 
 		let sCache = null;
 		let out: number = null;
-		if (this.req.sys.bCache) { // Пробуем получить данные из кеша
+		if (this.ctx.sys.bCache) { // Пробуем получить данные из кеша
 			sCache = await this.redisSys.get(sKey);
 
 			if (sCache) {
@@ -174,7 +174,7 @@ export class CacheSys {
 
 		let sCache = null;
 		let out: number = null;
-		if (this.req.sys.bCache) { // Пробуем получить данные из кеша
+		if (this.ctx.sys.bCache) { // Пробуем получить данные из кеша
 			sCache = await this.redisSys.get(sKey);
 
 			if (sCache) {

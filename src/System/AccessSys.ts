@@ -1,12 +1,13 @@
-import { MainRequest } from './MainRequest';
+
 import { RoleModelSQL } from '../Infrastructure/SQL/Repository/RoleModelSQL';
 import _ from 'lodash';
 import { ErrorSys } from '@a-a-game-studio/aa-components';
 import { RouteI } from '../Infrastructure/SQL/Entity/RouteE';
+import { P63Context } from './P63Context';
 
 /**  */
 export class AccessSys {
-	req: MainRequest;
+	ctx: P63Context;
 
 	roleModelSQL: RoleModelSQL;
 
@@ -21,11 +22,11 @@ export class AccessSys {
 	private routesByOrgrole: Record<string | number, Record<string, boolean>>;
 
 	/**  */
-	constructor(req: MainRequest) {
-		this.req = req;
-		this.errorSys = req.sys.errorSys;
-		this.idUser = req.sys.userSys.idUser;
-		this.roleModelSQL = new RoleModelSQL(req);
+	constructor(ctx: P63Context) {
+		this.ctx = ctx;
+		this.errorSys = ctx.sys.errorSys;
+		this.idUser = ctx.sys.userSys.idUser;
+		this.roleModelSQL = new RoleModelSQL(ctx);
 	}
 
 	/**
@@ -140,7 +141,7 @@ export class AccessSys {
 	public async accessAction(): Promise<void> {
 		await this.faListRouteForRole();
 
-		const route = this.req.path;
+		const route = this.ctx.req.url;
 
 		if (!this.routesByRole[route]) {
 			throw this.errorSys.throwAccess('У вас нет доступа к данному роуту по роли на сайте');
@@ -156,7 +157,7 @@ export class AccessSys {
 
 		await this.faListRouteForOrgrole();
 
-		const route = this.req.path;
+		const route = this.ctx.req.url;
 
 		try {
 			res = this.routesByOrgrole[orgId][route];

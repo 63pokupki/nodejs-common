@@ -1,8 +1,9 @@
 import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 import { UserSys } from './UserSys';
-import { MainRequest } from './MainRequest';
+
 import { LogicSys } from './LogicSys';
 import { CacheSys } from './CacheSys';
+import { P63Context } from './P63Context';
 
 /**
  * Класс для сервисов которые проксируют запросы к базе данных
@@ -14,17 +15,17 @@ export default class BaseS {
 
 	public userSys: UserSys;
 
-	public req: MainRequest;
+	public ctx: P63Context;
 
 	public logicSys: LogicSys;
 
 	public cacheSys: CacheSys;
 
-	constructor(req: MainRequest) {
-		this.errorSys = req.sys.errorSys;
-		this.userSys = req.sys.userSys;
-		this.logicSys = req.sys.logicSys;
-		this.cacheSys = req.sys.cacheSys;
-		this.req = req;
+	constructor(ctx: P63Context) {
+		this.errorSys = ctx.sys.errorSys;
+		this.userSys = ctx.sys.userSys;
+		this.logicSys = ctx.sys.logicSys;
+		this.cacheSys = ctx.sys.cacheSys;
+		this.ctx = ctx;
 	}
 }

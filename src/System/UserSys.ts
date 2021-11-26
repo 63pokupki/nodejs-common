@@ -3,7 +3,6 @@ import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 import * as _ from 'lodash';
 
 // Системные сервисы
-import { MainRequest } from './MainRequest';
 
 // SQL Запросы
 import { UserSQL } from '../Infrastructure/SQL/Repository/UserSQL';
@@ -12,6 +11,7 @@ import { AccessGroupSQL } from '../Infrastructure/SQL/Repository/AccessGroupSQL'
 import { CtrlAccessSQL } from '../Infrastructure/SQL/Repository/CtrlAccessSQL';
 import { P63UserVisitSQL } from '../Infrastructure/SQL/Repository/P63UserVisitSQL';
 import { RolesT } from './RolesI';
+import { P63Context } from './P63Context';
 
 export interface UserInfoI {
 	user_id: number;
@@ -48,7 +48,7 @@ export class UserSys {
 
 	private accessCRUDList: any; // Доступ CRUD к модулю
 
-	private req: MainRequest; // Объект запроса пользователя
+	private ctx: P63Context; // Объект запроса пользователя
 
 	private userSQL: UserSQL;
 
@@ -62,16 +62,16 @@ export class UserSys {
 
 	private p63UserVisitSQL: P63UserVisitSQL;
 
-	public constructor(req: MainRequest) {
-		this.req = req;
+	public constructor(ctx: P63Context) {
+		this.ctx = ctx;
 
-		this.errorSys = req.sys.errorSys;
+		this.errorSys = ctx.sys.errorSys;
 
-		this.userSQL = new UserSQL(req);
-		this.userGroupSQL = new UserGroupSQL(req);
-		this.accessGroupSQL = new AccessGroupSQL(req);
-		this.ctrlAccessSQL = new CtrlAccessSQL(req);
-		this.p63UserVisitSQL = new P63UserVisitSQL(req);
+		this.userSQL = new UserSQL(ctx);
+		this.userGroupSQL = new UserGroupSQL(ctx);
+		this.accessGroupSQL = new AccessGroupSQL(ctx);
+		this.ctrlAccessSQL = new CtrlAccessSQL(ctx);
+		this.p63UserVisitSQL = new P63UserVisitSQL(ctx);
 
 		this.ctrlAccessList = {};
 		this.userGroupsList = {};
@@ -79,7 +79,7 @@ export class UserSys {
 
 		/* вылавливаем apikey */
 
-		this.apikey = req.sys.apikey;
+		this.apikey = ctx.sys.apikey;
 
 		if (!this.apikey) {
 			this.apikey = '';
@@ -100,7 +100,7 @@ export class UserSys {
 		const ifAuth = await this.userSQL.isAuth(this.apikey);
 
 		if (ifAuth) { // Ставим в общий слой видимости флаг авторизации
-			this.req.sys.bAuth = true;
+			this.ctx.sys.bAuth = true;
 		}
 
 		let userInfoList: any = {};

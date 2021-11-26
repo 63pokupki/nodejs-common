@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
-
-import { MainRequest } from './MainRequest';
+import { P63Context } from './P63Context';
 
 interface MattermostField {
 	short: boolean;
@@ -21,13 +20,13 @@ interface MattermostMsg {
 
 /** Класс для работы с MatterMost'ом */
 export class MattermostSys {
-	protected req: MainRequest;
+	protected ctx: P63Context;
 
 	protected errorSys: ErrorSys;
 
-	constructor(req: MainRequest) {
-		this.req = req;
-		this.errorSys = req.sys.errorSys;
+	constructor(ctx: P63Context) {
+		this.ctx = ctx;
+		this.errorSys = ctx.sys.errorSys;
 	}
 
 	/**
@@ -44,13 +43,13 @@ export class MattermostSys {
 				{
 					fallback: 'test',
 					color: 'danger',
-					text: `:boom: :trollface: Apikey: ${this.req.sys.apikey}`,
-					title: `Ошибка на ${this.req.common.env}`,
+					text: `:boom: :trollface: Apikey: ${this.ctx.sys.apikey}`,
+					title: `Ошибка на ${this.ctx.common.env}`,
 					fields: [
 						{
 							short: true,
 							title: 'URL',
-							value: `:link: ${this.req.originalUrl}`,
+							value: `:link: ${this.ctx.req.url}`,
 						},
 						{
 							short: true,
@@ -65,7 +64,7 @@ export class MattermostSys {
 						{
 							short: false,
 							title: 'request body',
-							value: this.req.body,
+							value: this.ctx.body,
 						},
 					],
 				},
@@ -82,7 +81,7 @@ export class MattermostSys {
 			});
 		}
 
-		this.send(msg, this.req.common.hook_url_errors);
+		this.send(msg, this.ctx.common.hook_url_errors);
 	}
 
 	/**
@@ -97,8 +96,8 @@ export class MattermostSys {
 				{
 					fallback: 'test',
 					color: 'danger',
-					text: `:boom: :trollface: ApiKey:${this.req.sys.apikey} - ID:${this.req.sys.userSys.idUser}`,
-					title: `Ошибка на ${this.req.common.env}`,
+					text: `:boom: :trollface: ApiKey:${this.ctx.sys.apikey} - ID:${this.ctx.sys.userSys.idUser}`,
+					title: `Ошибка на ${this.ctx.common.env}`,
 					fields: [
 					],
 				},
@@ -122,7 +121,7 @@ export class MattermostSys {
 		}
 
 		if (this.errorSys.isOk()) {
-			this.send(msg, this.req.common.hook_url_front_errors);
+			this.send(msg, this.ctx.common.hook_url_front_errors);
 		}
 	}
 
@@ -138,7 +137,7 @@ export class MattermostSys {
 					fallback: 'test',
 					color: 'info',
 					text: `:boom: :trollface: ${sTitle}`,
-					title: `Мониторинг на ${this.req.common.env}`,
+					title: `Мониторинг на ${this.ctx.common.env}`,
 					fields: [
 						{
 							short: true,
@@ -150,7 +149,7 @@ export class MattermostSys {
 			],
 		};
 
-		this.send(msg, this.req.common.hook_url_monitoring);
+		this.send(msg, this.ctx.common.hook_url_monitoring);
 	}
 
 	/**

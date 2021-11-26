@@ -1,6 +1,5 @@
 import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
-import { MainRequest } from './MainRequest';
-
+import { P63Context } from './P63Context';
 import { UserSys } from './UserSys';
 
 /**
@@ -13,10 +12,10 @@ export default class BaseCommand {
 
 	public userSys: UserSys;
 
-	constructor(req: MainRequest) {
-		this.db = req.infrastructure.mysql;
+	constructor(ctx: P63Context) {
+		this.db = ctx.infrastructure.mysql;
 
-		this.errorSys = req.sys.errorSys;
-		this.userSys = req.sys.userSys;
+		this.errorSys = ctx.sys.errorSys;
+		this.userSys = ctx.sys.userSys;
 	}
 }

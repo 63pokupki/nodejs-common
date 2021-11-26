@@ -3,11 +3,11 @@ import { Knex } from 'knex';
 
 // Системные сервисы
 import { RedisSys } from './RedisSys';
-import { MainRequest } from './MainRequest';
 
 import { UserSys } from './UserSys';
 import { CacheSys } from './CacheSys';
 import { LogicSys } from './LogicSys';
+import { P63Context } from './P63Context';
 
 /**
  * SQL Запросы
@@ -20,7 +20,7 @@ export default class BaseSQL {
 	 */
 	protected get db(): Knex {
 		let db = null;
-		if (this.req.sys.bMasterDB) {
+		if (this.ctx.sys.bMasterDB) {
 			db = this.dbMaster;
 		} else {
 			db = this.dbBalancer;
@@ -40,40 +40,40 @@ export default class BaseSQL {
 
 	protected userSys: UserSys;
 
-	protected req: MainRequest;
+	protected ctx: P63Context;
 
 	protected cacheSys: CacheSys;
 
 	protected logicSys: LogicSys;
 
-	constructor(req: MainRequest) {
-		this.req = req;
+	constructor(ctx: P63Context) {
+		this.ctx = ctx;
 
-		this.modelValidatorSys = new ModelValidatorSys(req.sys.errorSys);
-		this.errorSys = req.sys.errorSys;
-		this.userSys = req.sys.userSys;
-		this.logicSys = req.sys.logicSys;
-		this.cacheSys = req.sys.cacheSys;
+		this.modelValidatorSys = new ModelValidatorSys(ctx.sys.errorSys);
+		this.errorSys = ctx.sys.errorSys;
+		this.userSys = ctx.sys.userSys;
+		this.logicSys = ctx.sys.logicSys;
+		this.cacheSys = ctx.sys.cacheSys;
 
-		if (req.infrastructure.mysql) {
-			this.dbBalancer = req.infrastructure.mysql;
+		if (ctx.infrastructure.mysql) {
+			this.dbBalancer = ctx.infrastructure.mysql;
 		} else {
 			this.errorSys.error('db_no_connection', 'Отсутствует подключение к mysql');
 		}
 
 		// Если мастер есть ставим его
-		if (req.infrastructure.mysqlMaster) {
-			this.dbMaster = req.infrastructure.mysqlMaster;
+		if (ctx.infrastructure.mysqlMaster) {
+			this.dbMaster = ctx.infrastructure.mysqlMaster;
 		} else { // если мастера нет ставим MaxScale
-			this.dbMaster = req.infrastructure.mysql;
+			this.dbMaster = ctx.infrastructure.mysql;
 		}
 
 		if (!this.dbMaster) { // Если мастера все еще нет ОШИБКА
 			this.errorSys.error('db_master_no_connection', 'Отсутствует подключение к mysql мастеру');
 		}
 
-		if (req.infrastructure.redis) {
-			this.redisSys = req.infrastructure.redis;
+		if (ctx.infrastructure.redis) {
+			this.redisSys = ctx.infrastructure.redis;
 		} else {
 			this.errorSys.error('db_redis', 'Отсутствует подключение к redis');
 		}

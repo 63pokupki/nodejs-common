@@ -1,10 +1,11 @@
-import { MainRequest } from '../MainRequest';
+
+import { P63Context } from '../P63Context';
 import { ResponseSys } from '../ResponseSys';
 
 /* Переводит пост в JSON */
-export default function ResponseSysMiddleware(request: MainRequest, response: any, next: any): void {
-	const responseSys = new ResponseSys(request);
-	request.sys.responseSys = responseSys;
+export default function ResponseSysMiddleware(ctx: P63Context): void {
+	const responseSys = new ResponseSys(ctx);
+	ctx.sys.responseSys = responseSys;
 
-	next();
+	ctx.next();
 }

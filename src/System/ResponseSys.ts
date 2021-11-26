@@ -1,18 +1,18 @@
-import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
-import { Response } from 'express';
+/* eslint-disable @typescript-eslint/ban-types */
+import { ErrorSys } from '@a-a-game-studio/aa-components';
 
-import { MainRequest } from './MainRequest';
 import { fErrorHandler } from './ErrorHandler';
+import { P63Context } from './P63Context';
 
 /**
  * Функция рендера страницы
  * @param faCallback - функция контролера
  */
-export const faSendRouter = (faCallback: Function) => async (req: MainRequest, res: Response, next: any): Promise<void> => {
+export const faSendRouter = (faCallback: Function) => async (ctx: P63Context): Promise<void> => {
 	try {
-		await faCallback(req, res);
+		await faCallback(ctx);
 	} catch (e) {
-		fErrorHandler(e, req, res, next);
+		fErrorHandler(e, ctx);
 	}
 };
 
@@ -22,23 +22,23 @@ export const faSendRouter = (faCallback: Function) => async (req: MainRequest, r
 export class ResponseSys {
 	private env: string;
 
-	private req: MainRequest;
+	private ctx: P63Context;
 
 	private ifDevMode: boolean;
 
 	private errorSys: ErrorSys;
 	// private mattermostSys:MattermostSys;
 
-	constructor(req: MainRequest) {
-		this.req = req;
-		this.env = req.common.env;
+	constructor(ctx: P63Context) {
+		this.ctx = ctx;
+		this.env = ctx.common.env;
 		if (this.env === 'local' || this.env === 'dev' || this.env === 'test') {
 			this.ifDevMode = true;
 		} else {
 			this.ifDevMode = false;
 		}
 
-		this.errorSys = req.sys.errorSys;
+		this.errorSys = ctx.sys.errorSys;
 
 		/* this.mattermostSys = new MattermostSys(req);
  */
