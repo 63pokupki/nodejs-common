@@ -1,7 +1,6 @@
 
 import { UserSys } from '../UserSys';
 import * as jwt from 'jsonwebtoken';
-import type { Response, NextFunction } from 'express';
 import { AccessSys } from '../AccessSys';
 import { P63Context } from '../P63Context';
 
