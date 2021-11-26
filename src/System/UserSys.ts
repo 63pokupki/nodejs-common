@@ -5,7 +5,6 @@ import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 import { MainRequest } from './MainRequest';
 import { RolesT } from './RolesI';
 import { AuthR, UserInfoI } from '../Interface/AuthUser';
-import { QuerySys } from '@a-a-game-studio/aa-front';
 import { AuthQuerySys } from '../Common/AuthQuerySys';
 
 
@@ -58,29 +57,19 @@ export class UserSys {
 		// Запрос к сервису авторизации
 		this.authQuerySys.fActionOk((data: AuthR.authByApikey.ResponseI)=> {
 			if (data.user_info) {
-				// Основная информация о пользователе:
-				this.idUser = data.user_info.user_id;
-				this.req.sys.bAuth = true;
-
 				if (this.req.common.env !== 'prod') {
 					console.log(`Авторизация через Auth.Core прошла успешно, пользователь - ${data.user_info.username}`);
 				}
 				
 				this.req.sys.errorSys.devNotice(
-					'is_user_init', `Авторизация через Auth.Core прошла успешно, пользователь - ${data.user_info.username}`
+					'is_user_init', `Авторизация через Auth.Core прошла успешно, пользователь - ${data.user_info.username}`,
 				);
-
-				// сохраняем группы пользователя
-				for (let i = 0; i < data.list_group.length; i++) {
-					const group = data.list_group[i];
-					this.userGroupsList[group.group_alias] = group.group_id;
-				}
-
-				// сохраняем доступные пользователю контроллеры
-				for (let i = 0; i < data.list_ctrl.length; i++) {
-					const ctrl = data.list_ctrl[i];
-					this.ctrlAccessList[ctrl.ctrl_alias] = ctrl.ctrl_id;
-				}
+				// Заносим доступные user id, групп и контроллеры
+				this.setUserInfo({
+					idUser: data.user_info.user_id,
+					aCtrlName: data.list_ctrl,
+					aGroup: data.list_group,
+				});
 			} else {
 				this.errorSys.devWarning('is_user_init', 'Авторизация провалилась');
 			}
@@ -96,6 +85,39 @@ export class UserSys {
 			await this.authQuerySys.faSend(AuthR.authByApikey.route, reqData);
 		} else {
 			this.errorSys.devWarning('is_user_init', 'Пользователь не авторизован');
+		}
+	}
+
+	/**
+	 * Сохранить ID пользователя, доступные ему группы и контроллеры
+	 */
+	public setUserInfo(data: {
+		idUser: number,
+		aGroup: {
+			group_id: number;
+			group_name: string;
+			group_alias: string;
+		}[],
+		aCtrlName: {
+			/** Id контроллера */
+			ctrl_id: number;
+			/** Псевдоним пользователя */
+			ctrl_alias: string;
+		}[],
+	}): void {
+		this.idUser = data.idUser;
+		this.req.sys.bAuth = true;
+		
+		// сохраняем группы пользователя
+		for (let i = 0; i < data.aGroup.length; i++) {
+			const group = data.aGroup[i];
+			this.userGroupsList[group.group_alias] = group.group_id;
+		}
+
+		// сохраняем доступные пользователю контроллеры
+		for (let i = 0; i < data.aCtrlName.length; i++) {
+			const ctrl = data.aCtrlName[i];
+			this.ctrlAccessList[ctrl.ctrl_alias] = ctrl.ctrl_id;
 		}
 	}
 
