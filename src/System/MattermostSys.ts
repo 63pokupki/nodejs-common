@@ -64,7 +64,7 @@ export class MattermostSys {
 						{
 							short: false,
 							title: 'request body',
-							value: this.ctx.body,
+							value: JSON.stringify(this.ctx.body),
 						},
 					],
 				},

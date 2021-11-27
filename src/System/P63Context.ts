@@ -24,8 +24,6 @@ export class P63Context extends AAContext {
 		[key: string]: any;
 	} = <any>{};
 
-	body: any = null;
-
 	method: string;
 
 	auth: {
