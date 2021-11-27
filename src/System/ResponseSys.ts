@@ -8,7 +8,7 @@ import { P63Context } from './P63Context';
  * Функция рендера страницы
  * @param faCallback - функция контролера
  */
-export const faSendRouter = (faCallback: Function) => async (ctx: P63Context): Promise<void> => {
+export const faSendRouter = (faCallback: (ctx: P63Context) => Promise<void> ) => async (ctx: P63Context): Promise<void> => {
 	try {
 		await faCallback(ctx);
 	} catch (e) {
