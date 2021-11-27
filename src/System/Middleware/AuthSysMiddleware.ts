@@ -20,6 +20,7 @@ interface JwtDecodeI {
 /* проверка аутентификации на уровне приложения */
 export default async function AuthSysMiddleware(ctx:P63Context): Promise<void> {
 	const apikey = ctx.cookies.apikey || ctx.headers.apikey;
+    
 
 	if (apikey) {
 		if (apikey.length > 32) {
@@ -58,6 +59,8 @@ export default async function AuthSysMiddleware(ctx:P63Context): Promise<void> {
 	} else {
 		ctx.sys.apikey = '';
 	}
+
+    ctx.apikey = ctx.sys.apikey;
 
 	/* юзерь не авторизован */
 	ctx.sys.bAuth = false;
