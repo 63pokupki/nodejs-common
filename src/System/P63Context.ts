@@ -20,9 +20,6 @@ import { RabbitSenderSys } from './RabbitSenderSys';
 
 
 export class P63Context extends AAContext {
-	headers: {
-		[key: string]: any;
-	} = <any>{};
 
 	method: string;
 
@@ -70,7 +67,8 @@ export class P63Context extends AAContext {
 
 
 const Req: any = {
-	headers: null,
+	headers: {},
+    cookies: {},
 	common: { 								// Общее
 		env: 'dev', 						// Тип окружения
 		oldCoreURL: null, 					// URL адрес основного сайта
