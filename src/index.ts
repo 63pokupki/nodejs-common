@@ -8,7 +8,7 @@ import BaseM from './System/BaseM';
 // export { BaseM as BaseM };
 
 import { UserSys, UserInfoI } from './System/UserSys';
-import { ResponseSys } from './System/ResponseSys';
+import { faSendRouter, ResponseSys } from './System/ResponseSys';
 
 import {
 	P63Context, TError, initMainRequest, devReq,
@@ -76,6 +76,7 @@ export {
 	RabbitSenderSys, 	// Класс системы для работы с ребитом
 	rabbitSenderSys, 	// Объект система работы с ребитом
 	initMainRequest, 	// Инициализация Main Request для тестов
+    faSendRouter,
 	BaseCommand, 		// Конструктор консольных команд
 	Seo, 				// сео собственно
 	HelperSys, 			// Вспомогательные функции которые ни к чему не привязаны
