@@ -27,7 +27,7 @@
   "homepage": "https://github.com/63pokupki/nodejs-common#readme",
   "dependencies": {
     "@a-a-game-studio/aa-components": "^1.1.44",
-    "@a-a-game-studio/aa-server": "^1.0.7",
+    "@a-a-game-studio/aa-server": "^1.0.8",
     "amqplib": "^0.8.0",
     "aws-sdk": "^2.1016.0",
     "axios": "^0.24.0",
