@@ -46,6 +46,8 @@ import * as Mattermost from './System/MattermostSys';
 import * as S3DO from './System/S3DO';
 import { LogicSys } from './System/LogicSys';
 import SubSysMiddleware from './System/Middleware/SubSysMiddleware';
+import ParseBodyMiddleware from './System/Middleware/ParseBodyMiddleware';
+
 
 import { CacheSys } from './System/CacheSys';
 import { RolesT } from './System/RolesI';
@@ -56,6 +58,7 @@ const Middleware = {
 	ResponseSysMiddleware,
 	AuthSysMiddleware,
 	SubSysMiddleware,
+    ParseBodyMiddleware,
 };
 
 export {
