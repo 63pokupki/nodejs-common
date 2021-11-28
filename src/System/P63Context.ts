@@ -57,6 +57,8 @@ export class P63Context extends AAContext {
 	infrastructure: {
 		mysql: Knex;
 		mysqlMaster: Knex;
+        mysqlMasterPool?: Knex[]; // Пулл для мультимастера
+        mysqlSlavePool?: Knex[]; // Пулл для балансировки запросов
 		sphinx?: Knex;
 		redis: RedisSys;
 		rabbit: RabbitSenderSys;
