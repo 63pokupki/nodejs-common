@@ -23,7 +23,7 @@ export default function ParseBodyMiddleware(ctx: P63Context): void {
                 let sBody = Buffer.concat(body).toString();
 
                 try {
-                    if (sBody && sBody.indexOf('{') === 0){
+                    if (sBody && sBody[0] === '{'){
                         ctx.body = JSON.parse(sBody);
                     } else {
                         sBody = decodeURI(sBody);
