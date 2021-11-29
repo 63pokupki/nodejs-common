@@ -25,6 +25,9 @@ export default function ParseBodyMiddleware(ctx: P63Context): void {
                 try {
                     if (sBody && sBody[0] === '{'){
                         ctx.body = JSON.parse(sBody);
+                        if (ctx.body.data){ // Если встречаем [data] парсим ее как json
+                            ctx.body.data = JSON.parse(String(ctx.body.data));
+                        }
                     } else {
                         sBody = decodeURI(sBody);
                         const vSearchParams = new URLSearchParams(sBody);
@@ -34,7 +37,7 @@ export default function ParseBodyMiddleware(ctx: P63Context): void {
                             const kBodyParam = p[0];
                             const vBodyParam = p[1];
 
-                            if (kBodyParam == 'data'){ // Если встречаем в form param [data] парсим ее как json
+                            if (kBodyParam == 'data'){ // Если встречаем [data] парсим ее как json
                                 ctx.body[kBodyParam] = JSON.parse(vBodyParam);
                             } else {
                                 ctx.body[kBodyParam] = vBodyParam;
