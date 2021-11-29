@@ -69,7 +69,7 @@ export const fErrorHandler = async (err: Error, ctx: P63Context): Promise<void> 
 	try { // отправка ошибки в апи
 		await axios.post(ctx.common.hook_url_errors_api, vErrorForAPI);
 	} catch (e) {
-		console.warn(e, 'Не удалось отправить ошибку');
+		console.warn('Не удалось отправить ошибку на api', ctx.common.hook_url_errors_api);
 	}
 
 	ctx.send(

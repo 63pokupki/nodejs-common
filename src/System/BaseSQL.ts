@@ -27,7 +27,7 @@ export default class BaseSQL {
 	protected get db(): Knex {
 		let db = null;
 		if (this.ctx.sys.bMasterDB) {
-			db = this.dbMaster;
+			db = this.dbMasterOne;
 		} else {
 			db = this.dbOne;
 		}
