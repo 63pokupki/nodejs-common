@@ -6,7 +6,7 @@ import colors from 'colors';
 /* LEGO ошибок */
 export default function ParseBodyMiddleware(ctx: P63Context): void {
 	if (ctx.req.method === 'POST' ){
-        if (ctx.req.headers['content-length'] && Number(ctx.req.headers['content-length']) < 40 * 1024 * 1024 ){
+        // if (ctx.req.headers['content-length'] && Number(ctx.req.headers['content-length']) < 40 * 1024 * 1024 ){
             const body:Buffer[] = [];
 
             ctx.req.on('error', (err) => {
@@ -51,10 +51,10 @@ export default function ParseBodyMiddleware(ctx: P63Context): void {
                 }
 
             });
-        } else {
-            console.error(colors.red('Размер запроса слишком большой - '), ctx.req.url);
-            ctx.error(400);
-        }
+        // } else {
+        //     console.error(colors.red('Размер запроса слишком большой - '), ctx.req.url);
+        //     ctx.error(400);
+        // }
     }
 
     ctx.next();
