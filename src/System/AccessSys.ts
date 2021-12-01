@@ -171,6 +171,34 @@ export class AccessSys {
 	}
 
 	/**
+	 * Проверка доступа к роуту по глобальной или орг роли
+	 */
+	public async accessByAnyRole(orgId: number): Promise<void> {
+		await this.faListRouteForRole();
+		await this.faListRouteForOrgrole();
+
+		const route = this.ctx.req.url;
+
+		const accessByRole = this.routesByRole[route];
+		let accessByOrgRole = false;
+		try {
+			accessByOrgRole = this.routesByOrgrole[orgId][route];
+		} catch (e) {}
+
+		if(accessByRole) {
+			this.errorSys.devNotice('access_by_role', 'Доступ к роуту по глобальной роли');
+		}
+		if(accessByOrgRole) {
+			this.errorSys.devNotice('access_by_orgrole', 'Доступ к роуту по роли в организации');
+		}
+	
+
+		if (!accessByRole && !accessByOrgRole) {
+			throw this.errorSys.throwAccess('У вас нет доступа к данному роуту по глобальной/орг роли');
+		}
+	}
+
+	/**
 	 * проверка доступа к контроллеру по группе
 	 * @param ctrlName
 	 */
