@@ -137,22 +137,40 @@ export class AccessSys {
 
 	/**
 	 * проверка доступа к роуту по роли
+	 * (обратная совместимость)
 	 */
 	public async accessAction(): Promise<void> {
+		await this.accessByRole();
+	}
+	
+	/**
+	 * проверка доступа к роуту по оргроли
+	 * (обратная совместимость)
+	 */
+	public async accessActionOrg(orgId: number): Promise<void> {
+		await this.accessByOrgRole(orgId);
+	}
+
+
+	/**
+	 * проверка доступа к роуту по роли
+	 */
+	public async accessByRole(): Promise<void> {
 		await this.faListRouteForRole();
 
 		const route = this.ctx.req.url;
 
 		if (!this.routesByRole[route]) {
 			throw this.errorSys.throwAccess('У вас нет доступа к данному роуту по роли на сайте');
+		} else {
+			this.errorSys.devNotice('access_by_role', 'Доступ к роуту по глобальной роли');
 		}
 	}
 
 	/**
 	 * проверка доступа к роуту по оргроли
-	 * @param orgId
 	 */
-	public async accessActionOrg(orgId: number): Promise<void> {
+	public async accessByOrgRole(orgId: number): Promise<void> {
 		let res: boolean;
 
 		await this.faListRouteForOrgrole();
@@ -167,6 +185,36 @@ export class AccessSys {
 
 		if (!res) {
 			throw this.errorSys.throwAccess('У вас нет доступа к данному роуту по роли в организации');
+		} {
+			this.errorSys.devNotice('access_by_orgrole', 'Доступ к роуту по роли в организации');
+		}
+	}
+
+	/**
+	 * Проверка доступа к роуту по глобальной или орг роли
+	 */
+	public async accessByAnyRole(orgId: number): Promise<void> {
+		await this.faListRouteForRole();
+		await this.faListRouteForOrgrole();
+
+		const route = this.ctx.req.url;
+
+		const accessByRole = this.routesByRole[route];
+		let accessByOrgRole = false;
+		try {
+			accessByOrgRole = this.routesByOrgrole[orgId][route];
+		} catch (e) {}
+
+		if(accessByRole) {
+			this.errorSys.devNotice('access_by_role', 'Доступ к роуту по глобальной роли');
+		}
+		if(accessByOrgRole) {
+			this.errorSys.devNotice('access_by_orgrole', 'Доступ к роуту по роли в организации');
+		}
+	
+
+		if (!accessByRole && !accessByOrgRole) {
+			throw this.errorSys.throwAccess('У вас нет доступа к данному роуту по глобальной/орг роли');
 		}
 	}
 
