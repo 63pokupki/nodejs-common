@@ -40,7 +40,7 @@ export default class BaseSQL {
 	 * Если их нет отдает мастер БД
      * Если мастер соединений не найденно отдает балансировщик или одиночную БД
 	 */
-	protected get dbm(): Knex {
+	protected get dbMaster(): Knex {
 		let db = null;
 		if (this.dbMasterPool?.length) {
             // Случайно отдаем одну базу данных из пула
@@ -59,7 +59,7 @@ export default class BaseSQL {
      * По умолчанию выибрается из пула ведомых баз данных
 	 * Если их нет отдает ведомую БД
 	 */
-	protected get dbs(): Knex {
+	protected get dbSlave(): Knex {
 		let db = null;
 		if (this.dbSlavePool?.length) {
             // Случайно отдаем одну базу данных из пула
@@ -154,7 +154,7 @@ export default class BaseSQL {
 			this.dbSlavePool = ctx.infrastructure.mysqlSlavePool;
 		}
 
-		if (!this.dbm) { // Если мастера все еще нет ОШИБКА
+		if (!this.dbMasterOne) { // Если мастера все еще нет ОШИБКА
 			this.errorSys.error('db_master_no_connection', 'Отсутствует подключение к mysql мастеру');
 		}
 
