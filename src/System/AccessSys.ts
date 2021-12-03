@@ -7,9 +7,9 @@ import { P63Context } from './P63Context';
 
 /**  */
 export class AccessSys {
-	ctx: P63Context;
+	private ctx: P63Context;
 
-	roleModelSQL: RoleModelSQL;
+	private roleModelSQL: RoleModelSQL;
 
 	errorSys: ErrorSys;
 
@@ -135,6 +135,10 @@ export class AccessSys {
 		this.ctrls = sortedCtrls;
 	}
 
+	// ========================================
+	// Проверки с выбросом ошибок
+	// ========================================
+
 	/**
 	 * проверка доступа к роуту по роли
 	 * (обратная совместимость)
@@ -228,5 +232,37 @@ export class AccessSys {
 		if (!this.ctrls[ctrlName]) {
 			throw this.errorSys.throwAccess('У вас нет доступа к данному контроллеру');
 		}
+	}
+
+	// ============================================
+	// Проверки без выброса ошибок
+	// ============================================
+
+	/**
+	 * Проверить, если доступ к роуту по глобальной роли
+	 */
+	public async isAccessByRole(): Promise<boolean> {
+		await this.faListRouteForRole();
+		const route = this.ctx.req.url;
+		return this.routesByRole[route];
+	}
+
+	/**
+	 * Проверить, если доступ к роуту по орг роли
+	 * @returns IDs организаций, по которым есть доступ
+	 */
+	public async isAccessByOrgRole(): Promise<number[]> {
+		await this.faListRouteForOrgrole();
+		const route = this.ctx.req.url;
+
+		const aidOrganization = [];
+		for (let i = 0; i < Object.keys(this.routesByOrgrole).length; i++) {
+			const idOrg = Number(Object.keys(this.routesByOrgrole)[i]);
+			if(this.routesByOrgrole[idOrg][route]) {
+				aidOrganization.push(idOrg);
+			}
+		}
+
+		return aidOrganization;
 	}
 }
