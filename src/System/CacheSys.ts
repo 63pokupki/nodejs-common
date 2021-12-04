@@ -224,4 +224,17 @@ export class CacheSys {
 			}
 		}
 	}
+
+	/**
+	 * Создать объект для управления кэшем конретного коллбэка
+	 */
+	cacheFuncBuilder<CallbackResT>(sKey: string, iTimeSec: number, callback: () => Promise<CallbackResT>): {
+		getResult: () => Promise<CallbackResT>;
+		cleaneCache: () => Promise<void>;
+	} {
+		return {
+			getResult: () => this.autoCache(sKey, iTimeSec, callback),
+			cleaneCache: () => this.clearCache(sKey),
+		}
+	}
 }
