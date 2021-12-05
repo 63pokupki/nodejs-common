@@ -135,7 +135,18 @@ export class AvgCacheSys {
             }
         }
 
-        return aDataCache;
+        // Сортировка
+        const ixDataCache = _.keyBy(aDataCache, 'id');
+        const aDataCacheSort:DataT[] = [];
+        for (let i = 0; i < aidRecord.length; i++) {
+            const idRecord = aidRecord[i];
+            const vDataCache = ixDataCache[idRecord];
+            if (vDataCache){
+                aDataCacheSort.push(vDataCache);
+            }
+        }
+
+        return aDataCacheSort;
     }
 
 }
