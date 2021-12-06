@@ -1,6 +1,5 @@
 import * as AWS from 'aws-sdk';
 import { S3confI } from './MainConfig';
-import { MainRequest } from './MainRequest';
 
 /**
  * Параметры объекта для заливки

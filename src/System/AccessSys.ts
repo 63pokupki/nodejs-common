@@ -1,13 +1,12 @@
-import { MainRequest } from './MainRequest';
 import _ from 'lodash';
 import { ErrorSys } from '@a-a-game-studio/aa-components';
-import { QuerySys } from '@a-a-game-studio/aa-front';
 import { AuthR } from '../Interface/AuthUser';
 import { AuthQuerySys } from '../Common/AuthQuerySys';
+import { P63Context } from './P63Context';
 
 /**  */
 export class AccessSys {
-	req: MainRequest;
+	private ctx: P63Context;
 
 	errorSys: ErrorSys;
 
@@ -22,11 +21,11 @@ export class AccessSys {
 	private readonly authQuerySys: AuthQuerySys;
 
 	/**  */
-	constructor(req: MainRequest) {
-		this.req = req;
-		this.errorSys = req.sys.errorSys;
-		this.idUser = req.sys.userSys.idUser;
-		this.authQuerySys = new AuthQuerySys(req.auth.auth_url);
+	constructor(ctx: P63Context) {
+		this.ctx = ctx;
+		this.errorSys = ctx.sys.errorSys;
+		this.idUser = ctx.sys.userSys.idUser;
+		this.authQuerySys = new AuthQuerySys(ctx.auth.auth_url);
 	}
 
 	/**
@@ -39,7 +38,7 @@ export class AccessSys {
 				const route = data.list_route_url[i];
 				this.aRouteByRole[route] = true;
 			}
-			this.req.sys.errorSys.devNotice('access_by_roles', 'Доступые по ролям роуты получены из auth.core');
+			this.ctx.sys.errorSys.devNotice('access_by_roles', 'Доступые по ролям роуты получены из auth.core');
 		});
 
 		this.authQuerySys.fActionErr(() => {
@@ -50,7 +49,7 @@ export class AccessSys {
 			user_id: this.idUser,
 		};
 
-		await this.authQuerySys.faSend(`${this.req.auth.auth_url}/${AuthR.getListRouteByRole.route}`, reqData);
+		await this.authQuerySys.faSend(`${this.ctx.auth.auth_url}/${AuthR.getListRouteByRole.route}`, reqData);
 	}
 
 	/**
@@ -63,7 +62,7 @@ export class AccessSys {
 				const orgRole = data.list_org_route[i];
 				this.aRouteByOrgRole[orgRole.org_id][orgRole.route_url] = true;
 			}
-			this.req.sys.errorSys.devNotice('access_by_orgroles', 'Доступые по оргролям роуты полоучены из auth.core');
+			this.ctx.sys.errorSys.devNotice('access_by_orgroles', 'Доступые по оргролям роуты полоучены из auth.core');
 		});
 
 		this.authQuerySys.fActionErr(() => {
@@ -74,7 +73,7 @@ export class AccessSys {
 			user_id: this.idUser,
 		};
 
-		await this.authQuerySys.faSend(`${this.req.auth.auth_url}/${AuthR.getListRouteByOrgRole.route}`, reqData);
+		await this.authQuerySys.faSend(`${this.ctx.auth.auth_url}/${AuthR.getListRouteByOrgRole.route}`, reqData);
 	}
 
 	/**
@@ -87,7 +86,7 @@ export class AccessSys {
 				const ctrlAlias = data.list_ctrl_alias[i];
 				this.aCtrl[ctrlAlias] = true;
 			}
-			this.req.sys.errorSys.devNotice('access_by_groups', 'Доступые контроллеры получены из auth.core');
+			this.ctx.sys.errorSys.devNotice('access_by_groups', 'Доступые контроллеры получены из auth.core');
 		});
 
 		this.authQuerySys.fActionErr(() => {
@@ -98,32 +97,54 @@ export class AccessSys {
 			user_id: this.idUser,
 		};
 
-		await this.authQuerySys.faSend(`${this.req.auth.auth_url}/${AuthR.getListCtrl.route}`, reqData);
+		await this.authQuerySys.faSend(`${this.ctx.auth.auth_url}/${AuthR.getListCtrl.route}`, reqData);
 	}
+
+	// ========================================
+	// Проверки с выбросом ошибок
+	// ========================================
+
+	/**
+	 * проверка доступа к роуту по роли
+	 * (обратная совместимость)
+	 */
+	public async accessAction(): Promise<void> {
+		await this.accessByRole();
+	}
+	
+	/**
+	 * проверка доступа к роуту по оргроли
+	 * (обратная совместимость)
+	 */
+	public async accessActionOrg(orgId: number): Promise<void> {
+		await this.accessByOrgRole(orgId);
+	}
+
 
 	/**
 	 * проверка доступа к роуту по роли
 	 */
-	public async accessAction(): Promise<void> {
+	public async accessByRole(): Promise<void> {
 		await this.faListRouteForRole();
 
-		const route = this.req.path;
+		const route = this.ctx.req.url;
 
 		if (!this.aRouteByRole[route]) {
 			throw this.errorSys.throwAccess('У вас нет доступа к данному роуту по роли на сайте');
+		} else {
+			this.errorSys.devNotice('access_by_role', 'Доступ к роуту по глобальной роли');
 		}
 	}
 
 	/**
 	 * проверка доступа к роуту по оргроли
-	 * @param orgId
 	 */
-	public async accessActionOrg(orgId: number): Promise<void> {
+	public async accessByOrgRole(orgId: number): Promise<void> {
 		let res: boolean;
 
 		await this.faListRouteForOrgrole();
 
-		const route = this.req.path;
+		const route = this.ctx.req.url;
 
 		try {
 			res = this.aRouteByOrgRole[orgId][route];
@@ -133,6 +154,36 @@ export class AccessSys {
 
 		if (!res) {
 			throw this.errorSys.throwAccess('У вас нет доступа к данному роуту по роли в организации');
+		} {
+			this.errorSys.devNotice('access_by_orgrole', 'Доступ к роуту по роли в организации');
+		}
+	}
+
+	/**
+	 * Проверка доступа к роуту по глобальной или орг роли
+	 */
+	public async accessByAnyRole(orgId: number): Promise<void> {
+		await this.faListRouteForRole();
+		await this.faListRouteForOrgrole();
+
+		const route = this.ctx.req.url;
+
+		const accessByRole = this.aRouteByRole[route];
+		let accessByOrgRole = false;
+		try {
+			accessByOrgRole = this.aRouteByOrgRole[orgId][route];
+		} catch (e) {}
+
+		if(accessByRole) {
+			this.errorSys.devNotice('access_by_role', 'Доступ к роуту по глобальной роли');
+		}
+		if(accessByOrgRole) {
+			this.errorSys.devNotice('access_by_orgrole', 'Доступ к роуту по роли в организации');
+		}
+	
+
+		if (!accessByRole && !accessByOrgRole) {
+			throw this.errorSys.throwAccess('У вас нет доступа к данному роуту по глобальной/орг роли');
 		}
 	}
 
@@ -146,5 +197,37 @@ export class AccessSys {
 		if (!this.aCtrl[ctrlName]) {
 			throw this.errorSys.throwAccess('У вас нет доступа к данному контроллеру');
 		}
+	}
+
+	// ============================================
+	// Проверки без выброса ошибок
+	// ============================================
+
+	/**
+	 * Проверить, если доступ к роуту по глобальной роли
+	 */
+	public async isAccessByRole(): Promise<boolean> {
+		await this.faListRouteForRole();
+		const route = this.ctx.req.url;
+		return this.aRouteByRole[route];
+	}
+
+	/**
+	 * Проверить, если доступ к роуту по орг роли
+	 * @returns IDs организаций, по которым есть доступ
+	 */
+	public async isAccessByOrgRole(): Promise<number[]> {
+		await this.faListRouteForOrgrole();
+		const route = this.ctx.req.url;
+
+		const aidOrganization = [];
+		for (let i = 0; i < Object.keys(this.aRouteByOrgRole).length; i++) {
+			const idOrg = Number(Object.keys(this.aRouteByOrgRole)[i]);
+			if(this.aRouteByOrgRole[idOrg][route]) {
+				aidOrganization.push(idOrg);
+			}
+		}
+
+		return aidOrganization;
 	}
 }

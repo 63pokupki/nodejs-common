@@ -8,13 +8,11 @@ import BaseM from './System/BaseM';
 // export { BaseM as BaseM };
 
 import { UserSys } from './System/UserSys';
-import { DbProvider } from './System/DbProvider';
-
-import { ResponseSys } from './System/ResponseSys';
+import { faSendRouter, ResponseSys } from './System/ResponseSys';
 
 import {
-	MainRequest, TError, initMainRequest, devReq,
-} from './System/MainRequest';
+	P63Context, TError, initMainRequest, devReq,
+} from './System/P63Context';
 
 // /* LEGO ошибок */
 import ErrorSysMiddleware from './System/Middleware/ErrorSysMiddleware';
@@ -43,23 +41,18 @@ import * as Seo from './Components/Seo';
 
 /* Хелпер полезных функций */
 import * as HelperSys from './System/HelperSys';
-import { FieldValidator } from './System/FieldValidator';
 
 import * as Mattermost from './System/MattermostSys';
 import * as S3DO from './System/S3DO';
 import { LogicSys } from './System/LogicSys';
 import SubSysMiddleware from './System/Middleware/SubSysMiddleware';
+import ParseBodyMiddleware from './System/Middleware/ParseBodyMiddleware';
 
-import {
-	ExpressRouterProxy,
-	HandlerContext,
-	Handler,
-	HandlerDefinition,
-	ControllerClass,
-} from './System/ExpressRouterProxy';
+
 import { CacheSys } from './System/CacheSys';
 import { RolesT } from './System/RolesI';
 import { UserInfoI } from './Interface/AuthUser';
+import { AvgCacheSys } from './System/AvgCacheSys';
 
 const Middleware = {
 	ErrorSysMiddleware,
@@ -67,12 +60,12 @@ const Middleware = {
 	ResponseSysMiddleware,
 	AuthSysMiddleware,
 	SubSysMiddleware,
+    ParseBodyMiddleware,
 };
 
 export {
 	BaseCtrl,
 	BaseSQL,
-	DbProvider,
 	BaseM,
 	UserSys,
 	UserInfoI as UserInfo,
@@ -80,8 +73,8 @@ export {
 	CacheSys,
 	ResponseSys,
 	RedisSys,
+    AvgCacheSys,
 	Middleware,
-	MainRequest, 		// interface MainRequest,
 	TError,
 	devReq, 			// Пример MainRequest
 	S3,
@@ -89,16 +82,12 @@ export {
 	RabbitSenderSys, 	// Класс системы для работы с ребитом
 	rabbitSenderSys, 	// Объект система работы с ребитом
 	initMainRequest, 	// Инициализация Main Request для тестов
+    faSendRouter,
 	BaseCommand, 		// Конструктор консольных команд
 	Seo, 				// сео собственно
 	HelperSys, 			// Вспомогательные функции которые ни к чему не привязаны
-	FieldValidator,
+    P63Context,
 	Mattermost,
 	S3DO,
-	ExpressRouterProxy,
-	HandlerContext,
-	Handler,
-	HandlerDefinition,
-	ControllerClass,
 	RolesT,				// Роли пользователей
 };

@@ -1,5 +1,4 @@
 import { QuerySys } from '@a-a-game-studio/aa-front';
-import { MainRequest } from '../System/MainRequest';
 
 /**
  * Запросы к сервису авторизации

@@ -1,4 +1,5 @@
-import { MainRequest } from '../System/MainRequest';
+import { P63Context } from "../System/P63Context";
+
 
 /**
  * Open Graph
@@ -31,7 +32,7 @@ export interface SeoConfigI {
 export class SeoBase {
 	protected url: string; // входящий url
 
-	protected req: MainRequest;
+	protected ctx: P63Context;
 
 	public title: string;
 
@@ -43,10 +44,10 @@ export class SeoBase {
 
 	public conf: SeoConfigI;
 
-	constructor(req: MainRequest, conf: SeoConfigI) {
-		this.url = req.url;
+	constructor(ctx: P63Context, conf: SeoConfigI) {
+		this.url = ctx.req.url;
 		this.conf = conf;
-		this.req = req;
+		this.ctx = ctx;
 
 		this.title = this.conf.defaultTitle;
 		this.description = this.conf.defaultDescription;

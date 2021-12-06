@@ -1,9 +1,10 @@
 import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 import { UserSys } from './UserSys';
-import { MainRequest } from './MainRequest';
+
 import { LogicSys } from './LogicSys';
 import { CacheSys } from './CacheSys';
 import { AccessSys } from './AccessSys';
+import { P63Context } from './P63Context';
 
 /**
  * Базовая модель
@@ -13,7 +14,7 @@ export default class BaseM {
 
 	public userSys: UserSys;
 
-	public req: MainRequest;
+	public ctx: P63Context;
 
 	public logicSys: LogicSys;
 
@@ -21,12 +22,12 @@ export default class BaseM {
 
 	public accessSys: AccessSys;
 
-	constructor(req: MainRequest) {
-		this.errorSys = req.sys.errorSys;
-		this.userSys = req.sys.userSys;
-		this.logicSys = req.sys.logicSys;
-		this.cacheSys = req.sys.cacheSys;
-		this.req = req;
-		this.accessSys = req.sys.accessSys;
+	constructor(ctx: P63Context) {
+		this.errorSys = ctx.sys.errorSys;
+		this.userSys = ctx.sys.userSys;
+		this.logicSys = ctx.sys.logicSys;
+		this.cacheSys = ctx.sys.cacheSys;
+		this.ctx = ctx;
+		this.accessSys = ctx.sys.accessSys;
 	}
 }

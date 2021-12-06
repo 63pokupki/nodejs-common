@@ -1,9 +1,10 @@
 import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
-import { MainRequest } from '../MainRequest';
+import { P63Context } from '../P63Context';
+
 
 /* LEGO ошибок */
-export default function ErrorSysMiddleware(request: MainRequest, response: any, next: any): void {
-	request.sys = {
+export default function ErrorSysMiddleware(ctx: P63Context): void {
+	ctx.sys = {
 		apikey: '',
 		errorSys: null,
 		userSys: null,
@@ -15,15 +16,15 @@ export default function ErrorSysMiddleware(request: MainRequest, response: any, 
 		bMasterDB: false,
 		bCache: true,
 	};
-	if (request) {
-		request.sys.errorSys = new ErrorSys(request.common.env);
-		if (request.common.errorMute) {
+	if (ctx) {
+		ctx.sys.errorSys = new ErrorSys(ctx.common.env);
+		if (ctx.common.errorMute) {
 			// Здесь были настройки по игнорировнию ошибок
 			// request.sys.errorSys;
 		}
 	} else {
-		request.sys.errorSys = new ErrorSys();
+		ctx.sys.errorSys = new ErrorSys();
 	}
 
-	next();
+	ctx.next();
 }

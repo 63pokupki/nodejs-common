@@ -1,6 +1,6 @@
 import { ErrorSys, ModelRulesC, ModelValidatorSys } from '@a-a-game-studio/aa-components/lib';
+import { P63Context } from './P63Context';
 
-import { MainRequest } from './MainRequest';
 import { UserSys } from './UserSys';
 
 /**
@@ -12,40 +12,40 @@ export class LogicSys {
 
 	protected userSys: UserSys;
 
-	protected req: MainRequest;
+	protected ctx: P63Context;
 
-	constructor(req: MainRequest) {
-		this.req = req;
-		this.errorSys = req.sys.errorSys;
-		this.userSys = req.sys.userSys;
+	constructor(ctx: P63Context) {
+		this.ctx = ctx;
+		this.errorSys = ctx.sys.errorSys;
+		this.userSys = ctx.sys.userSys;
 	}
 
 	/**
 	 * Включить запросы на базу данных
 	 */
 	fMasterDBOn(): void {
-		this.req.sys.bMasterDB = true;
+		this.ctx.sys.bMasterDB = true;
 	}
 
 	/**
 	 * Отключить запросы на мастер базу данных
 	 */
 	fMasterDBOff(): void {
-		this.req.sys.bMasterDB = false;
+		this.ctx.sys.bMasterDB = false;
 	}
 
 	/**
 	 * Включить кеш редиса
 	 */
 	fCacheOn(): void {
-		this.req.sys.bCache = true;
+		this.ctx.sys.bCache = true;
 	}
 
 	/**
 	 * Выключить кеш редиса
 	 */
 	fCacheOff(): void {
-		this.req.sys.bCache = false;
+		this.ctx.sys.bCache = false;
 	}
 
 	/**
@@ -91,7 +91,7 @@ export class LogicSys {
      * @param callback - функция содержащая логическую операцию
      */
 	async faQueryMasterDB(sError: string, callback: Function): Promise<any> {
-		this.req.sys.bMasterDB = true;
+		this.ctx.sys.bMasterDB = true;
 
 		let out = null;
 		try {
@@ -102,7 +102,7 @@ export class LogicSys {
 			throw e;
 		}
 
-		this.req.sys.bMasterDB = false;
+		this.ctx.sys.bMasterDB = false;
 
 		return out;
 	}

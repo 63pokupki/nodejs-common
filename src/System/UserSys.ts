@@ -2,10 +2,10 @@
 import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 
 // Системные сервисы
-import { MainRequest } from './MainRequest';
 import { RolesT } from './RolesI';
 import { AuthR, UserInfoI } from '../Interface/AuthUser';
 import { AuthQuerySys } from '../Common/AuthQuerySys';
+import { P63Context } from './P63Context';
 
 
 /**
@@ -22,21 +22,21 @@ export class UserSys {
 
 	private ctrlAccessList: Record<string, number>; // Список модулей
 
-	private req: MainRequest; // Объект запроса пользователя
+	private ctx: P63Context; // Объект запроса пользователя
 
 	private errorSys: ErrorSys;
 
 	private readonly authQuerySys: AuthQuerySys;
 
-	public constructor(req: MainRequest) {
-		this.req = req;
-		this.errorSys = req.sys.errorSys;
+	public constructor(ctx: P63Context) {
+		this.ctx = ctx;
+		this.errorSys = ctx.sys.errorSys;
 		this.ctrlAccessList = {};
 		this.userGroupsList = {};
-		this.authQuerySys = new AuthQuerySys(req.auth.auth_url);
+		this.authQuerySys = new AuthQuerySys(ctx.auth.auth_url);
 
 		/* вылавливаем apikey */
-		this.apikey = req.cookies.apikey || req.headers.apikey;
+		this.apikey = ctx.cookies.apikey || String(ctx.headers.apikey);
 
 		if (!this.apikey) {
 			this.apikey = '';
@@ -57,11 +57,11 @@ export class UserSys {
 		// Запрос к сервису авторизации
 		this.authQuerySys.fActionOk((data: AuthR.authByApikey.ResponseI)=> {
 			if (data.user_info) {
-				if (this.req.common.env !== 'prod') {
+				if (this.ctx.common.env !== 'prod') {
 					console.log(`Авторизация через Auth.Core прошла успешно, пользователь - ${data.user_info.username}`);
 				}
 				
-				this.req.sys.errorSys.devNotice(
+				this.ctx.sys.errorSys.devNotice(
 					'is_user_init', `Авторизация через Auth.Core прошла успешно, пользователь - ${data.user_info.username}`,
 				);
 				// Заносим доступные user id, групп и контроллеры
@@ -106,7 +106,7 @@ export class UserSys {
 		}[],
 	}): void {
 		this.idUser = data.idUser;
-		this.req.sys.bAuth = true;
+		this.ctx.sys.bAuth = true;
 		
 		// сохраняем группы пользователя
 		for (let i = 0; i < data.aGroup.length; i++) {
