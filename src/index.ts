@@ -51,6 +51,7 @@ import ParseBodyMiddleware from './System/Middleware/ParseBodyMiddleware';
 
 import { CacheSys } from './System/CacheSys';
 import { RolesT } from './System/RolesI';
+import { AvgCacheSys } from './System/AvgCacheSys';
 
 const Middleware = {
 	ErrorSysMiddleware,
@@ -71,6 +72,7 @@ export {
 	CacheSys,
 	ResponseSys,
 	RedisSys,
+    AvgCacheSys,
 	Middleware,
 	TError,
 	devReq, 			// Пример MainRequest
