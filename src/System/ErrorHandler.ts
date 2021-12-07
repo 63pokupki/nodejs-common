@@ -73,6 +73,6 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
 	}
 
 	ctx.send(
-		JSON.stringify(ctx.sys.responseSys.response(null, err.message)),
+		JSON.stringify(ctx.sys.responseSys.response(null, 'Ошибка сервера')),
 	);
 };
