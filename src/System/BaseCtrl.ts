@@ -43,6 +43,7 @@ export default class BaseCtrl {
     public async faAction(msg: string, cbAction: Function): Promise<void> {
         let out = null;
         if (this.errorSys.isOk()) {
+            this.ctx.msg = msg;
             out = await cbAction();
         } else {
             this.ctx.status(401);
