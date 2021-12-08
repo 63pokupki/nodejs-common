@@ -22,6 +22,7 @@ import { RabbitSenderSys } from './RabbitSenderSys';
 export class P63Context extends AAContext {
 
 	method: string;
+    msg?:string; // Сообщение какой роутер выполняется
 
 	auth: {
 		algorithm: string;

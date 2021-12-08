@@ -12,7 +12,8 @@ export const faSendRouter = (faCallback: (ctx: P63Context) => Promise<void> ) =>
 	try {
 		await faCallback(ctx);
 	} catch (e) {
-		fErrorHandler(e, ctx);
+        ctx.sys.errorSys.errorEx(e, ctx.req.url, ctx.msg);
+		fErrorHandler(ctx);
 	}
 };
 

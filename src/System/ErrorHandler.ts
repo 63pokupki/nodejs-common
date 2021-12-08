@@ -1,6 +1,7 @@
 
 import axios from 'axios';
 import { P63Context } from './P63Context';
+import { ErrorSys, ErrorT } from '@a-a-game-studio/aa-components/lib';
 
 /**
  * Обработчик ошибок выполнения
@@ -8,49 +9,47 @@ import { P63Context } from './P63Context';
  * @param ctx
  * @param next
  */
-export const fErrorHandler = async (err: Error, ctx: P63Context): Promise<void> => {
+export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
 	// const mattermostSys = new Mattermost.MattermostSys(<any>ctx);
 
 	let ifDevMode = false;
-	if (ctx.common.env === 'dev' || ctx.common.env === 'local') {
-		ifDevMode = true;
-	}
+    if (ctx.common.env === 'dev' || ctx.common.env === 'test' || ctx.common.env == 'local') {
+        ifDevMode = true;
+    }
 
-	if (err.name === 'AuthError') {
-		ctx.status(500);
-		// req.sys.errorSys.error('AuthError', 'Ошибка авторизации');
-	} else if (err.name === 'ValidationError') {
-		ctx.status(200);
-		ctx.sys.errorSys.error('ValidationError', err.message);
-	} else if (err.name === 'AppError') {
-		ctx.status(500);
-		if (ctx.common.env !== 'local') {
-			// mattermostSys.sendErrorMsg(ctx.sys.errorSys, err, err.message);
-		}
-	} else {
-		ctx.status(500);
-		/* у нас в err что-то не то */
-		ctx.sys.errorSys.error('server_error', 'Ошибка сервера');
-		// mattermostSys.sendErrorMsg(ctx.sys.errorSys, err, `${String(err)}`);
-	}
+    const ixErrors = ctx.sys.errorSys.getErrors();
 
-	if (ifDevMode) {
-		console.log(
-			'=================================== \r\n',
-			`err.msg: ${err.message}`,
-			'\r\n',
-			'err.stack: \r\n ',
-			'----------------------------------- \r\n',
-			err.stack,
-			'\r\n',
-			'----------------------------------- \r\n',
-			'originalUrl:',
-			ctx.req.url,
-			'\r\n',
-			'=================================== \r\n',
-			'\r\n',
-		);
-	}
+    const sTraceError = ctx.sys.errorSys.getTraceList().map( el => el.e.stack).join('\n');
+
+    if(ixErrors[ErrorT.throwLogic] || ixErrors[ErrorT.throwAccess]){ // логическая ошибка
+        ctx.status(403);
+    }
+
+    if(ixErrors[ErrorT.throwValid]){ // логическая ошибка
+        ctx.status(400);
+
+    }
+
+    if (ifDevMode) {
+        console.log(
+            '=================================== \r\n',
+            new Date(),
+            '\r\n',
+            'err.msg: ',
+            ctx.sys.errorSys.getErrors(),
+            '\r\n',
+            'err.stack: \r\n ',
+            '----------------------------------- \r\n',
+            sTraceError,
+            '\r\n',
+            '----------------------------------- \r\n',
+            'originalUrl:',
+            ctx.req.url,
+            '\r\n',
+            '=================================== \r\n',
+            '\r\n',
+        );
+    }
 
 	const arrError = ctx.sys.errorSys.getErrors();
 
@@ -60,8 +59,8 @@ export const fErrorHandler = async (err: Error, ctx: P63Context): Promise<void> 
 		env: ctx.common.env || null,
 		user_id: ctx.sys.userSys.idUser || null,
 		url: ctx.req.url || null,
-		message: err.message || null,
-		stack: err.stack || null,
+		message: ctx.msg || null,
+		stack: sTraceError || null,
 		request_body: JSON.stringify(ctx.body) || null,
 		fields: JSON.stringify(arrError),
 	};
@@ -73,6 +72,6 @@ export const fErrorHandler = async (err: Error, ctx: P63Context): Promise<void> 
 	}
 
 	ctx.send(
-		JSON.stringify(ctx.sys.responseSys.response(null, err.message)),
+		JSON.stringify(ctx.sys.responseSys.response(null, 'Ошибка сервера')),
 	);
 };
