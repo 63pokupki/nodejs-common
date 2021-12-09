@@ -28,6 +28,7 @@ export class P63Context extends AAContext {
 		algorithm: string;
 		secret: string;
 		auth_url: string;
+		auth_ws_url?: string;
 	} = <any>{};
 
 	common: {

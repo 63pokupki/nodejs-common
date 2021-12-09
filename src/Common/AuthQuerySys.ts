@@ -6,10 +6,8 @@ import { QuerySys } from '@a-a-game-studio/aa-front';
 export class AuthQuerySys extends QuerySys {
 	constructor(authUrl: string) {
 		super();
-		this.fConfig({
+		this.fConfigWs({
 			baseURL: authUrl,
-			withCredentials: true,
-			timeout: 5000,
 		});
 	}
 }
