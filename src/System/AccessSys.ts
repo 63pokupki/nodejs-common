@@ -25,7 +25,7 @@ export class AccessSys {
 		this.ctx = ctx;
 		this.errorSys = ctx.sys.errorSys;
 		this.idUser = ctx.sys.userSys.idUser;
-		this.authQuerySys = new AuthQuerySys(ctx.auth.auth_url);
+		this.authQuerySys = AuthQuerySys.getInstance(ctx.auth.auth_url);
 	}
 
 	/**

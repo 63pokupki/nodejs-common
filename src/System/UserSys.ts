@@ -33,7 +33,7 @@ export class UserSys {
 		this.errorSys = ctx.sys.errorSys;
 		this.ctrlAccessList = {};
 		this.userGroupsList = {};
-		this.authQuerySys = new AuthQuerySys(ctx.auth.auth_ws_url);
+		this.authQuerySys = AuthQuerySys.getInstance(ctx.auth.auth_ws_url);
 
 		/* вылавливаем apikey */
 		this.apikey = ctx.cookies.apikey || String(ctx.headers.apikey);
