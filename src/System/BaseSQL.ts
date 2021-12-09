@@ -61,7 +61,9 @@ export default class BaseSQL {
 	 */
 	protected get dbSlave(): Knex {
 		let db = null;
-		if (this.dbSlavePool?.length) {
+        if (this.ctx.sys.bMasterDB) { // Если указан флаг брать с мастера берем с мастера
+			db = this.dbMasterOne;
+		} else if (this.dbSlavePool?.length) {
             // Случайно отдаем одну базу данных из пула
             const iRand = mRandomInteger(0, this.dbSlavePool.length - 1)
             db = this.dbSlavePool[iRand]
