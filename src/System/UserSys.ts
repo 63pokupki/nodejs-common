@@ -35,8 +35,12 @@ export class UserSys {
 		this.userGroupsList = {};
 		this.authQuerySys = AuthQuerySys.getInstance(ctx.auth.auth_ws_url);
 
-		/* вылавливаем apikey */
-		this.apikey = ctx.cookies.apikey || String(ctx.headers.apikey);
+		/**
+		 * Вылавливаем апикей
+		 * Костыль с String т.к. 1) в ноде headers.apikey имеет тип string | string [], поэтому юзаем String
+		 * 2) Перед этим проверяем, потому чтоесли undefined, то получается строка 'undefined'
+		 */
+		this.apikey = ctx.cookies.apikey || ctx.headers.apikey ? String(ctx.headers.apikey) : '' ;
 
 		if (!this.apikey) {
 			this.apikey = '';
