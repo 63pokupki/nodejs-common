@@ -4,6 +4,8 @@ import _ from 'lodash';
 import { ErrorSys } from '@a-a-game-studio/aa-components';
 import { RouteI } from '../Infrastructure/SQL/Entity/RouteE';
 import { P63Context } from './P63Context';
+import { RoleT } from '../Infrastructure/SQL/Entity/RoleE';
+import { OrgRoleT } from '../Infrastructure/SQL/Entity/OrgRoleE';
 
 /**  */
 export class AccessSys {
@@ -20,6 +22,10 @@ export class AccessSys {
 	private ctrls: Record<string, boolean>;
 
 	private routesByOrgrole: Record<string | number, Record<string, boolean>>;
+
+	private aRole: RoleT[];
+
+	private aOrgRole: Record< string| number, OrgRoleT[]>;
 
 	/**  */
 	constructor(ctx: P63Context) {
@@ -68,7 +74,7 @@ export class AccessSys {
 	 * Получить роуты, доступные по оргроли
 	 */
 	private async faListRouteForOrgrole(): Promise<void> {
-		const aUserOrgrole = await this.roleModelSQL.listOrgRoleByUserId(this.idUser);
+		const aUserOrgrole = await this.roleModelSQL.listOrgRoleIdByUserId(this.idUser);
 
 		/** Роутгруппы, доступные в рамках организаций */
 		const aRouteGroupInOrg: { idOrg: number; idRouteGroup: number }[] = [];
@@ -84,7 +90,7 @@ export class AccessSys {
 		}));
 
 		/** Роуты, доступные в рамках организаций */
-		const aRouteByOrgrole: { idOrg: number; name: string; url: string}[] = [];
+		const aRouteByOrgrole: { idOrg: number; name: string; url: string }[] = [];
 		await Promise.all(aRouteGroupInOrg.map(async (routeGroupInOrg) => {
 			const aRoute = await this.roleModelSQL.listRouteByRouteGroupId(routeGroupInOrg.idRouteGroup);
 			for (let i = 0; i < aRoute.length; i++) {
@@ -114,6 +120,8 @@ export class AccessSys {
 		}
 
 		this.routesByOrgrole = sortedroutesByOrgrole;
+
+
 	}
 
 	/**
@@ -133,6 +141,35 @@ export class AccessSys {
 		}
 
 		this.ctrls = sortedCtrls;
+	}
+
+	/**
+	 * Получить список ролей пользователя
+	 */
+	private async faListUserRole(): Promise<void> {
+		if(!this.aRole) {
+			this.aRole = await this.roleModelSQL.listRoleByUserId(this.idUser);
+		}
+	}
+
+	/**
+	 * Получить список ролей пользователя в организациях
+	 */
+	private async faListUserOrgRole(): Promise<void> {
+		if(!this.aOrgRole) {
+			this.aOrgRole = {};
+			const aUserOrgRole = await this.roleModelSQL.listOrgRoleByUserId(this.idUser);
+			for (let i = 0; i < aUserOrgRole.length; i++) {
+				const userOrgRole = aUserOrgRole[i];
+
+				// добавляем орг роль в список ролей в конкретной организации
+				if(this.aOrgRole[userOrgRole.orgrole_id]?.length > 0) {
+					this.aOrgRole[userOrgRole.orgrole_id].push(userOrgRole.alias);
+				} else {
+					this.aOrgRole[userOrgRole.orgrole_id] = [userOrgRole.alias];
+				}
+			}
+		}
 	}
 
 	// ========================================
@@ -264,5 +301,30 @@ export class AccessSys {
 		}
 
 		return aidOrganization;
+	}
+
+	/**
+	 * Проверить, есть ли у пользователя конкретная роль
+	 */
+	public async isRole(role: RoleT): Promise<boolean> {
+		// обновляем список ролей пользователя
+		await this.faListUserRole();
+
+		return this.aRole.includes(role);
+	}
+
+	/**
+	 * Проверить, есть ли у пользователя роль в конкретной или любой организаци
+	 */
+	public async isRoleInOrganization(role: OrgRoleT, idOrg: number): Promise<boolean> {
+		// обновляем список ролей пользователя в организациях
+		await this.faListUserOrgRole();
+
+		let res = false;
+		// если пришел ID организации, то ищем в ней
+		if(idOrg) {
+			res = this.aOrgRole[idOrg]?.includes(role);
+		}
+		return res;
 	}
 }
