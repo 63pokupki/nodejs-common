@@ -14,11 +14,11 @@ import { AccessSys } from './AccessSys';
 import { SeoBase } from '../Components/Seo';
 import { RedisSys } from './RedisSys';
 import { RabbitSenderSys } from './RabbitSenderSys';
+import { AuthQuerySys } from '../Common/AuthQuerySys';
 
-
-
-
-
+/**
+ * Контекст реквеста к core проектам
+ */
 export class P63Context extends AAContext {
 
 	method: string;
@@ -53,7 +53,10 @@ export class P63Context extends AAContext {
 		responseSys: ResponseSys;
 		logicSys: LogicSys;
 		cacheSys: CacheSys;
+		/** Ролевая модель */
 		accessSys: AccessSys;
+		/** Запросы к auth.core */
+		authQuerySys: AuthQuerySys;
 		seo?: SeoBase;
 	} = <any>{};
 
@@ -96,6 +99,7 @@ const Req: any = {
 		logicSys: null, 		// Система логики управления приложением
 		cacheSys: null, 		// Система кеширования\
 		accessSys: null,
+		authQuerySys: null,
 	},
 	infrastructure: {
 		mysql: null, 			// коннект к балансеру БД

@@ -15,6 +15,7 @@ export default function ErrorSysMiddleware(ctx: P63Context): void {
 		bAuth: false,
 		bMasterDB: false,
 		bCache: true,
+		authQuerySys: null,
 	};
 	if (ctx) {
 		ctx.sys.errorSys = new ErrorSys(ctx.common.env);

@@ -33,8 +33,7 @@ export class UserSys {
 		this.errorSys = ctx.sys.errorSys;
 		this.ctrlAccessList = {};
 		this.userGroupsList = {};
-		this.authQuerySys = AuthQuerySys.getInstance(ctx.auth.auth_ws_url);
-
+		this.authQuerySys = ctx.sys.authQuerySys;
 		/**
 		 * Вылавливаем апикей
 		 * Костыль с String т.к. 1) в ноде headers.apikey имеет тип string | string [], поэтому юзаем String
@@ -60,6 +59,9 @@ export class UserSys {
 
 		// Запрос к сервису авторизации
 		this.authQuerySys.fActionOk((data: AuthR.authByApikey.ResponseI)=> {
+			console.log('==========================');
+			console.log('fActionOk response :>> ', data);
+			console.log('==========================');
 			if (data.user_info) {
 				if (this.ctx.common.env !== 'prod') {
 					console.log(`Авторизация через Auth.Core прошла успешно, пользователь - ${data.user_info.username}`);
@@ -86,6 +88,7 @@ export class UserSys {
 
 		// если есть апикей, то пытаемся авторизовать пользователя
 		if (this.apikey) {
+			console.log('стучимся в ауфкор :>> ');
 			await this.authQuerySys.faSend(AuthR.authByApikey.route, reqData);
 		} else {
 			this.errorSys.devWarning('is_user_init', 'Пользователь не авторизован');

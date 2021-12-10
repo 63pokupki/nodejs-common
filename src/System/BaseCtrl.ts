@@ -49,7 +49,9 @@ export default class BaseCtrl {
             this.ctx.status(401);
             this.errorSys.error('init_ctrl', 'Авторизация или активация провалились');
         }
-
+        if(this.ctx.ws) {
+            
+        }
         this.ctx.send(
             JSON.stringify(this.responseSys.response(out, msg)),
         );
