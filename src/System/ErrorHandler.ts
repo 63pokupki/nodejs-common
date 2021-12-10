@@ -36,6 +36,10 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
         console.log(
             '=================================== \r\n',
             new Date(),
+            'url:',
+            ctx.req.url,
+            '\r\n',
+            '----------------------------------- \r\n',
             '\r\n',
             'err.msg: ',
             ctx.sys.errorSys.getErrors(),
@@ -45,15 +49,28 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
             sTraceError,
             '\r\n',
             '----------------------------------- \r\n',
-            'originalUrl:',
-            ctx.req.url,
-            '\r\n',
             '=================================== \r\n',
             '\r\n',
         );
     }
 
 	const arrError = ctx.sys.errorSys.getErrors();
+    const aTraceError = ctx.sys.errorSys.getTraceList();
+    const aTraceErrorSend:{
+        key:string;
+        msg:string;
+        error:string;
+        trace:string;
+    }[] = []
+    for (let i = 0; i < aTraceError.length; i++) {
+        const vTraceError = aTraceError[i];
+        aTraceErrorSend.push({
+            key:vTraceError.key,
+            msg:vTraceError.msg,
+            error:vTraceError?.e?.message,
+            trace:vTraceError?.e?.stack
+        })
+    }
 
 	const vErrorForAPI = { // собираем ошибку
 		api_key: ctx.sys.apikey || null,
@@ -62,7 +79,7 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
 		user_id: ctx.sys.userSys.idUser || null,
 		url: ctx.req.url || null,
 		message: ctx.msg || null,
-		stack: JSON.stringify(ctx.sys.errorSys.getTraceList()) || null,
+		stack: JSON.stringify(aTraceErrorSend) || null,
 		request_body: JSON.stringify(ctx.body) || null,
 		fields: JSON.stringify(arrError),
 	};
