@@ -1,7 +1,10 @@
 
-import axios from 'axios';
+
 import { P63Context } from './P63Context';
 import { ErrorSys, ErrorT } from '@a-a-game-studio/aa-components/lib';
+import { fAxiosConnect } from './AxiosConnect';
+
+const axiosConnect = fAxiosConnect();
 
 /**
  * Обработчик ошибок выполнения
@@ -27,7 +30,6 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
 
     if(ixErrors[ErrorT.throwValid]){ // логическая ошибка
         ctx.status(400);
-
     }
 
     if (ifDevMode) {
@@ -64,9 +66,9 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
 		request_body: JSON.stringify(ctx.body) || null,
 		fields: JSON.stringify(arrError),
 	};
-
+    
 	try { // отправка ошибки в апи
-		await axios.post(ctx.common.hook_url_errors_api, vErrorForAPI);
+		await axiosConnect.post(ctx.common.hook_url_errors_api, vErrorForAPI);
 	} catch (e) {
 		console.warn('Не удалось отправить ошибку на api', ctx.common.hook_url_errors_api);
 	}
