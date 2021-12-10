@@ -6,6 +6,12 @@ import { fAxiosConnect } from './AxiosConnect';
 
 const axiosConnect = fAxiosConnect();
 
+enum CategoryErrorT {
+    error = 'error',
+    logic = 'logic',
+    valid = 'valid',
+    notice = 'notice'
+}
 /**
  * Обработчик ошибок выполнения
  * @param err - обязательно instanceof Error()
@@ -24,13 +30,24 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
 
     const sTraceError = ctx.sys.errorSys.getTraceList().map( el => el.e.stack).join('\r\n');
 
+    let iCodeError = 500; // Коды для серверных ошибок
+    let tCategoryError = CategoryErrorT.error; // Категория различие ошибки не ошибки
     if(ixErrors[ErrorT.throwLogic] || ixErrors[ErrorT.throwAccess]){ // логическая ошибка
-        ctx.status(403);
+        iCodeError = 403
+        tCategoryError = CategoryErrorT.logic;
     }
 
-    if(ixErrors[ErrorT.throwValid]){ // логическая ошибка
-        ctx.status(400);
+    if(ixErrors[ErrorT.throwValid]){ // ошибка валидации
+        iCodeError = 400;
+        tCategoryError = CategoryErrorT.valid;
     }
+
+    if(ixErrors[ErrorT.throwValidDB]){ // ошибка валидации БД
+        iCodeError = 500;
+        tCategoryError = CategoryErrorT.error;
+    }
+
+    ctx.status(iCodeError);
 
     if (ifDevMode) {
         console.log(
@@ -75,7 +92,8 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
 	const vErrorForAPI = { // собираем ошибку
 		api_key: ctx.sys.apikey || null,
 		type: 'backend',
-		env: ctx.common.env || null,
+        category:tCategoryError,
+		env: ifDevMode ? 'dev' : 'prod',
 		user_id: ctx.sys.userSys.idUser || null,
 		url: ctx.req.url || null,
 		message: ctx.msg || null,
