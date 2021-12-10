@@ -19,7 +19,7 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
 
     const ixErrors = ctx.sys.errorSys.getErrors();
 
-    const sTraceError = ctx.sys.errorSys.getTraceList().map( el => el.e.stack).join('\n');
+    const sTraceError = ctx.sys.errorSys.getTraceList().map( el => el.e.stack).join('\r\n');
 
     if(ixErrors[ErrorT.throwLogic] || ixErrors[ErrorT.throwAccess]){ // логическая ошибка
         ctx.status(403);
@@ -60,7 +60,7 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
 		user_id: ctx.sys.userSys.idUser || null,
 		url: ctx.req.url || null,
 		message: ctx.msg || null,
-		stack: sTraceError || null,
+		stack: JSON.stringify(ctx.sys.errorSys.getTraceList()) || null,
 		request_body: JSON.stringify(ctx.body) || null,
 		fields: JSON.stringify(arrError),
 	};
