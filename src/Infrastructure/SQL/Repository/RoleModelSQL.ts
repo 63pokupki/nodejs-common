@@ -8,6 +8,8 @@ import { OrgroleOfRouteGroupE, OrgroleOfRouteGroupI } from '../Entity/OrgroleOfR
 import { RoleOfRouteGroupE, RoleOfRouteGroupI } from '../Entity/RoleOfRouteGroupE';
 import { AccessGroupE } from '../Entity/AccessGroupE';
 import { CtrlAccessE, CtrlAccessI } from '../Entity/CtrlAccessE';
+import { RoleE, RoleI, RoleT } from '../Entity/RoleE';
+import { OrgRoleE, OrgRoleI, OrgRoleT } from '../Entity/OrgRoleE';
 
 export class RoleModelSQL extends BaseSQL {
 	// =====================================================
@@ -35,6 +37,33 @@ export class RoleModelSQL extends BaseSQL {
 			}
 			return res;
 		});
+
+		return resp;
+	}
+
+	/**
+	 * Получить роли пользователя по сайту
+	 */
+	public async listRoleByUserId(idUser: number): Promise<RoleT[]> {
+		const sKeyCahce = `RoleModelSQL.listRoleByUserId(${idUser})`;
+
+		const resp = await this.cacheSys.autoCache(sKeyCahce, 3600, async () => {
+			let res;
+			try {
+				res = await this.db<UserRoleI>({ ur: UserRoleE.NAME })
+					.leftJoin<RoleI>({ r: RoleE.NAME }, 'r.id', 'ur.role_id')
+					.where('ur.user_id', idUser)
+					.pluck('alias');
+			} catch (e) {
+				this.errorSys.errorEx(
+					e,
+					'RoleModelSQL.listRoleByUserId',
+					'Не удалось получить роли пользователя по сайту',
+				);
+			}
+			return res;
+		});
+
 		return resp;
 	}
 
@@ -69,14 +98,40 @@ export class RoleModelSQL extends BaseSQL {
 	/**
 	 * Получить роли пользователя в организациях
 	 */
-	public async listOrgRoleByUserId(idUser: number): Promise<UserOrgroleI[]> {
-		const sKeyCahce = `RoleModelSQL.listOrgRoleByUserId(${idUser})`;
+	public async listOrgRoleIdByUserId(idUser: number): Promise<UserOrgroleI[]> {
+		const sKeyCahce = `RoleModelSQL.listOrgRoleIdByUserId(${idUser})`;
 		const cacheRes: UserOrgroleI[] = await this.autoCache(sKeyCahce, 3600, async () => {
 			let res;
 			try {
 				res = await this.db<UserOrgroleI>(UserOrgroleE.NAME)
 					.where({ user_id: idUser })
 					.select();
+			} catch (e) {
+				this.errorSys.errorEx(
+					e,
+					'RoleModelSQL.listOrgRoleIdByUserId',
+					'Не удалось получить IDs ролей пользователя по организациям',
+				);
+			}
+
+			return res;
+		});
+		return cacheRes;
+	}
+
+	/**
+	 * Получить роли пользователя в организациях
+	 */
+	public async listOrgRoleByUserId(idUser: number): Promise<{ orgrole_id: number, alias: OrgRoleT }[]> {
+		const sKeyCahce = `RoleModelSQL.listOrgRoleByUserId(${idUser})`;
+
+		const cacheRes= await this.cacheSys.autoCache(sKeyCahce, 3600, async () => {
+			let res;
+			try {
+				res = await this.db<UserOrgroleI>({ uo: UserOrgroleE.NAME })
+					.innerJoin<OrgRoleI>({ o: OrgRoleE.NAME }, 'uo.orgrole_id', 'o.id')
+					.where({ user_id: idUser })
+					.select('orgrole_id', 'alias');
 			} catch (e) {
 				this.errorSys.errorEx(
 					e,
