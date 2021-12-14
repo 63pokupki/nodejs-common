@@ -436,10 +436,10 @@ export class UserSys {
 	 *
 	 * @return boolean
 	 */
-	public async isAuth(): Promise<boolean> {
+	public isAuth(): boolean {
 		let ok = this.errorSys.isOk();
 
-		if (ok && await this.userSQL.isAuth(this.apikey)) {
+		if (ok && this.idUser) {
 			this.errorSys.devNotice('is_auth', 'Вы авторизованы');
 		} else {
 			ok = false;
