@@ -4,6 +4,10 @@ import * as jwt from 'jsonwebtoken';
 import { AccessSys } from '../AccessSys';
 import { P63Context } from '../P63Context';
 
+import { fAxiosConnect } from '../AxiosConnect';
+
+const axiosConnect = fAxiosConnect();
+
 /**
  * Ответ декодиирования тикена
  * Должен обновляться каждую неделю
@@ -11,55 +15,16 @@ import { P63Context } from '../P63Context';
  * Если пользователь постоянно пользуется сайтом у него будет ощущение бесконечного токена
  * Токен скрыто обновляется если он старше 1 недели
  */
-interface JwtDecodeI {
-	token?: string; // старый статичный apikey
-	iat?: number; // время создания токена
-	exp?: number; // время действия токена
+interface UserInfoI {
+	apikey?: string; // старый статичный apikey
+
 }
 
 /* проверка аутентификации на уровне приложения */
 export default async function AuthSysMiddleware(ctx:P63Context): Promise<void> {
 	const apikey = ctx.cookies.apikey || String(ctx.headers.apikey);
-    
 
-	if (apikey) {
-		if (apikey.length > 32) {
-			let decoded: JwtDecodeI = null;
-
-			try {
-				decoded = jwt.verify(apikey, ctx.auth.secret, {
-					algorithms: [
-						ctx.auth.algorithm,
-					] as jwt.Algorithm[],
-				}) as JwtDecodeI;
-			} catch (e) {
-				ctx.sys.errorSys.error(
-					'token_expired_error',
-					'Время жизни токена закончилось',
-				);
-			}
-
-			// Проверяем что прошло меньше месяца
-			if (decoded) {
-				// Проверяем время жизни токена
-				if (Date.now() / 1000 < decoded.exp) {
-					// TODO это условие скорей всего не нужно поскольку выскакивает ошибка
-					ctx.sys.apikey = decoded.token;
-				} else {
-					ctx.sys.apikey = '';
-				}
-			} else {
-				ctx.sys.apikey = '';
-			}
-		} else {
-			// Временное решение пока идет разработка
-			// Дает возможность использовать старый токен
-			ctx.sys.apikey = apikey;
-		}
-	} else {
-		ctx.sys.apikey = '';
-	}
-
+    ctx.sys.apikey = apikey
     ctx.apikey = ctx.sys.apikey;
 
 	/* юзерь не авторизован */
@@ -67,7 +32,19 @@ export default async function AuthSysMiddleware(ctx:P63Context): Promise<void> {
 	const userSys = new UserSys(ctx);
 
 	// Инициализируем систему для пользователей
-	await userSys.init();
+    try { // отправка ошибки в апи
+		const vUserResp = await axiosConnect.post(ctx.common.hook_url_auth, { apikey });
+        await userSys.init({
+            vUser:vUserResp.data.user_info,
+            aGroup:vUserResp.data.list_group
+        });
+	} catch (e) {
+		ctx.sys.errorSys.warning(
+            'auth_check',
+            'Ошибка проверки авторизации',
+        );
+	}
+	
 
 	// if (await userSys.isAuth()) {
 	//     await userSys.init();
