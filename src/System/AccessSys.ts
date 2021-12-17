@@ -36,6 +36,19 @@ export class AccessSys {
 	}
 
 	/**
+	 * Получение информации о пользователе
+	 */
+	public async faInit(): Promise<void> {
+		await Promise.all([
+			this.faListRouteForRole(),
+			this.faListRouteForOrgrole(),
+			this.faListCtrlByGroup(),
+			this.faListUserRole(),
+			this.faListUserOrgRole(),
+		]);
+	}
+
+	/**
 	 * Получить роуты, доступные по роли
 	 */
 	private async faListRouteForRole(): Promise<void> {
@@ -180,25 +193,23 @@ export class AccessSys {
 	 * проверка доступа к роуту по роли
 	 * (обратная совместимость)
 	 */
-	public async accessAction(): Promise<void> {
-		await this.accessByRole();
+	public  accessAction(): void {
+		this.accessByRole();
 	}
 	
 	/**
 	 * проверка доступа к роуту по оргроли
 	 * (обратная совместимость)
 	 */
-	public async accessActionOrg(orgId: number): Promise<void> {
-		await this.accessByOrgRole(orgId);
+	public accessActionOrg(orgId: number): void {
+		this.accessByOrgRole(orgId);
 	}
 
 
 	/**
 	 * проверка доступа к роуту по роли
 	 */
-	public async accessByRole(): Promise<void> {
-		await this.faListRouteForRole();
-
+	public accessByRole(): void {
 		const route = this.ctx.req.url;
 
 		if (!this.routesByRole[route]) {
@@ -211,10 +222,8 @@ export class AccessSys {
 	/**
 	 * проверка доступа к роуту по оргроли
 	 */
-	public async accessByOrgRole(orgId: number): Promise<void> {
+	public accessByOrgRole(orgId: number): void {
 		let res: boolean;
-
-		await this.faListRouteForOrgrole();
 
 		const route = this.ctx.req.url;
 
@@ -234,10 +243,7 @@ export class AccessSys {
 	/**
 	 * Проверка доступа к роуту по глобальной или орг роли
 	 */
-	public async accessByAnyRole(orgId: number): Promise<void> {
-		await this.faListRouteForRole();
-		await this.faListRouteForOrgrole();
-
+	public accessByAnyRole(orgId: number): void {
 		const route = this.ctx.req.url;
 
 		const accessByRole = this.routesByRole[route];
@@ -261,11 +267,8 @@ export class AccessSys {
 
 	/**
 	 * проверка доступа к контроллеру по группе
-	 * @param ctrlName
 	 */
-	public async accessCtrl(ctrlName: string): Promise<void> {
-		await this.faListCtrlByGroup();
-
+	public accessCtrl(ctrlName: string): void {
 		if (!this.ctrls[ctrlName]) {
 			throw this.errorSys.throwAccess('У вас нет доступа к данному контроллеру');
 		}
@@ -278,8 +281,7 @@ export class AccessSys {
 	/**
 	 * Проверить, если доступ к роуту по глобальной роли
 	 */
-	public async isAccessByRole(): Promise<boolean> {
-		await this.faListRouteForRole();
+	public isAccessByRole(): boolean {
 		const route = this.ctx.req.url;
 		return this.routesByRole[route];
 	}
@@ -288,8 +290,7 @@ export class AccessSys {
 	 * Проверить, если доступ к роуту по орг роли
 	 * @returns IDs организаций, по которым есть доступ
 	 */
-	public async isAccessByOrgRole(): Promise<number[]> {
-		await this.faListRouteForOrgrole();
+	public isAccessByOrgRole(): number[] {
 		const route = this.ctx.req.url;
 
 		const aidOrganization = [];
@@ -306,20 +307,14 @@ export class AccessSys {
 	/**
 	 * Проверить, есть ли у пользователя конкретная роль
 	 */
-	public async isRole(role: RoleT): Promise<boolean> {
-		// обновляем список ролей пользователя
-		await this.faListUserRole();
-
+	public isRole(role: RoleT): boolean {
 		return this.aRole.includes(role);
 	}
 
 	/**
 	 * Проверить, есть ли у пользователя роль в конкретной или любой организаци
 	 */
-	public async isRoleInOrganization(role: OrgRoleT, idOrg: number): Promise<boolean> {
-		// обновляем список ролей пользователя в организациях
-		await this.faListUserOrgRole();
-
+	public isRoleInOrganization(role: OrgRoleT, idOrg: number): boolean {
 		let res = false;
 		// если пришел ID организации, то ищем в ней
 		if(idOrg) {
