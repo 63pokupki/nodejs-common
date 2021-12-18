@@ -23,9 +23,6 @@ import RequestSysMiddleware from './System/Middleware/RequestSysMiddleware';
 /* Создает объект ответа */
 import ResponseSysMiddleware from './System/Middleware/ResponseSysMiddleware';
 
-// /* проверка авторизации на уровне приложения */
-import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware';
-
 import { RedisSys } from './System/RedisSys';
 
 /* Класс для работы с S3 */
@@ -57,7 +54,6 @@ const Middleware = {
 	ErrorSysMiddleware,
 	RequestSysMiddleware,
 	ResponseSysMiddleware,
-	AuthSysMiddleware,
 	SubSysMiddleware,
     ParseBodyMiddleware,
 };
