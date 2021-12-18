@@ -79,6 +79,7 @@ const Req: any = {
 	},
 	sys: {
 		apikey: '',
+        apiConnect:null,
 		bAuth: false, 			// флаг авторизации
 		bMasterDB: false, 		// По умолчанию используется maxScale
 		bCache: true, 			// По умолчанию кеш используется
