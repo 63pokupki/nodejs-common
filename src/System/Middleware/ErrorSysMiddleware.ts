@@ -6,6 +6,7 @@ import { P63Context } from '../P63Context';
 export default function ErrorSysMiddleware(ctx: P63Context): void {
 	ctx.sys = {
 		apikey: '',
+        srvkey: '',
         apiConnect: null,
 		errorSys: null,
 		userSys: null,
@@ -14,6 +15,7 @@ export default function ErrorSysMiddleware(ctx: P63Context): void {
 		cacheSys: null,
 		accessSys: null,
 		bAuth: false,
+        bSrv: false,
 		bMasterDB: false,
 		bCache: true,
 	};

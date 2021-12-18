@@ -327,4 +327,15 @@ export class AccessSys {
 		}
 		return res;
 	}
+
+    /**
+	 * Проверка межсерверного запроса
+	 */
+	public async accessSrv(): Promise<void> {
+		if(this.ctx.sys.bSrv){
+            this.ctx.sys.errorSys.devNotice('cross_srv', 'Межсерверный запрос');
+        } else {
+            this.ctx.sys.errorSys.error('cross_srv', 'Ошибка межсерверного запроса');
+        }
+	}
 }

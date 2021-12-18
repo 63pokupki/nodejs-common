@@ -14,6 +14,8 @@ import { AccessSys } from './AccessSys';
 import { SeoBase } from '../Components/Seo';
 import { RedisSys } from './RedisSys';
 import { RabbitSenderSys } from './RabbitSenderSys';
+import { CryptAlgT } from '../Helpers/CryptoH';
+import { JwtAlgT } from '../Helpers/JwtH';
 
 export class P63Context extends AAContext {
 
@@ -32,11 +34,25 @@ export class P63Context extends AAContext {
         hook_url_auth: string;
 		port: number;
 	} = <any>{};
-
+    srv: { // маршрутизация сервера
+        keyPool: string[], // ключи для корректной работы необходимы минимум 5 совпадений
+        ipPool:string[],
+        jwt:{ // jwt подпись
+            jwtKey: string, // Ключ для шифровки jwt токена
+            algorithm: JwtAlgT, // Алгоритм шифрования
+            exp: number, // Время жизни
+        },
+        cry:{ // Ключ для шифровки данных
+            key: string,
+            algorithm: CryptAlgT
+        }
+    };
 	sys: {
 		apikey: string;
+        srvkey: string;
         apiConnect:AxiosInstance;
 		bAuth: boolean;
+        bSrv: boolean;
 		bMasterDB: boolean;
 		bCache?: boolean;
 		errorSys: ErrorSys;
@@ -77,10 +93,25 @@ const Req: any = {
         hook_url_auth: 'https://',          // Авторизация
 		port: 3005, 						// порт на котором будет работать нода
 	},
+    srv: { // маршрутизация сервера
+        keyPool: [], // ключи для корректной работы необходимы минимум 5 совпадений
+        ipPool:['127.0.0.1'],
+        jwt:{ // jwt подпись
+            jwtKey: '', // Ключ для шифровки jwt токена
+            algorithm: '', // Алгоритм шифрования
+            exp: 0, // Время жизни
+        },
+        cry:{ // Ключ для шифровки данных
+            key: '',
+            algorithm: '',
+        }
+    },
 	sys: {
 		apikey: '',
+        srvkey: '',
         apiConnect:null,
 		bAuth: false, 			// флаг авторизации
+        bSrv: false, 			// флаг серверного запроса
 		bMasterDB: false, 		// По умолчанию используется maxScale
 		bCache: true, 			// По умолчанию кеш используется
 

@@ -23,6 +23,9 @@ import RequestSysMiddleware from './System/Middleware/RequestSysMiddleware';
 /* Создает объект ответа */
 import ResponseSysMiddleware from './System/Middleware/ResponseSysMiddleware';
 
+import SrvMiddleware from './System/Middleware/SrvMiddleware';
+
+
 import { RedisSys } from './System/RedisSys';
 
 /* Класс для работы с S3 */
@@ -50,7 +53,7 @@ import { CacheSys } from './System/CacheSys';
 import { RolesT } from './System/RolesI';
 import { AvgCacheSys } from './System/AvgCacheSys';
 import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware';
-import { mJwtDecode, mJwtEncode } from './Helpers/JwtH';
+import { JwtDecodeI, mJwtDecode, mJwtEncode } from './Helpers/JwtH';
 import { mDecrypt, mEncrypt } from './Helpers/CryptoH';
 
 const Middleware = {
@@ -60,6 +63,7 @@ const Middleware = {
 	ResponseSysMiddleware,
 	SubSysMiddleware,
     ParseBodyMiddleware,
+    SrvMiddleware
 };
 
 
