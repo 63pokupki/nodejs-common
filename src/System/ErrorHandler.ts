@@ -2,9 +2,9 @@
 
 import { P63Context } from './P63Context';
 import { ErrorSys, ErrorT } from '@a-a-game-studio/aa-components/lib';
-import { fAxiosConnect } from './AxiosConnect';
+import { axiosConnect } from './AxiosConnect';
 
-const axiosConnect = fAxiosConnect();
+
 
 enum CategoryErrorT {
     error = 'error',

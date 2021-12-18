@@ -7,11 +7,11 @@ import BaseSQL from './System/BaseSQL';
 import BaseM from './System/BaseM';
 // export { BaseM as BaseM };
 
-import { UserSys, UserInfoI } from './System/UserSys';
+import { UserSys } from './System/UserSys';
 import { faSendRouter, ResponseSys } from './System/ResponseSys';
 
 import {
-	P63Context, TError, initMainRequest, devReq,
+	P63Context, initMainRequest, devReq,
 } from './System/P63Context';
 
 // /* LEGO ошибок */
@@ -67,14 +67,12 @@ export {
 	BaseSQL,
 	BaseM,
 	UserSys,
-	UserInfoI as UserInfo,
 	LogicSys,
 	CacheSys,
 	ResponseSys,
 	RedisSys,
     AvgCacheSys,
 	Middleware,
-	TError,
 	devReq, 			// Пример MainRequest
 	S3,
 	S3objectParamsI,

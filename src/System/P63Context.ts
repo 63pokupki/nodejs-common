@@ -15,10 +15,6 @@ import { SeoBase } from '../Components/Seo';
 import { RedisSys } from './RedisSys';
 import { RabbitSenderSys } from './RabbitSenderSys';
 
-
-
-
-
 export class P63Context extends AAContext {
 
 	method: string;
@@ -38,7 +34,6 @@ export class P63Context extends AAContext {
 		hook_url_monitoring: string;
 		hook_url_front_errors: string;
         hook_url_errors_api: string;
-		hook_url_auth: string;
 		port: number;
 	} = <any>{};
 
@@ -82,7 +77,6 @@ const Req: any = {
 		hook_url_monitoring: 'https://', 	// Сообщения мониторинга в mattermost
 		hook_url_front_errors: 'https://', 	// Сообщения мониторинга ошибок в mattermost
         hook_url_errors_api: 'https://',    // Система ошибок
-        hook_url_auth: 'https://', 	        // Авторизация
 		port: 3005, 						// порт на котором будет работать нода
 	},
 	sys: {
@@ -127,13 +121,4 @@ export function initMainRequest(conf: any): P63Context {
 	}
 
 	return mainRequest;
-}
-
-/** Типы ошибок */
-export enum TError {
-	None = 0,
-	PageNotFound = 404,
-	Api = 1,
-	AllBad = 500,
-	AccessDenied = 403,
 }

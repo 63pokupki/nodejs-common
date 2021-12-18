@@ -68,12 +68,6 @@ export interface MainConfig {
 		hook_url_errors_api: string;	// url для миграции ошибок в сфинкс
 	};
 
-	// Параметры ра
-	auth?: {
-		secret?: string; 	// KEY
-		algorithm?: string; // Алгоритм для расшифровки
-	};
-
 	rabbit: {
 		connection: string;
 		queryList: string[];

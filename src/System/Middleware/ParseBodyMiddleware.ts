@@ -53,7 +53,6 @@ export default function ParseBodyMiddleware(ctx: P63Context): void {
 
         });
     } else {
-        console.error(colors.red('Парсинг тела запроса - требует POST запрос'), ctx.req.url);
-        ctx.error(400);
+        ctx.next();
     }
 }
