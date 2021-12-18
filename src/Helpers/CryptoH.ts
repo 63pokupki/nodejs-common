@@ -37,7 +37,7 @@ export function mEncrypt(alg:CryptAlgT, key:string, data:string){
     return sEncrypted;
 }
 
-// Расшифровать
+// Расшифровать данные
 export function mDecrypt(alg:CryptAlgT, key:string, sEncrypted:string,){
     if(key?.length != 48){
         console.log('mDecrypt.key - должен быть 48 символов')

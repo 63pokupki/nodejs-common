@@ -23,9 +23,8 @@ export enum JwtAlgT {
 }
 
 /**
- * Генерация случайного числа в между двумя числами включительно
- * @param min
- * @param max
+ * Декодирование jwt токена
+ * @param param - данные для расшифровки
  */
 export function mJwtDecode<T>(param:{
     jwt:string;
@@ -39,7 +38,6 @@ export function mJwtDecode<T>(param:{
     } catch (e) {
         decodedJwt = null;
     }
-    
 
     // Проверяем что прошло меньше месяца
     if (decodedJwt) {
@@ -53,9 +51,8 @@ export function mJwtDecode<T>(param:{
 }
 
 /**
- * Генерация случайного числа в между двумя числами включительно
- * @param min
- * @param max
+ * jwt кодирование
+ * @param param - данные для подписи
  */
  export function mJwtEncode(param:{
     data:any; // данные
