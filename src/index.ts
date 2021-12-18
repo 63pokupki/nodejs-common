@@ -50,6 +50,8 @@ import { CacheSys } from './System/CacheSys';
 import { RolesT } from './System/RolesI';
 import { AvgCacheSys } from './System/AvgCacheSys';
 import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware';
+import { mJwtDecode, mJwtEncode } from './Helpers/JwtH';
+import { mDecrypt, mEncrypt } from './Helpers/CryptoH';
 
 const Middleware = {
     AuthSysMiddleware,
@@ -59,6 +61,7 @@ const Middleware = {
 	SubSysMiddleware,
     ParseBodyMiddleware,
 };
+
 
 export {
 	BaseCtrl,
@@ -85,4 +88,8 @@ export {
 	Mattermost,
 	S3DO,
 	RolesT,				// Роли пользователей
+    mJwtEncode, // Jwt кодировка - хелпер
+    mJwtDecode, // Jwt раскодировка - хелпер
+    mEncrypt, // кодировка данных - хелпер
+    mDecrypt, // раскодировка данных - хелпер
 };
