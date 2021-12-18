@@ -49,8 +49,10 @@ import ParseBodyMiddleware from './System/Middleware/ParseBodyMiddleware';
 import { CacheSys } from './System/CacheSys';
 import { RolesT } from './System/RolesI';
 import { AvgCacheSys } from './System/AvgCacheSys';
+import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware';
 
 const Middleware = {
+    AuthSysMiddleware,
 	ErrorSysMiddleware,
 	RequestSysMiddleware,
 	ResponseSysMiddleware,

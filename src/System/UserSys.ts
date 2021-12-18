@@ -51,6 +51,7 @@ export class UserSys {
 		this.errorSys = ctx.sys.errorSys;
 
 		this.ixUserGroups = {};
+        this.ixUserRole = {};
 
 		/* вылавливаем apikey */
 
@@ -92,7 +93,6 @@ export class UserSys {
 			this.vUserInfo = param.vUser;
 		}
 
-		this.ixUserGroups = {};
 		if (ok && ifAuth && param?.aGroup) { // Проиндексировать группы по: имени группы
 			for (let i = 0; i < param.aGroup.length; i++) {
                 const vGroup = param.aGroup[i];
@@ -100,8 +100,7 @@ export class UserSys {
 				this.ixUserGroups[vGroup.alias] = vGroup.group_id;
             }
 		}
-
-        this.ixUserRole= {};
+        
 		if (ok && ifAuth && param?.aRole) { // Проиндексировать роли по: имени роли
 			for (let i = 0; i < param.aRole.length; i++) {
                 const vRole = param.aRole[i];

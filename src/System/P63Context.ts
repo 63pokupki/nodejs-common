@@ -5,7 +5,7 @@ import { ErrorSys } from '@a-a-game-studio/aa-components';
 import { Knex } from 'knex';
 import { AAContext } from '@a-a-game-studio/aa-server';
 
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { UserSys } from './UserSys';
 import { ResponseSys } from './ResponseSys';
 import { LogicSys } from './LogicSys';
@@ -20,11 +20,6 @@ export class P63Context extends AAContext {
 	method: string;
     msg?:string; // Сообщение какой роутер выполняется
 
-	auth: {
-		algorithm: string;
-		secret: string;
-	} = <any>{};
-
 	common: {
 		env: string;
 		oldCoreURL: string;
@@ -34,11 +29,13 @@ export class P63Context extends AAContext {
 		hook_url_monitoring: string;
 		hook_url_front_errors: string;
         hook_url_errors_api: string;
+        hook_url_auth: string;
 		port: number;
 	} = <any>{};
 
 	sys: {
 		apikey: string;
+        apiConnect:AxiosInstance;
 		bAuth: boolean;
 		bMasterDB: boolean;
 		bCache?: boolean;
@@ -77,6 +74,7 @@ const Req: any = {
 		hook_url_monitoring: 'https://', 	// Сообщения мониторинга в mattermost
 		hook_url_front_errors: 'https://', 	// Сообщения мониторинга ошибок в mattermost
         hook_url_errors_api: 'https://',    // Система ошибок
+        hook_url_auth: 'https://',          // Авторизация
 		port: 3005, 						// порт на котором будет работать нода
 	},
 	sys: {
