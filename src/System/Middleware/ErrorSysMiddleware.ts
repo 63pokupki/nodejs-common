@@ -7,7 +7,6 @@ export default function ErrorSysMiddleware(ctx: P63Context): void {
 	ctx.sys = {
 		apikey: '',
         srvkey: '',
-        apiConnect: null,
 		errorSys: null,
 		userSys: null,
 		responseSys: null,

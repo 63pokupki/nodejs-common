@@ -10,15 +10,16 @@
  * Токен скрыто обновляется если он старше 1 недели
  */
 
+import { intersection } from "lodash";
 import { AccessSys } from "../AccessSys";
+import { faApiRequest } from "../ApiRequest";
 import { P63Context } from "../P63Context";
 import { UserSys } from "../UserSys";
 
 /** проверка аутентификации на уровне приложения */
 export default async function AuthSysMiddleware(ctx:P63Context): Promise<void> {
-    const apikey = ctx.cookies.apikey || String(ctx.headers.apikey);
-
-    ctx.sys.apikey = apikey;
+    ctx.sys.apikey = ctx.cookies.apikey || <string>ctx.headers.apikey;
+    ctx.sys.srvkey = <string>ctx.headers.srvkey;
     ctx.apikey = ctx.sys.apikey;
 
     /* юзерь не авторизован */
@@ -29,11 +30,8 @@ export default async function AuthSysMiddleware(ctx:P63Context): Promise<void> {
     try { // отправка ошибки в апи
 
         let vAuthResp = null;
-        vAuthResp = await ctx.sys.apiConnect.post(ctx.common.hook_url_auth, { apikey });
-        await userSys.init({
-            vUser:vAuthResp?.data?.user_info,
-            aGroup:vAuthResp?.data?.list_group
-        });
+        vAuthResp = await faApiRequest<any>(ctx, ctx.common.hook_url_auth, { apikey:ctx.sys.apikey });
+        await userSys.init(vAuthResp);
         
     } catch (e) {
         await userSys.init({});

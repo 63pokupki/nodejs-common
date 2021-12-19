@@ -2,6 +2,7 @@
 
 import { P63Context } from './P63Context';
 import { ErrorSys, ErrorT } from '@a-a-game-studio/aa-components/lib';
+import { faApiRequest } from './ApiRequest';
 
 
 
@@ -103,11 +104,7 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
 	};
     
 	try { // отправка ошибки в апи
-        if(ctx.sys?.apiConnect){
-		    await ctx.sys.apiConnect.post(ctx.common.hook_url_errors_api, vErrorForAPI);
-        } else {
-            console.warn('Не указано соединение api', ctx.common.hook_url_errors_api);    
-        }
+        await faApiRequest<any>(ctx, ctx.common.hook_url_errors_api, vErrorForAPI);
 	} catch (e) {
 		console.warn('Не удалось отправить ошибку на api', ctx.common.hook_url_errors_api);
 	}

@@ -6,6 +6,8 @@ import { RouteI } from '../Infrastructure/SQL/Entity/RouteE';
 import { P63Context } from './P63Context';
 import { RoleT } from '../Infrastructure/SQL/Entity/RoleE';
 import { OrgRoleT } from '../Infrastructure/SQL/Entity/OrgRoleE';
+import { mJwtDecode } from '../Helpers/JwtH';
+import { mDecrypt } from '../Helpers/CryptoH';
 
 /**  */
 export class AccessSys {
@@ -332,7 +334,45 @@ export class AccessSys {
 	 * Проверка межсерверного запроса
 	 */
 	public async accessSrv(): Promise<void> {
-		if(this.ctx.sys.bSrv){
+        let bOk = true;
+
+        if(!this.ctx.sys.srvkey || this.ctx.sys.srvkey?.length > 10000){ // Проверка наличия серверного ключа
+            bOk = false;
+        }
+        if(bOk){ // Проверить IP
+            bOk = this.ctx.srv.ipPool.includes(this.ctx.req.socket.remoteAddress);
+        }
+
+        let asSrvKeyInput:string[] = [];
+        if(bOk && this.ctx.sys.srvkey){
+            try{
+                asSrvKeyInput = mJwtDecode<string[]>({
+                    jwt:mDecrypt(
+                        this.ctx.srv.cry.algorithm,
+                        this.ctx.srv.cry.key,
+                        this.ctx.sys.srvkey
+                    ),
+                    algorithm:this.ctx.srv.jwt.algorithm,
+                    secret:this.ctx.srv.jwt.jwtKey
+                });
+
+            } catch(e){
+                bOk = false;
+                console.log('!!!ERROR!!!>>>', 'Не удалась расшифровать srvkey - ', this.ctx.req.socket.remoteAddress);
+            }
+        }
+        
+        if(bOk){ // проверяем ключи
+            const asKeyValid = _.intersection(this.ctx.srv.keyPool, asSrvKeyInput)
+            
+            if(!asKeyValid || asKeyValid?.length < 5){
+                bOk = false;
+            }
+        }
+
+        this.ctx.sys.bSrv = false; // Проверка сервера
+        if(bOk){
+            this.ctx.sys.bSrv = true;
             this.ctx.sys.errorSys.devNotice('cross_srv', 'Межсерверный запрос');
         } else {
             this.ctx.sys.errorSys.error('cross_srv', 'Ошибка межсерверного запроса');

@@ -50,7 +50,6 @@ export class P63Context extends AAContext {
 	sys: {
 		apikey: string;
         srvkey: string;
-        apiConnect:AxiosInstance;
 		bAuth: boolean;
         bSrv: boolean;
 		bMasterDB: boolean;
@@ -109,7 +108,6 @@ const Req: any = {
 	sys: {
 		apikey: '',
         srvkey: '',
-        apiConnect:null,
 		bAuth: false, 			// флаг авторизации
         bSrv: false, 			// флаг серверного запроса
 		bMasterDB: false, 		// По умолчанию используется maxScale

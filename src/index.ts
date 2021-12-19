@@ -23,8 +23,6 @@ import RequestSysMiddleware from './System/Middleware/RequestSysMiddleware';
 /* Создает объект ответа */
 import ResponseSysMiddleware from './System/Middleware/ResponseSysMiddleware';
 
-import SrvMiddleware from './System/Middleware/SrvMiddleware';
-
 
 import { RedisSys } from './System/RedisSys';
 
@@ -63,7 +61,6 @@ const Middleware = {
 	ResponseSysMiddleware,
 	SubSysMiddleware,
     ParseBodyMiddleware,
-    SrvMiddleware
 };
 
 
