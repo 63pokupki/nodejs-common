@@ -16,6 +16,22 @@ import { faApiRequest } from "../ApiRequest";
 import { P63Context } from "../P63Context";
 import { UserSys } from "../UserSys";
 
+interface UserRespI{
+    /** основная информация о пользователе */
+    user_info: {
+        user_id: number;
+        username: string;
+        consumer_rating: number;
+    }
+    /** доступные пользователю группы */
+    list_group: {
+        /** ID группы */
+        group_id: number;
+        /** Псевдоним группы */
+        alias: string;
+    }[];
+}
+
 /** проверка аутентификации на уровне приложения */
 export default async function AuthSysMiddleware(ctx:P63Context): Promise<void> {
     ctx.sys.apikey = ctx.cookies.apikey || <string>ctx.headers.apikey;
@@ -29,9 +45,13 @@ export default async function AuthSysMiddleware(ctx:P63Context): Promise<void> {
     // Инициализируем систему для пользователей
     try { // отправка ошибки в апи
 
-        let vAuthResp = null;
-        vAuthResp = await faApiRequest<any>(ctx, ctx.common.hook_url_auth, { apikey:ctx.sys.apikey });
-        await userSys.init(vAuthResp);
+        
+        const vAuthResp = await faApiRequest<UserRespI>(ctx, ctx.common.hook_url_auth, { apikey:ctx.sys.apikey });
+        await userSys.init({
+            vUser:vAuthResp.user_info,
+            aGroup:vAuthResp.list_group,
+            aRole:[]
+        });
         
     } catch (e) {
         await userSys.init({});
