@@ -333,7 +333,7 @@ export class AccessSys {
     /**
 	 * Проверка межсерверного запроса
 	 */
-	public async accessSrv(): Promise<void> {
+	public accessSrv(): boolean {
         let bOk = true;
 
         if(!this.ctx.sys.srvkey || this.ctx.sys.srvkey?.length > 10000){ // Проверка наличия серверного ключа
@@ -377,5 +377,7 @@ export class AccessSys {
         } else {
             this.ctx.sys.errorSys.error('cross_srv', 'Ошибка межсерверного запроса');
         }
+
+        return bOk;
 	}
 }
