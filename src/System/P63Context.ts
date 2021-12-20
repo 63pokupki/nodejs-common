@@ -34,6 +34,10 @@ export class P63Context extends AAContext {
         hook_url_auth: string;
 		port: number;
 	} = <any>{};
+    auth: {
+		algorithm: string;
+		secret: string;
+	} = <any>{};
     srv: { // маршрутизация сервера
         keyPool: string[], // ключи для корректной работы необходимы минимум 5 совпадений
         ipPool:string[],

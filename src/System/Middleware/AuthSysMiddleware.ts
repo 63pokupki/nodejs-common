@@ -1,6 +1,8 @@
 
-
-
+import { UserSys } from '../UserSys';
+import * as jwt from 'jsonwebtoken';
+import { AccessSys } from '../AccessSys';
+import { P63Context } from '../P63Context';
 
 /**
  * Ответ декодиирования тикена
@@ -9,67 +11,72 @@
  * Если пользователь постоянно пользуется сайтом у него будет ощущение бесконечного токена
  * Токен скрыто обновляется если он старше 1 недели
  */
-
-import { intersection } from "lodash";
-import { AccessSys } from "../AccessSys";
-import { faApiRequest } from "../ApiRequest";
-import { P63Context } from "../P63Context";
-import { UserSys } from "../UserSys";
-
-interface UserRespI{
-    /** основная информация о пользователе */
-    user_info: {
-        user_id: number;
-        username: string;
-        consumer_rating: number;
-    }
-    /** доступные пользователю группы */
-    list_group: {
-        /** ID группы */
-        group_id: number;
-        /** Псевдоним группы */
-        alias: string;
-    }[];
+interface JwtDecodeI {
+	token?: string; // старый статичный apikey
+	iat?: number; // время создания токена
+	exp?: number; // время действия токена
 }
 
-/** проверка аутентификации на уровне приложения */
+/* проверка аутентификации на уровне приложения */
 export default async function AuthSysMiddleware(ctx:P63Context): Promise<void> {
-    ctx.sys.apikey = ctx.cookies.apikey || <string>ctx.headers.apikey;
-    ctx.sys.srvkey = <string>ctx.headers.srvkey;
+	const apikey = ctx.cookies.apikey || String(ctx.headers.apikey);
+    
+
+	if (apikey) {
+		if (apikey.length > 32) {
+			let decoded: JwtDecodeI = null;
+
+			try {
+				decoded = jwt.verify(apikey, ctx.auth.secret, {
+					algorithms: [
+						ctx.auth.algorithm,
+					] as jwt.Algorithm[],
+				}) as JwtDecodeI;
+			} catch (e) {
+				ctx.sys.errorSys.error(
+					'token_expired_error',
+					'Время жизни токена закончилось',
+				);
+			}
+
+			// Проверяем что прошло меньше месяца
+			if (decoded) {
+				// Проверяем время жизни токена
+				if (Date.now() / 1000 < decoded.exp) {
+					// TODO это условие скорей всего не нужно поскольку выскакивает ошибка
+					ctx.sys.apikey = decoded.token;
+				} else {
+					ctx.sys.apikey = '';
+				}
+			} else {
+				ctx.sys.apikey = '';
+			}
+		} else {
+			// Временное решение пока идет разработка
+			// Дает возможность использовать старый токен
+			ctx.sys.apikey = apikey;
+		}
+	} else {
+		ctx.sys.apikey = '';
+	}
+
     ctx.apikey = ctx.sys.apikey;
 
-    /* юзерь не авторизован */
-    ctx.sys.bAuth = false;
-    const userSys = new UserSys(ctx);
+	/* юзерь не авторизован */
+	ctx.sys.bAuth = false;
+	const userSys = new UserSys(ctx);
 
-    // Инициализируем систему для пользователей
-    try { // отправка ошибки в апи
+	// Инициализируем систему для пользователей
+	await userSys.init();
 
-        
-        const vAuthResp = await faApiRequest<UserRespI>(ctx, ctx.common.hook_url_auth, { apikey:ctx.sys.apikey });
-        await userSys.init({
-            vUser:vAuthResp.user_info,
-            aGroup:vAuthResp.list_group,
-            aRole:[]
-        });
-        
-    } catch (e) {
-        await userSys.init({});
-        ctx.sys.errorSys.warning(
-            'auth_check',
-            'Ошибка проверки авторизации',
-        );
-    }
+	// if (await userSys.isAuth()) {
+	//     await userSys.init();
+	//     /* проставляем авторизацию */
+	//     request.sys.bAuth = true;
 
+	// }
+	ctx.sys.userSys = userSys;
+	ctx.sys.accessSys = new AccessSys(ctx);
 
-    // if (await userSys.isAuth()) {
-    //     await userSys.init();
-    //     /* проставляем авторизацию */
-    //     request.sys.bAuth = true;
-
-    // }
-    ctx.sys.userSys = userSys;
-    ctx.sys.accessSys = new AccessSys(ctx);
-
-    ctx.next();
+	ctx.next();
 }
