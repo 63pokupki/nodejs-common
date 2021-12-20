@@ -34,8 +34,8 @@ interface UserRespI{
 
 /** проверка аутентификации на уровне приложения */
 export default async function AuthSysMiddleware(ctx:P63Context): Promise<void> {
-    ctx.sys.apikey = ctx.cookies.apikey || <string>ctx.headers.apikey;
-    ctx.sys.srvkey = <string>ctx.headers.srvkey;
+    ctx.sys.apikey = ctx.cookies.apikey || <string>ctx.headers.apikey || '';
+    ctx.sys.srvkey = <string>ctx.headers.srvkey || '';
     ctx.apikey = ctx.sys.apikey;
 
     /* юзерь не авторизован */
