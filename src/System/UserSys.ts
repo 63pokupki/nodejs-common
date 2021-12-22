@@ -7,8 +7,8 @@ import * as _ from 'lodash';
 // SQL Запросы
 import { RolesT } from './RolesI';
 import { P63Context } from './P63Context';
-import { RoleT } from '../Infrastructure/SQL/Entity/RoleE';
-import { OrgRoleT } from '../Infrastructure/SQL/Entity/OrgRoleE';
+import { RoleT } from '../Interfaces/RoleI';
+import { OrgRoleT } from '../Interfaces/OrgRoleI';
 
 /** Информация по пользователю */
 interface UserInfoI {
@@ -20,12 +20,6 @@ interface UserInfoI {
 /** Группы пользователей */
 interface GroupUserI {
     group_id: number;
-    alias: string;
-}
-
-/** Роли пользователей */
-interface RoleUserI {
-    role_id: number;
     alias: string;
 }
 

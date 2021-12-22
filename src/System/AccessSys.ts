@@ -1,13 +1,12 @@
 
 import _ from 'lodash';
 import { ErrorSys } from '@a-a-game-studio/aa-components';
-import { RouteI } from '../Infrastructure/SQL/Entity/RouteE';
 import { P63Context } from './P63Context';
-import { RoleT } from '../Infrastructure/SQL/Entity/RoleE';
-import { OrgRoleT } from '../Infrastructure/SQL/Entity/OrgRoleE';
 import { mJwtDecode } from '../Helpers/JwtH';
 import { mDecrypt } from '../Helpers/CryptoH';
 import { UserSys } from './UserSys';
+import { RoleT } from '../Interfaces/RoleI';
+import { OrgRoleT } from '../Interfaces/OrgRoleI';
 
 /**  */
 export class AccessSys {

@@ -10,9 +10,8 @@
  * Токен скрыто обновляется если он старше 1 недели
  */
 
-import { intersection } from "lodash";
-import { OrgRoleT } from "../../Infrastructure/SQL/Entity/OrgRoleE";
-import { RoleT } from "../../Infrastructure/SQL/Entity/RoleE";
+import { OrgRoleT } from "../../Interfaces/OrgRoleI";
+import { RoleT } from "../../Interfaces/RoleI";
 import { AccessSys } from "../AccessSys";
 import { faApiRequest } from "../ApiRequest";
 import { P63Context } from "../P63Context";
