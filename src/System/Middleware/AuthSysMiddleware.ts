@@ -56,9 +56,8 @@ export default async function AuthSysMiddleware(ctx:P63Context): Promise<void> {
     // Инициализируем систему для пользователей
     try { // отправка ошибки в апи
 
-        
         const vAuthResp = await faApiRequest<UserRespI>(ctx, ctx.common.hook_url_auth, { apikey:ctx.sys.apikey });
-        await userSys.init({
+        userSys.init({
             vUser: vAuthResp.user_info,
             aGroup: vAuthResp.list_group,
             ixRole: vAuthResp.ix_role,

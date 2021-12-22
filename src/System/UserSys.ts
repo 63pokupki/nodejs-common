@@ -74,14 +74,14 @@ export class UserSys {
 	 *
 	 * @return void
 	 */
-	public async init(param?: {
+	public init(param?: {
         vUser?:UserInfoI; // Информация пользователя
         aGroup?:GroupUserI[]; // Группы пользователя
         ixRole: Record<RoleT, boolean>;
         ixRoleRoute: Record<string, boolean>;
         ixOrgRole: Record<string | number, Record<OrgRoleT, boolean>>;
         ixOrgRoleRoute: Record<string | number, Record<string, boolean>>;
-    }): Promise<void> {
+    }): void {
 		let ok = this.errorSys.isOk(); // По умолчанию true
 
 		// Проверяем apikey

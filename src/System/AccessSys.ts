@@ -49,16 +49,16 @@ export class AccessSys {
 	 * проверка доступа к роуту по роли
 	 * (обратная совместимость)
 	 */
-	public async accessAction(): Promise<void> {
-		await this.accessByRole();
+	public accessAction(): void {
+		this.accessByRole();
 	}
 	
 	/**
 	 * проверка доступа к роуту по оргроли
 	 * (обратная совместимость)
 	 */
-	public async accessActionOrg(orgId: number): Promise<void> {
-		await this.accessByOrgRole(orgId);
+	public accessActionOrg(orgId: number): void {
+		this.accessByOrgRole(orgId);
 	}
 
 
@@ -78,7 +78,7 @@ export class AccessSys {
 	/**
 	 * проверка доступа к роуту по оргроли
 	 */
-	public async accessByOrgRole(orgId: number):Promise<void> {
+	public accessByOrgRole(orgId: number): void {
 		const route = this.ctx.req.url;
 
 		if (this.ixOrgRoleRoute?.[orgId]?.[route]) {
@@ -135,7 +135,7 @@ export class AccessSys {
 	 * Проверить, если доступ к роуту по орг роли
 	 * @returns IDs организаций, по которым есть доступ
 	 */
-	public async isAccessByOrgRole(): Promise<number[]> {
+	public isAccessByOrgRole(): number[] {
 		const route = this.ctx.req.url;
 
 		const aidOrganization =  Object.keys(this.ixOrgRoleRoute);
@@ -153,14 +153,14 @@ export class AccessSys {
 	/**
 	 * Проверить, есть ли у пользователя конкретная роль
 	 */
-	public async isRole(role: RoleT): Promise<boolean> {
+	public isRole(role: RoleT): boolean {
         return this.ixRole?.[role];
 	}
 
 	/**
 	 * Проверить, есть ли у пользователя роль в конкретной или любой организаци
 	 */
-	public async isRoleInOrganization(role: OrgRoleT, idOrg: number): Promise<boolean> {
+	public isRoleInOrganization(role: OrgRoleT, idOrg: number): boolean {
 		return !!this.ixOrgRole?.[idOrg]?.[role];
 	}
 
