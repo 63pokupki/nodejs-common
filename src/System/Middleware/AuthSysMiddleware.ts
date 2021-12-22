@@ -11,6 +11,8 @@
  */
 
 import { intersection } from "lodash";
+import { OrgRoleT } from "../../Infrastructure/SQL/Entity/OrgRoleE";
+import { RoleT } from "../../Infrastructure/SQL/Entity/RoleE";
 import { AccessSys } from "../AccessSys";
 import { faApiRequest } from "../ApiRequest";
 import { P63Context } from "../P63Context";
@@ -30,6 +32,16 @@ interface UserRespI{
         /** Псевдоним группы */
         alias: string;
     }[];
+
+    /** Роли пользователя */
+    ix_role: Record<RoleT, boolean>;
+    /** Доступные по ролям роуты */
+    ix_role_route: Record<string, boolean>;
+
+    /** Роли пользователя в организациях */
+    ix_org_role: Record<string | number, Record<OrgRoleT, boolean>>;
+    /** Роуты, доступные по ролям в организациям */
+    ix_org_role_route: Record<string | number, Record<string, boolean>>
 }
 
 /** проверка аутентификации на уровне приложения */
@@ -48,13 +60,15 @@ export default async function AuthSysMiddleware(ctx:P63Context): Promise<void> {
         
         const vAuthResp = await faApiRequest<UserRespI>(ctx, ctx.common.hook_url_auth, { apikey:ctx.sys.apikey });
         await userSys.init({
-            vUser:vAuthResp.user_info,
-            aGroup:vAuthResp.list_group,
-            aRole:[]
+            vUser: vAuthResp.user_info,
+            aGroup: vAuthResp.list_group,
+            ixRole: vAuthResp.ix_role,
+            ixOrgRole: vAuthResp.ix_org_role,
+            ixRoleRoute: vAuthResp.ix_role_route,
+            ixOrgRoleRoute: vAuthResp.ix_org_role_route,
         });
         
     } catch (e) {
-        await userSys.init({});
         ctx.sys.errorSys.warning(
             'auth_check',
             'Ошибка проверки авторизации',

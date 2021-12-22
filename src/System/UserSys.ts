@@ -7,6 +7,8 @@ import * as _ from 'lodash';
 // SQL Запросы
 import { RolesT } from './RolesI';
 import { P63Context } from './P63Context';
+import { RoleT } from '../Infrastructure/SQL/Entity/RoleE';
+import { OrgRoleT } from '../Infrastructure/SQL/Entity/OrgRoleE';
 
 /** Информация по пользователю */
 interface UserInfoI {
@@ -38,12 +40,22 @@ export class UserSys {
 	private vUserInfo: UserInfoI; // Информация о пользователе
 
 	private ixUserGroups: Record<string, number>; // Группы пользователя
-    private ixUserRole: Record<string, boolean>; // Группы пользователя
 
 	private ctx: P63Context; // Объект запроса пользователя
 
 	private errorSys: ErrorSys;
 
+    /** Глобальные роли */
+    private ixRole: Record<RoleT, boolean>;
+
+    /** роуты, доступные по глобальным ролям */
+    private ixRoleRoute: Record<string, boolean>;
+
+    /** Роли в организациях */
+    private ixOrgRole: Record<string | number, Record<OrgRoleT, boolean>>;
+
+    /** роуты, доступные по ролям в организациях */
+    private ixOrgRoleRoute: Record<string | number, Record<string, boolean>>;
 
 	public constructor(ctx: P63Context) {
 		this.ctx = ctx;
@@ -51,7 +63,6 @@ export class UserSys {
 		this.errorSys = ctx.sys.errorSys;
 
 		this.ixUserGroups = {};
-        this.ixUserRole = {};
 
 		/* вылавливаем apikey */
 
@@ -72,7 +83,10 @@ export class UserSys {
 	public async init(param?: {
         vUser?:UserInfoI; // Информация пользователя
         aGroup?:GroupUserI[]; // Группы пользователя
-        aRole?:RoleUserI[]; // Роли пользователя
+        ixRole: Record<RoleT, boolean>;
+        ixRoleRoute: Record<string, boolean>;
+        ixOrgRole: Record<string | number, Record<OrgRoleT, boolean>>;
+        ixOrgRoleRoute: Record<string | number, Record<string, boolean>>;
     }): Promise<void> {
 		let ok = this.errorSys.isOk(); // По умолчанию true
 
@@ -101,12 +115,11 @@ export class UserSys {
             }
 		}
         
-		if (ok && ifAuth && param?.aRole) { // Проиндексировать роли по: имени роли
-			for (let i = 0; i < param.aRole.length; i++) {
-                const vRole = param.aRole[i];
-
-				this.ixUserGroups[vRole.alias] = vRole.role_id;
-            }
+		if (ok && ifAuth) {
+			this.ixRole = param.ixRole;
+			this.ixOrgRole = param.ixOrgRole;
+			this.ixRoleRoute = param.ixRoleRoute;
+			this.ixOrgRoleRoute = param.ixOrgRoleRoute;
 		}
 
 		if (ok && ifAuth) { // Уведомление об успешной авторизации пользователя в DEV режиме
@@ -284,4 +297,33 @@ export class UserSys {
 	public isUserInGroup(groupAlias: string): boolean {
 		return !this.ixUserGroups ? false : !!this.ixUserGroups[groupAlias];
 	}
+
+
+    /**
+     * Получить глобальные роли пользователя
+     */
+     public getIxRole(): Record<RoleT, boolean> {
+        return this.ixRole;
+    }
+
+    /**
+     * Получить роли пользователя в организациях
+     */
+    public getIxOrgRole(): Record<string | number, Record<OrgRoleT, boolean>> {
+        return this.ixOrgRole;
+    }
+
+    /**
+     * Получить роуты, доступные по глобальным ролям
+     */
+    public getIxRoleRoute(): Record<string, boolean> {
+        return this.ixRoleRoute;
+    }
+
+    /**
+     * Получить роуты, доступные по ролям в организациях
+     */
+    public getIxOrgRoleRoute(): Record<string | number, Record<string, boolean>> {
+        return this.ixOrgRoleRoute;
+    }
 }
