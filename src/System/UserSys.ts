@@ -5,10 +5,10 @@ import * as _ from 'lodash';
 // Системные сервисы
 
 // SQL Запросы
-import { RolesT } from './RolesI';
 import { P63Context } from './P63Context';
 import { RoleT } from '../Interfaces/RoleI';
 import { OrgRoleT } from '../Interfaces/OrgRoleI';
+import { GroupT } from '../Interfaces/GroupI';
 
 /** Информация по пользователю */
 interface UserInfoI {
@@ -75,8 +75,8 @@ export class UserSys {
 	 * @return void
 	 */
 	public init(param?: {
-        vUser?:UserInfoI; // Информация пользователя
-        aGroup?:GroupUserI[]; // Группы пользователя
+        vUser:UserInfoI; // Информация пользователя
+        aGroup:GroupUserI[]; // Группы пользователя
         ixRole: Record<RoleT, boolean>;
         ixRoleRoute: Record<string, boolean>;
         ixOrgRole: Record<string | number, Record<OrgRoleT, boolean>>;
@@ -131,7 +131,7 @@ export class UserSys {
 	public isOrg(): boolean {
 		let ok = this.errorSys.isOk();
 
-		if (ok && this.ixUserGroups[RolesT.organizers]) {
+		if (ok && this.ixUserGroups[GroupT.organizers]) {
 			this.errorSys.devNotice('is_org', 'Вы организатор');
 		} else {
 			ok = false;
@@ -158,7 +158,7 @@ export class UserSys {
 	public isAdmin(): boolean {
 		let ok = this.errorSys.isOk();
 
-		if (ok && this.ixUserGroups[RolesT.administrators]) {
+		if (ok && this.ixUserGroups[GroupT.administrators]) {
 			this.errorSys.devNotice('is_admin', 'Вы администратор');
 		} else {
 			ok = false;
@@ -176,7 +176,7 @@ export class UserSys {
 	public isModerator(): boolean {
 		let ok = this.errorSys.isOk();
 
-		if (ok && this.ixUserGroups[RolesT.global_moderators]) {
+		if (ok && this.ixUserGroups[GroupT.global_moderators]) {
 			this.errorSys.devNotice('is_moderator', 'Вы модератор');
 		} else {
 			ok = false;
@@ -194,7 +194,7 @@ export class UserSys {
 	public isPvzUser(): boolean {
 		let ok = this.errorSys.isOk();
 
-		if (ok && this.ixUserGroups[RolesT.pvz_users]) {
+		if (ok && this.ixUserGroups[GroupT.pvz_users]) {
 			this.errorSys.devNotice('is_pvz_user', 'Вы пользователь ПВЗ');
 		} else {
 			ok = false;
@@ -212,7 +212,7 @@ export class UserSys {
 	public isPvzModerator(): boolean {
 		let ok = this.errorSys.isOk();
 
-		if (ok && this.ixUserGroups[RolesT.pvz_moderators]) {
+		if (ok && this.ixUserGroups[GroupT.pvz_moderators]) {
 			this.errorSys.devNotice('is_pvz_moderator', 'Вы модератор ПВЗ');
 		} else {
 			ok = false;

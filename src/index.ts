@@ -48,7 +48,9 @@ import ParseBodyMiddleware from './System/Middleware/ParseBodyMiddleware';
 
 
 import { CacheSys } from './System/CacheSys';
-import { RolesT } from './System/RolesI';
+import { GroupT } from './Interfaces/GroupI';
+import { RoleT } from './Interfaces/RoleI';
+import { OrgRoleT } from './Interfaces/OrgRoleI';
 import { AvgCacheSys } from './System/AvgCacheSys';
 import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware';
 import { JwtDecodeI, mJwtDecode, mJwtEncode } from './Helpers/JwtH';
@@ -88,7 +90,9 @@ export {
     P63Context,
 	Mattermost,
 	S3DO,
-	RolesT,				// Роли пользователей
+	GroupT,				// Группы пользователей
+    RoleT,              // Глобальные роли пользователей
+    OrgRoleT,           // Роли пользователей в организациях
     mJwtEncode, // Jwt кодировка - хелпер
     mJwtDecode, // Jwt раскодировка - хелпер
     mEncrypt, // кодировка данных - хелпер
