@@ -256,4 +256,55 @@ export class UserSys {
     public getIxOrgRoleRoute(): Record<string | number, Record<string, boolean>> {
         return this.ixOrgRoleRoute;
     }
+
+    // ===================== Новая ролевая модель ================================
+
+    /**
+	 * Проверить, есть ли у пользователя конкретная роль
+	 */
+	public isRole(role: RoleT): boolean {
+        return this.ixRole?.[role];
+	}
+
+	/**
+	 * Проверить, есть ли у пользователя роль в конкретной или любой организаци
+	 */
+	public isRoleInOrganization(role: OrgRoleT, idOrg: number): boolean {
+		return !!this.ixOrgRole?.[idOrg]?.[role];
+	}
+
+
+	/**
+	 * Проверить, если доступ к роуту по глобальной роли
+	 */
+	public isAccessByRole(): boolean {
+		const route = this.ctx.req.url;
+		return !!this.ixRoleRoute?.[route];
+	}
+
+	/**
+	 * Проверить, если доступ к роуту по орг роли
+	 */
+	public isAccessByOrgRole(idOrg: number): boolean {
+		const route = this.ctx.req.url;
+
+		return this.ixOrgRoleRoute?.[idOrg]?.[route];
+	}
+	/**
+	 * Получить IDs организаций, в которых доступен данный роут
+	 */
+	public getAvailableOrganizationId(): number[] {
+		const route = this.ctx.req.url;
+
+		const aidOrganization =  Object.keys(this.ixOrgRoleRoute);
+        const aidAccessOrganization = [];
+		for (let i = 0; i < aidOrganization.length; i++) {
+			const idOrg = Number(aidOrganization[i]);
+			if(this.ixOrgRoleRoute?.[idOrg]?.[route]) {
+				aidAccessOrganization.push(idOrg);
+			}
+		}
+
+		return aidAccessOrganization;
+	}
 }

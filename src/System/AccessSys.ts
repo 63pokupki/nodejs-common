@@ -5,8 +5,6 @@ import { P63Context } from './P63Context';
 import { mJwtDecode } from '../Helpers/JwtH';
 import { mDecrypt } from '../Helpers/CryptoH';
 import { UserSys } from './UserSys';
-import { RoleT } from '../Interfaces/RoleI';
-import { OrgRoleT } from '../Interfaces/OrgRoleI';
 
 /**  */
 export class AccessSys {
@@ -18,27 +16,11 @@ export class AccessSys {
 
 	private ixCtrl: Record<string, boolean>;
 
-    /** Глобальные роли */
-    private ixRole: Record<RoleT, boolean>;
-
-    /** роуты, доступные по глобальным ролям */
-    private ixRoleRoute: Record<string, boolean>;
-
-    /** Роли в организациях */
-    private ixOrgRole: Record<string | number, Record<OrgRoleT, boolean>>;
-
-    /** роуты, доступные по ролям в организациях */
-    private ixOrgRoleRoute: Record<string | number, Record<string, boolean>>;
-
 	/**  */
 	constructor(ctx: P63Context) {
 		this.ctx = ctx;
 		this.errorSys = ctx.sys.errorSys;
 		this.userSys = ctx.sys.userSys;
-        this.ixRole = this.userSys.getIxRole();
-        this.ixOrgRole = this.userSys.getIxOrgRole();
-        this.ixRoleRoute = this.userSys.getIxRoleRoute();
-        this.ixOrgRoleRoute = this.userSys.getIxOrgRoleRoute();
 	}
 
 	// ========================================
@@ -126,9 +108,7 @@ export class AccessSys {
 	 * Доступ к роуту по роли
 	 */
 	public accessByRole(): void {
-		const route = this.ctx.req.url;
-
-		if (this.ixRoleRoute?.[route]) {
+		if (this.userSys.isAccessByRole()) {
             this.errorSys.devNotice('access_by_role', 'Доступ к роуту по глобальной роли');
 		} else {
 			throw this.errorSys.throwAccess('У вас нет доступа к данному роуту по роли на сайте');
@@ -138,10 +118,8 @@ export class AccessSys {
 	/**
 	 * Доступ к роуту по роли в организации
 	 */
-	public accessByOrgRole(orgId: number): void {
-		const route = this.ctx.req.url;
-
-		if (this.ixOrgRoleRoute?.[orgId]?.[route]) {
+	public accessByOrgRole(idOrg: number): void {
+		if (this.userSys.isAccessByOrgRole(idOrg)) {
 			this.errorSys.devNotice('access_by_orgrole', 'Доступ к роуту по роли в организации');
 		} {
             throw this.errorSys.throwAccess('У вас нет доступа к данному роуту по роли в организации');
@@ -151,11 +129,11 @@ export class AccessSys {
 	/**
 	 * Доступ к роуту по глобальной или роли в организации
 	 */
-	public accessByAnyRole(orgId: number): void {
+	public accessByAnyRole(idOrg: number): void {
 		const route = this.ctx.req.url;
 
-		const accessByRole = this.ixRoleRoute?.[route];
-		let accessByOrgRole = this.ixOrgRoleRoute?.[orgId]?.[route];
+		const accessByRole = this.userSys.isAccessByRole();
+		let accessByOrgRole = this.userSys.isAccessByOrgRole(idOrg);
 
 		if(accessByRole) {
 			this.errorSys.devNotice('access_by_role', 'Доступ к роуту по глобальной роли');
@@ -176,50 +154,6 @@ export class AccessSys {
 		if (!this.ixCtrl?.[ctrlName]) {
 			throw this.errorSys.throwAccess('У вас нет доступа к данному контроллеру');
 		}
-	}
-
-	// ============================================
-	// Проверки без выброса ошибок
-	// ============================================
-
-	/**
-	 * Проверить, если доступ к роуту по глобальной роли
-	 */
-	public isAccessByRole(): boolean {
-		const route = this.ctx.req.url;
-		return !!this.ixRoleRoute?.[route];
-	}
-
-	/**
-	 * Проверить, если доступ к роуту по орг роли
-	 */
-	public isAccessByOrgRole(): number[] {
-		const route = this.ctx.req.url;
-
-		const aidOrganization =  Object.keys(this.ixOrgRoleRoute);
-        const aidAccessOrganization = [];
-		for (let i = 0; i < aidOrganization.length; i++) {
-			const idOrg = Number(aidOrganization[i]);
-			if(this.ixOrgRoleRoute?.[idOrg]?.[route]) {
-				aidAccessOrganization.push(idOrg);
-			}
-		}
-
-		return aidAccessOrganization;
-	}
-
-	/**
-	 * Проверить, есть ли у пользователя конкретная роль
-	 */
-	public isRole(role: RoleT): boolean {
-        return this.ixRole?.[role];
-	}
-
-	/**
-	 * Проверить, есть ли у пользователя роль в конкретной или любой организаци
-	 */
-	public isRoleInOrganization(role: OrgRoleT, idOrg: number): boolean {
-		return !!this.ixOrgRole?.[idOrg]?.[role];
 	}
 
     /**
