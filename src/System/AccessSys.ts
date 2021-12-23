@@ -12,7 +12,7 @@ import { OrgRoleT } from '../Interfaces/OrgRoleI';
 export class AccessSys {
 	private ctx: P63Context;
 
-	errorSys: ErrorSys;
+	private errorSys: ErrorSys;
 
     private userSys: UserSys;
 
@@ -45,25 +45,85 @@ export class AccessSys {
 	// Проверки с выбросом ошибок
 	// ========================================
 
-	/**
-	 * проверка доступа к роуту по роли
-	 * (обратная совместимость)
+    /**
+	 * Доступ только для группы администаторы
 	 */
-	public accessAction(): void {
-		this.accessByRole();
-	}
-	
-	/**
-	 * проверка доступа к роуту по оргроли
-	 * (обратная совместимость)
-	 */
-	public accessActionOrg(orgId: number): void {
-		this.accessByOrgRole(orgId);
+	public isAdmin(): void {
+		if(!this.userSys.isAdmin()) {
+            throw this.errorSys.throwAccess('Вы не администратор');
+        } else {
+            this.errorSys.devNotice('is_admin', 'Вы администратор');
+        }
 	}
 
+    /**
+	 * Доступ только для группы организаторы
+	 */
+	public isOrg(): void {
+		if(!this.userSys.isOrg()) {
+            throw this.errorSys.throwAccess('Вы не организатор');
+        } else {
+            this.errorSys.devNotice('is_org', 'Вы организатор');
+        }
+	}
+
+    /**
+	 * Доступ только для группы администаторы организаторов
+	 */
+	public isOrgAdmin(): void {
+		if(!this.userSys.isOrgAdmin()) {
+            throw this.errorSys.throwAccess('Вы не администратор организаторов');
+        } else {
+            this.errorSys.devNotice('is_org_admin', 'Вы администратор организаторов');
+        }
+	}
+
+    /**
+	 * Доступ только для группы модераторы
+	 */
+	public isModerator(): void {
+		if(!this.userSys.isModerator()) {
+            throw this.errorSys.throwAccess('Вы не модератор');
+        } else {
+            this.errorSys.devNotice('is_moderator', 'Вы модератор');
+        }
+	}
+
+    /**
+	 * Доступ только для группы пвз пользователи
+	 */
+	public isPvzUser(): void {
+		if(!this.userSys.isPvzUser()) {
+            throw this.errorSys.throwAccess('Вы не пользователь ПВЗ');
+        } else {
+            this.errorSys.devNotice('is_pvz_user', 'Вы пользователь ПВЗ');
+        }
+	}
+
+    /**
+	 * Доступ только для группы ПВЗ модераторы
+	 */
+	public isPvzModerator(): void {
+		if(!this.userSys.isPvzModerator()) {
+            throw this.errorSys.throwAccess('Вы не модератор ПВЗ');
+        } else {
+            this.errorSys.devNotice('is_pvz_moderator', 'Вы модератор ПВЗ');
+        }
+	}
+
+    /**
+	 * Доступ только для авторизованных пользователей
+	 */
+	public isAuth(): void {
+		if(!this.userSys.isAuth()) {
+            throw this.errorSys.throwAccess('Вы не авторизованы');
+        } else {
+            this.errorSys.devNotice('is_auth', 'Вы авторизованы');
+        }
+	}
 
 	/**
-	 * проверка доступа к роуту по роли
+	 * Доступ к роуту по роли
 	 */
 	public accessByRole(): void {
 		const route = this.ctx.req.url;
@@ -76,7 +136,7 @@ export class AccessSys {
 	}
 
 	/**
-	 * проверка доступа к роуту по оргроли
+	 * Доступ к роуту по роли в организации
 	 */
 	public accessByOrgRole(orgId: number): void {
 		const route = this.ctx.req.url;
@@ -89,7 +149,7 @@ export class AccessSys {
 	}
 
 	/**
-	 * Проверка доступа к роуту по глобальной или орг роли
+	 * Доступ к роуту по глобальной или роли в организации
 	 */
 	public accessByAnyRole(orgId: number): void {
 		const route = this.ctx.req.url;
@@ -111,7 +171,6 @@ export class AccessSys {
 
 	/**
 	 * проверка доступа к контроллеру по группе
-	 * @param ctrlName
 	 */
 	public accessCtrl(ctrlName: string): void {
 		if (!this.ixCtrl?.[ctrlName]) {
@@ -133,7 +192,6 @@ export class AccessSys {
 
 	/**
 	 * Проверить, если доступ к роуту по орг роли
-	 * @returns IDs организаций, по которым есть доступ
 	 */
 	public isAccessByOrgRole(): number[] {
 		const route = this.ctx.req.url;

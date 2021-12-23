@@ -123,128 +123,65 @@ export class UserSys {
 		}
 	}
 
+    // ==================================================
+    // Проверки без выброса ошибок
+    // ==================================================
+
 	/**
 	 * Проверка является ли пользователь организатором
-	 *
-	 * @return boolean
 	 */
 	public isOrg(): boolean {
-		let ok = this.errorSys.isOk();
-
-		if (ok && this.ixUserGroups[GroupT.organizers]) {
-			this.errorSys.devNotice('is_org', 'Вы организатор');
-		} else {
-			ok = false;
-			this.errorSys.error('is_org', 'Вы не организатор');
-		}
-
-		return ok;
+		return !!this.ixUserGroups[GroupT.organizers];
 	}
 
 	/**
 	 * Проверка является ли пользователь администратором организаторов на пр Ольга Проданова
-	 *
-	 * @return boolean
 	 */
 	public isOrgAdmin(): boolean {
-		return !!this.isAdmin();
+		return this.isAdmin();
 	}
 
 	/**
 	 * Проверка является ли пользователь администратором
-	 *
-	 * @return boolean
 	 */
 	public isAdmin(): boolean {
-		let ok = this.errorSys.isOk();
-
-		if (ok && this.ixUserGroups[GroupT.administrators]) {
-			this.errorSys.devNotice('is_admin', 'Вы администратор');
-		} else {
-			ok = false;
-			this.errorSys.error('is_admin', 'Вы не администратор');
-		}
-
-		return ok;
+		return !!this.ixUserGroups[GroupT.administrators];
 	}
 
 	/**
 	 * Проверка является ли пользователь модератором
-	 *
-	 * @return boolean
 	 */
 	public isModerator(): boolean {
-		let ok = this.errorSys.isOk();
-
-		if (ok && this.ixUserGroups[GroupT.global_moderators]) {
-			this.errorSys.devNotice('is_moderator', 'Вы модератор');
-		} else {
-			ok = false;
-			this.errorSys.error('is_moderator', 'Вы не модератор');
-		}
-
-		return ok;
+		return !!this.ixUserGroups[GroupT.global_moderators];
 	}
 
 	/**
 	 * Проверка имеет ли пользователь доступ к ПВЗ
-	 *
-	 * @return boolean
 	 */
 	public isPvzUser(): boolean {
-		let ok = this.errorSys.isOk();
-
-		if (ok && this.ixUserGroups[GroupT.pvz_users]) {
-			this.errorSys.devNotice('is_pvz_user', 'Вы пользователь ПВЗ');
-		} else {
-			ok = false;
-			this.errorSys.error('is_pvz_user', 'Вы не пользователь ПВЗ');
-		}
-
-		return ok;
+		return !!this.ixUserGroups[GroupT.pvz_users];
 	}
 
 	/**
 	 * Проверка является ли пользователь модератором ПВЗ
-	 *
-	 * @return boolean
 	 */
 	public isPvzModerator(): boolean {
-		let ok = this.errorSys.isOk();
-
-		if (ok && this.ixUserGroups[GroupT.pvz_moderators]) {
-			this.errorSys.devNotice('is_pvz_moderator', 'Вы модератор ПВЗ');
-		} else {
-			ok = false;
-			this.errorSys.error('is_pvz_moderator', 'Вы не модератор ПВЗ');
-		}
-
-		return ok;
+		return !!this.ixUserGroups[GroupT.pvz_moderators];
 	}
 
 	/**
 	 * Проверка является ли пользователь авторизированным
-	 *
-	 * @return boolean
 	 */
 	public isAuth(): boolean {
-		let ok = this.errorSys.isOk();
-
-		if (ok && this.idUser) {
-			this.errorSys.devNotice('is_auth', 'Вы авторизованы');
-		} else {
-			ok = false;
-			this.errorSys.error('is_auth', 'Вы не авторизованы');
-			this.errorSys.devNotice('is_auth', 'Вы не авторизованы');
-		}
-
-		return ok;
+		return !!this.idUser;
 	}
+
+    // ==================================================
+    // Геттеры
+    // ==================================================
 
 	/**
 	 * возвращает apikey
-	 *
-	 * @return string|null
 	 */
 	public fGetApikey(): string {
 		return this.apikey;
@@ -291,7 +228,6 @@ export class UserSys {
 	public isUserInGroup(groupAlias: string): boolean {
 		return !this.ixUserGroups ? false : !!this.ixUserGroups[groupAlias];
 	}
-
 
     /**
      * Получить глобальные роли пользователя
