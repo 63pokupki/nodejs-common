@@ -216,6 +216,7 @@ export class UserSys {
 
 	/**
 	 * Список ID групп в которых состоит пользователь
+     * @todo вырезать из абстрактного класса UserSys
 	 */
 	public getUserGroupIds(): number[] {
 		return !this.ixUserGroups ? [] : Object.values(this.ixUserGroups);
@@ -231,6 +232,7 @@ export class UserSys {
 
     /**
      * Получить глобальные роли пользователя
+     * @todo вырезать из абстрактного класса UserSys
      */
      public getIxRole(): Record<RoleT, boolean> {
         return this.ixRole;
@@ -238,6 +240,7 @@ export class UserSys {
 
     /**
      * Получить роли пользователя в организациях
+     * @todo вырезать из абстрактного класса UserSys
      */
     public getIxOrgRole(): Record<string | number, Record<OrgRoleT, boolean>> {
         return this.ixOrgRole;
@@ -245,6 +248,7 @@ export class UserSys {
 
     /**
      * Получить роуты, доступные по глобальным ролям
+     * @todo вырезать из абстрактного класса UserSys
      */
     public getIxRoleRoute(): Record<string, boolean> {
         return this.ixRoleRoute;
@@ -252,6 +256,7 @@ export class UserSys {
 
     /**
      * Получить роуты, доступные по ролям в организациях
+     * @todo вырезать из абстрактного класса UserSys
      */
     public getIxOrgRoleRoute(): Record<string | number, Record<string, boolean>> {
         return this.ixOrgRoleRoute;
@@ -290,6 +295,7 @@ export class UserSys {
 
 		return this.ixOrgRoleRoute?.[idOrg]?.[route];
 	}
+
 	/**
 	 * Получить IDs организаций, в которых доступен данный роут
 	 */
