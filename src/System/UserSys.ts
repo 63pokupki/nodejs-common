@@ -278,7 +278,6 @@ export class UserSys {
 		return !!this.ixOrgRole?.[idOrg]?.[role];
 	}
 
-
 	/**
 	 * Проверить, если доступ к роуту по глобальной роли
 	 */

@@ -53,33 +53,31 @@ export default async function AuthSysMiddleware(ctx:P63Context): Promise<void> {
     ctx.sys.bAuth = false;
     const userSys = new UserSys(ctx);
 
-    // Инициализируем систему для пользователей
-    try { // отправка ошибки в апи
+    if (ctx.sys.apikey) {
+        // Инициализируем систему для пользователей
+        try { // отправка ошибки в апи
 
-        const vAuthResp = await faApiRequest<UserRespI>(ctx, ctx.common.hook_url_auth, { apikey:ctx.sys.apikey });
-        userSys.init({
-            vUser: vAuthResp.user_info,
-            aGroup: vAuthResp.list_group,
-            ixRole: vAuthResp.ix_role,
-            ixOrgRole: vAuthResp.ix_org_role,
-            ixRoleRoute: vAuthResp.ix_role_route,
-            ixOrgRoleRoute: vAuthResp.ix_org_role_route,
-        });
-        
-    } catch (e) {
-        ctx.sys.errorSys.warning(
-            'auth_check',
-            'Ошибка проверки авторизации',
-        );
+            const vAuthResp = await faApiRequest<UserRespI>(ctx, ctx.common.hook_url_auth, { apikey: ctx.sys.apikey });
+            userSys.init({
+                vUser: vAuthResp.user_info,
+                aGroup: vAuthResp.list_group,
+                ixRole: vAuthResp.ix_role,
+                ixOrgRole: vAuthResp.ix_org_role,
+                ixRoleRoute: vAuthResp.ix_role_route,
+                ixOrgRoleRoute: vAuthResp.ix_org_role_route,
+            });
+
+        } catch (e) {
+            userSys.init();
+            ctx.sys.errorSys.warning(
+                'auth_check',
+                'Ошибка проверки авторизации',
+            );
+        }
+    } else {
+        ctx.sys.errorSys.devNotice('is_auth', 'Вы не авторизованы');
     }
-
-
-    // if (await userSys.isAuth()) {
-    //     await userSys.init();
-    //     /* проставляем авторизацию */
-    //     request.sys.bAuth = true;
-
-    // }
+    
     ctx.sys.userSys = userSys;
     ctx.sys.accessSys = new AccessSys(ctx);
 
