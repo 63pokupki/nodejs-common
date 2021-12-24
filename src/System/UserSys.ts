@@ -5,8 +5,10 @@ import * as _ from 'lodash';
 // Системные сервисы
 
 // SQL Запросы
-import { RolesT } from './RolesI';
 import { P63Context } from './P63Context';
+import { RoleT } from '../Interfaces/RoleI';
+import { OrgRoleT } from '../Interfaces/OrgRoleI';
+import { GroupT } from '../Interfaces/GroupI';
 
 /** Информация по пользователю */
 interface UserInfoI {
@@ -21,12 +23,6 @@ interface GroupUserI {
     alias: string;
 }
 
-/** Роли пользователей */
-interface RoleUserI {
-    role_id: number;
-    alias: string;
-}
-
 /**
  * Класс который глобально знает все данные пользователя
  */
@@ -38,12 +34,22 @@ export class UserSys {
 	private vUserInfo: UserInfoI; // Информация о пользователе
 
 	private ixUserGroups: Record<string, number>; // Группы пользователя
-    private ixUserRole: Record<string, boolean>; // Группы пользователя
 
 	private ctx: P63Context; // Объект запроса пользователя
 
 	private errorSys: ErrorSys;
 
+    /** Глобальные роли */
+    private ixRole: Record<RoleT, boolean>;
+
+    /** роуты, доступные по глобальным ролям */
+    private ixRoleRoute: Record<string, boolean>;
+
+    /** Роли в организациях */
+    private ixOrgRole: Record<string | number, Record<OrgRoleT, boolean>>;
+
+    /** роуты, доступные по ролям в организациях */
+    private ixOrgRoleRoute: Record<string | number, Record<string, boolean>>;
 
 	public constructor(ctx: P63Context) {
 		this.ctx = ctx;
@@ -51,7 +57,6 @@ export class UserSys {
 		this.errorSys = ctx.sys.errorSys;
 
 		this.ixUserGroups = {};
-        this.ixUserRole = {};
 
 		/* вылавливаем apikey */
 
@@ -69,11 +74,14 @@ export class UserSys {
 	 *
 	 * @return void
 	 */
-	public async init(param?: {
-        vUser?:UserInfoI; // Информация пользователя
-        aGroup?:GroupUserI[]; // Группы пользователя
-        aRole?:RoleUserI[]; // Роли пользователя
-    }): Promise<void> {
+	public init(param?: {
+        vUser:UserInfoI; // Информация пользователя
+        aGroup:GroupUserI[]; // Группы пользователя
+        ixRole: Record<RoleT, boolean>;
+        ixRoleRoute: Record<string, boolean>;
+        ixOrgRole: Record<string | number, Record<OrgRoleT, boolean>>;
+        ixOrgRoleRoute: Record<string | number, Record<string, boolean>>;
+    }): void {
 		let ok = this.errorSys.isOk(); // По умолчанию true
 
 		// Проверяем apikey
@@ -101,12 +109,11 @@ export class UserSys {
             }
 		}
         
-		if (ok && ifAuth && param?.aRole) { // Проиндексировать роли по: имени роли
-			for (let i = 0; i < param.aRole.length; i++) {
-                const vRole = param.aRole[i];
-
-				this.ixUserGroups[vRole.alias] = vRole.role_id;
-            }
+		if (ok && ifAuth) {
+			this.ixRole = param.ixRole;
+			this.ixOrgRole = param.ixOrgRole;
+			this.ixRoleRoute = param.ixRoleRoute;
+			this.ixOrgRoleRoute = param.ixOrgRoleRoute;
 		}
 
 		if (ok && ifAuth) { // Уведомление об успешной авторизации пользователя в DEV режиме
@@ -116,128 +123,65 @@ export class UserSys {
 		}
 	}
 
+    // ==================================================
+    // Проверки без выброса ошибок
+    // ==================================================
+
 	/**
 	 * Проверка является ли пользователь организатором
-	 *
-	 * @return boolean
 	 */
 	public isOrg(): boolean {
-		let ok = this.errorSys.isOk();
-
-		if (ok && this.ixUserGroups[RolesT.organizers]) {
-			this.errorSys.devNotice('is_org', 'Вы организатор');
-		} else {
-			ok = false;
-			this.errorSys.error('is_org', 'Вы не организатор');
-		}
-
-		return ok;
+		return !!this.ixUserGroups[GroupT.organizers];
 	}
 
 	/**
 	 * Проверка является ли пользователь администратором организаторов на пр Ольга Проданова
-	 *
-	 * @return boolean
 	 */
 	public isOrgAdmin(): boolean {
-		return !!this.isAdmin();
+		return this.isAdmin();
 	}
 
 	/**
 	 * Проверка является ли пользователь администратором
-	 *
-	 * @return boolean
 	 */
 	public isAdmin(): boolean {
-		let ok = this.errorSys.isOk();
-
-		if (ok && this.ixUserGroups[RolesT.administrators]) {
-			this.errorSys.devNotice('is_admin', 'Вы администратор');
-		} else {
-			ok = false;
-			this.errorSys.error('is_admin', 'Вы не администратор');
-		}
-
-		return ok;
+		return !!this.ixUserGroups[GroupT.administrators];
 	}
 
 	/**
 	 * Проверка является ли пользователь модератором
-	 *
-	 * @return boolean
 	 */
 	public isModerator(): boolean {
-		let ok = this.errorSys.isOk();
-
-		if (ok && this.ixUserGroups[RolesT.global_moderators]) {
-			this.errorSys.devNotice('is_moderator', 'Вы модератор');
-		} else {
-			ok = false;
-			this.errorSys.error('is_moderator', 'Вы не модератор');
-		}
-
-		return ok;
+		return !!this.ixUserGroups[GroupT.global_moderators];
 	}
 
 	/**
 	 * Проверка имеет ли пользователь доступ к ПВЗ
-	 *
-	 * @return boolean
 	 */
 	public isPvzUser(): boolean {
-		let ok = this.errorSys.isOk();
-
-		if (ok && this.ixUserGroups[RolesT.pvz_users]) {
-			this.errorSys.devNotice('is_pvz_user', 'Вы пользователь ПВЗ');
-		} else {
-			ok = false;
-			this.errorSys.error('is_pvz_user', 'Вы не пользователь ПВЗ');
-		}
-
-		return ok;
+		return !!this.ixUserGroups[GroupT.pvz_users];
 	}
 
 	/**
 	 * Проверка является ли пользователь модератором ПВЗ
-	 *
-	 * @return boolean
 	 */
 	public isPvzModerator(): boolean {
-		let ok = this.errorSys.isOk();
-
-		if (ok && this.ixUserGroups[RolesT.pvz_moderators]) {
-			this.errorSys.devNotice('is_pvz_moderator', 'Вы модератор ПВЗ');
-		} else {
-			ok = false;
-			this.errorSys.error('is_pvz_moderator', 'Вы не модератор ПВЗ');
-		}
-
-		return ok;
+		return !!this.ixUserGroups[GroupT.pvz_moderators];
 	}
 
 	/**
 	 * Проверка является ли пользователь авторизированным
-	 *
-	 * @return boolean
 	 */
 	public isAuth(): boolean {
-		let ok = this.errorSys.isOk();
-
-		if (ok && this.idUser) {
-			this.errorSys.devNotice('is_auth', 'Вы авторизованы');
-		} else {
-			ok = false;
-			this.errorSys.error('is_auth', 'Вы не авторизованы');
-			this.errorSys.devNotice('is_auth', 'Вы не авторизованы');
-		}
-
-		return ok;
+		return !!this.idUser;
 	}
+
+    // ==================================================
+    // Геттеры
+    // ==================================================
 
 	/**
 	 * возвращает apikey
-	 *
-	 * @return string|null
 	 */
 	public fGetApikey(): string {
 		return this.apikey;
@@ -272,6 +216,7 @@ export class UserSys {
 
 	/**
 	 * Список ID групп в которых состоит пользователь
+     * @todo вырезать из абстрактного класса UserSys
 	 */
 	public getUserGroupIds(): number[] {
 		return !this.ixUserGroups ? [] : Object.values(this.ixUserGroups);
@@ -283,5 +228,88 @@ export class UserSys {
 	 */
 	public isUserInGroup(groupAlias: string): boolean {
 		return !this.ixUserGroups ? false : !!this.ixUserGroups[groupAlias];
+	}
+
+    /**
+     * Получить глобальные роли пользователя
+     * @todo вырезать из абстрактного класса UserSys
+     */
+     public getIxRole(): Record<RoleT, boolean> {
+        return this.ixRole;
+    }
+
+    /**
+     * Получить роли пользователя в организациях
+     * @todo вырезать из абстрактного класса UserSys
+     */
+    public getIxOrgRole(): Record<string | number, Record<OrgRoleT, boolean>> {
+        return this.ixOrgRole;
+    }
+
+    /**
+     * Получить роуты, доступные по глобальным ролям
+     * @todo вырезать из абстрактного класса UserSys
+     */
+    public getIxRoleRoute(): Record<string, boolean> {
+        return this.ixRoleRoute;
+    }
+
+    /**
+     * Получить роуты, доступные по ролям в организациях
+     * @todo вырезать из абстрактного класса UserSys
+     */
+    public getIxOrgRoleRoute(): Record<string | number, Record<string, boolean>> {
+        return this.ixOrgRoleRoute;
+    }
+
+    // ===================== Новая ролевая модель ================================
+
+    /**
+	 * Проверить, есть ли у пользователя конкретная роль
+	 */
+	public isRole(role: RoleT): boolean {
+        return this.ixRole?.[role];
+	}
+
+	/**
+	 * Проверить, есть ли у пользователя роль в конкретной или любой организаци
+	 */
+	public isRoleInOrganization(role: OrgRoleT, idOrg: number): boolean {
+		return !!this.ixOrgRole?.[idOrg]?.[role];
+	}
+
+	/**
+	 * Проверить, если доступ к роуту по глобальной роли
+	 */
+	public isAccessByRole(): boolean {
+		const route = this.ctx.req.url;
+		return !!this.ixRoleRoute?.[route];
+	}
+
+	/**
+	 * Проверить, если доступ к роуту по орг роли
+	 */
+	public isAccessByOrgRole(idOrg: number): boolean {
+		const route = this.ctx.req.url;
+
+		return this.ixOrgRoleRoute?.[idOrg]?.[route];
+	}
+
+	/**
+	 * Получить IDs организаций, в которых доступен данный роут
+	 */
+	public getAvailableOrganizationId(): number[] {
+		const route = this.ctx.req.url;
+
+		const aidOrganization =  Object.keys(this.ixOrgRoleRoute);
+        const aidAccessOrganization = [];
+		for (let i = 0; i < aidOrganization.length; i++) {
+			const idOrg = Number(aidOrganization[i]);
+			if(this.ixOrgRoleRoute?.[idOrg]?.[route]) {
+				aidAccessOrganization.push(idOrg);
+			}
+		}
+
+		return aidAccessOrganization;
 	}
 }

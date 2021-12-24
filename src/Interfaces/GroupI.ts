@@ -1,4 +1,7 @@
-export enum RolesT {
+/**
+ * Старые phpbb группы
+ */
+export enum GroupT {
 	organizers = 'organizers',
 	administrators = 'administrators',
 	global_moderators = 'global_moderators',
