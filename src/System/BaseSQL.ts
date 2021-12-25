@@ -76,7 +76,7 @@ export default class BaseSQL {
     /**
 	 * Выполняем запрос
 	 */
-	protected async dbExe<T>(query:Knex): Promise<T> {
+	protected async dbExe<T>(query:Knex.QueryBuilder | Knex.Raw): Promise<T> {
         const sQuery = query.toString();
         const sQueryStart = sQuery.substr(0, 50).toLowerCase();
         let out:T = null;
