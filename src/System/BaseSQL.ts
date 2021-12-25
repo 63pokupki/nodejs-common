@@ -73,6 +73,28 @@ export default class BaseSQL {
 		return db;
 	}
 
+    /**
+	 * Выполняем запрос
+	 */
+	protected async dbExe<T>(query:Knex): Promise<T> {
+        const sQuery = query.toString();
+        const sQueryStart = sQuery.substr(0, 50).toLowerCase();
+        let out:T = null;
+
+        try{
+            if (sQueryStart.indexOf('insert') >= 0 || sQueryStart.indexOf('update') >= 0 || sQueryStart.indexOf('delete') >= 0){
+                out = (await this.dbMaster.raw(sQuery))[0]
+            } else {
+                out = (await this.dbSlave.raw(sQuery))[0]
+            }
+        } catch(e){
+            throw this.errorSys.throwDB(e, 'dbExe - Не удалось выполнить запрос');
+        }
+
+        return out;
+		
+	}
+
     // =====================================
     // SET
     // =====================================
