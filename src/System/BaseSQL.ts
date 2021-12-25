@@ -37,8 +37,8 @@ export default class BaseSQL {
     /**
 	 * Получаем инстанс запроса Knex.QueryBuilder учитывая pool соединений
 	 */
-	protected query(tableName: Knex.TableDescriptor | Knex.AliasDict): Knex.QueryBuilder {
-		let q = this.dbOne(tableName);
+	protected query<T>(tableName: Knex.TableDescriptor | Knex.AliasDict): Knex.QueryBuilder {
+		let q = this.dbOne<T>(tableName);
 
         if (this.ctx.sys.bMasterDB) {
 			q.connection(this.dbMasterOne);
@@ -58,14 +58,19 @@ export default class BaseSQL {
 	 * Получаем инстанс запроса Knex.Raw учитывая pool соединений
 	 */
 	protected queryRaw(sql:string, param:Record<string, any>): Knex.Raw {
-        const q = this.dbOne.raw(sql, param || null);
+        const q = this.dbOne.raw(sql, param);
 		if (this.ctx.sys.bMasterDB) {
 			q.connection(this.dbMasterOne);
         } else {
             q.on('start', (builder:any) => {
 
                 const sQueryStart = builder.sql.substr(0, 50).toLowerCase();
-                if (sQueryStart.indexOf('select') >= 0){
+                const iSelectPos = sQueryStart.indexOf('select');
+                const iInsertPos = sQueryStart.indexOf('insert');
+                const iDeletePos = sQueryStart.indexOf('delete');
+                const iUpdatePos = sQueryStart.indexOf('update');
+                const bWrite = (iInsertPos >= 0 || iDeletePos >= 0 || iUpdatePos >= 0);
+                if(iSelectPos >= 0 && !bWrite){
                     q.connection(this.dbSlave);
                 } else {
                     q.connection(this.dbMaster);
