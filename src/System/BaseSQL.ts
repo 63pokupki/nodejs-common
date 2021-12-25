@@ -57,7 +57,7 @@ export default class BaseSQL {
     /**
 	 * Получаем инстанс запроса Knex.Raw учитывая pool соединений
 	 */
-	protected queryRaw(sql:string, param:Record<string, any>): Knex.Raw {
+	protected queryRaw(sql:string, param?:Record<string, any>): Knex.Raw {
         const q = this.dbOne.raw(sql, param);
 		if (this.ctx.sys.bMasterDB) {
 			q.connection(this.dbMasterOne);
