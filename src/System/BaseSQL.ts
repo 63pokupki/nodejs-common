@@ -1,5 +1,5 @@
 import { ModelValidatorSys, ErrorSys } from '@a-a-game-studio/aa-components/lib';
-import { Knex } from 'knex';
+import  knex, { Knex } from 'knex';
 
 // Системные сервисы
 import { RedisSys } from './RedisSys';
@@ -30,8 +30,49 @@ export default class BaseSQL {
 			db = this.dbMasterOne;
 		} else {
 			db = this.dbOne;
-		}
+		};
 		return db;
+	}
+
+    /**
+	 * Получаем инстанс запроса Knex.QueryBuilder учитывая pool соединений
+	 */
+	protected query(tableName: Knex.TableDescriptor | Knex.AliasDict): Knex.QueryBuilder {
+		let q = this.dbOne(tableName);
+
+        if (this.ctx.sys.bMasterDB) {
+			q.connection(this.dbMasterOne);
+        } else {
+            q.on('start', (builder:any) => {
+                if(builder._method === 'select'){
+                    q.connection(this.dbSlave);
+                } else {
+                    q.connection(this.dbMaster);
+                }
+            });
+        }
+		return q;
+	}
+
+    /**
+	 * Получаем инстанс запроса Knex.Raw учитывая pool соединений
+	 */
+	protected queryRaw(sql:string, param:Record<string, any>): Knex.Raw {
+        const q = this.dbOne.raw(sql, param || null);
+		if (this.ctx.sys.bMasterDB) {
+			q.connection(this.dbMasterOne);
+        } else {
+            q.on('start', (builder:any) => {
+
+                const sQueryStart = builder.sql.substr(0, 50).toLowerCase();
+                if (sQueryStart.indexOf('select') >= 0){
+                    q.connection(this.dbSlave);
+                } else {
+                    q.connection(this.dbMaster);
+                }
+            });
+        }
+		return q;
 	}
 
     /**
@@ -73,27 +114,6 @@ export default class BaseSQL {
 		return db;
 	}
 
-    /**
-	 * Выполняем запрос
-	 */
-	protected async dbExe<T>(query:Knex.QueryBuilder | Knex.Raw): Promise<T> {
-        const sQuery = query.toString();
-        const sQueryStart = sQuery.substr(0, 50).toLowerCase();
-        let out:T = null;
-
-        try{
-            if (sQueryStart.indexOf('insert') >= 0 || sQueryStart.indexOf('update') >= 0 || sQueryStart.indexOf('delete') >= 0){
-                out = (await this.dbMaster.raw(sQuery))[0]
-            } else {
-                out = (await this.dbSlave.raw(sQuery))[0]
-            }
-        } catch(e){
-            throw this.errorSys.throwDB(e, 'dbExe - Не удалось выполнить запрос');
-        }
-
-        return out;
-		
-	}
 
     // =====================================
     // SET
