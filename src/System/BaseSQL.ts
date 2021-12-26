@@ -10,6 +10,13 @@ import { LogicSys } from './LogicSys';
 import { P63Context } from './P63Context';
 import { mRandomInteger } from '../Helpers/NumberH';
 
+let iQCounter = 0;
+let iQBSlave = 0;
+let iQBMaster = 0;
+let iQRSlave = 0;
+let iQRMaster = 0;
+let iQIncorrect = 0;
+
 /**
  * SQL Запросы
  */
@@ -37,48 +44,263 @@ export default class BaseSQL {
     /**
 	 * Получаем инстанс запроса Knex.QueryBuilder учитывая pool соединений
 	 */
-	protected query<T>(tableName: Knex.TableDescriptor | Knex.AliasDict): Knex.QueryBuilder {
-		let q = this.dbOne<T>(tableName);
-
+	protected async query<T = any>(vQueryBuilder:Knex.QueryBuilder): Promise<T> {
+        const builder = <any>vQueryBuilder;
+        let out:T = null;
         if (this.ctx.sys.bMasterDB) {
-			q.connection(this.dbMasterOne);
+            iQBMaster++;
+            vQueryBuilder.client = this.dbMasterOne.client;
+			
         } else {
-            q.on('start', (builder:any) => {
-                if(builder._method === 'select'){
-                    q.connection(this.dbSlave);
-                } else {
-                    q.connection(this.dbMaster);
+            if (builder._method === 'select' || builder._method === 'first' || builder._method === 'pluck'){
+                iQBSlave++;
+                vQueryBuilder.client = this.dbSlave.client;
+            } else {
+                iQBMaster++;
+                vQueryBuilder.client = this.dbMaster.client;
+        
+                if (builder._method !== 'insert' && builder._method !== 'update' && builder._method !== 'delete'){
+                    // console.log('builder._method>', builder._method, builder.sql);
+                    iQIncorrect++;
                 }
-            });
+            }
+            
         }
-		return q;
+
+        // Выполнить запрос
+        out = (await vQueryBuilder);
+
+        iQCounter++;
+        
+        if (iQCounter % 100 == 0){
+            console.log('>>>',
+                ' iQCounter',
+                iQCounter,
+                ' iQBSlave>',
+                iQBSlave,
+                ' iQBMaster>',
+                iQBMaster,
+                ' iQRSlave>',
+                iQRSlave,
+                ' iQRMaster>',
+                iQRMaster,
+                'iQIncorrect>',
+                iQIncorrect);
+        }
+
+		return out;
 	}
 
     /**
 	 * Получаем инстанс запроса Knex.Raw учитывая pool соединений
 	 */
-	protected queryRaw(sql:string, param?:Record<string, any>): Knex.Raw {
-        const q = this.dbOne.raw(sql, param);
+	protected async queryRaw<T = any>(sql:string, param?:Record<string, any>): Promise<T> {
+        // const q = this.dbOne.raw(sql, param);
+        let out:T = null;
 		if (this.ctx.sys.bMasterDB) {
-			q.connection(this.dbMasterOne);
+            iQRMaster++;
+			out = <any>(await this.dbMasterOne.raw(sql, param));
         } else {
-            q.on('start', (builder:any) => {
 
-                const sQueryStart = builder.sql.substr(0, 50).toLowerCase();
-                const iSelectPos = sQueryStart.indexOf('select');
-                const iInsertPos = sQueryStart.indexOf('insert');
-                const iDeletePos = sQueryStart.indexOf('delete');
-                const iUpdatePos = sQueryStart.indexOf('update');
-                const bWrite = (iInsertPos >= 0 || iDeletePos >= 0 || iUpdatePos >= 0);
-                if(iSelectPos >= 0 && !bWrite){
-                    q.connection(this.dbSlave);
-                } else {
-                    q.connection(this.dbMaster);
-                }
-            });
+            const sQueryStart = sql.substr(0, 50).toLowerCase();
+            const iSelectPos = sQueryStart.indexOf('select');
+            const iInsertPos = sQueryStart.indexOf('insert');
+            const iDeletePos = sQueryStart.indexOf('delete');
+            const iUpdatePos = sQueryStart.indexOf('update');
+            const bWrite = (iInsertPos >= 0 || iDeletePos >= 0 || iUpdatePos >= 0);
+            if(iSelectPos >= 0 && !bWrite){
+                iQRSlave++;
+                out = <any>(await this.dbSlave.raw(sql, param))
+            } else {
+                iQRMaster++;
+                out = <any>(await this.dbMaster.raw(sql, param))
+            }
+            
         }
-		return q;
+
+        iQCounter++;
+        
+        if (iQCounter % 100 == 0){
+            console.log('>>>',
+                ' iQCounter',
+                iQCounter,
+                ' iQBSlave>',
+                iQBSlave,
+                ' iQBMaster>',
+                iQBMaster,
+                ' iQRSlave>',
+                iQRSlave,
+                ' iQRMaster>',
+                iQRMaster,
+                'iQIncorrect>',
+                iQIncorrect);
+        }
+		return out;
 	}
+
+    
+
+    /**
+	 * Выполняем запрос
+	 */
+	protected async dbExe<T = any>(vQueryBuilder:Knex.QueryBuilder | Knex.Raw): Promise<T> {
+        let out:T = null;
+
+        const builder = <any>vQueryBuilder;
+
+        try{
+
+            if (this.ctx.sys.bMasterDB) {
+                iQRMaster++;
+                builder.client = this.dbMasterOne.client;
+            } else {
+
+                if (builder._method && builder.sql){
+                    // console.log('builder._method>', builder._method, builder.sql);
+                    iQIncorrect++;
+                }
+            
+                if (!builder._method){ // Если метода нет значит raw запрос
+                    const sQueryStart = builder.sql.substr(0, 50).toLowerCase();
+                    const iSelectPos = sQueryStart.indexOf('select');
+                    const iInsertPos = sQueryStart.indexOf('insert');
+                    const iDeletePos = sQueryStart.indexOf('delete');
+                    const iUpdatePos = sQueryStart.indexOf('update');
+                    const bWrite = (iInsertPos >= 0 || iDeletePos >= 0 || iUpdatePos >= 0);
+                    if (iSelectPos >= 0 && !bWrite){
+                        iQRSlave++;
+                        builder.client = this.dbSlave.client;
+                    } else {
+                        iQRMaster++;
+                        builder.client = this.dbMaster.client;
+                    }
+                } else if (builder._method === 'select' || builder._method === 'first' || builder._method === 'pluck'){
+                    
+                    iQBSlave++;
+                    builder.client = this.dbSlave.client;
+                } else {
+                    iQBMaster++;
+                    builder.client = this.dbMaster.client;
+            
+                    if ((builder._method !== 'insert' && builder._method !== 'update' && builder._method !== 'delete')){
+                        // console.log('builder._method>', builder._method, builder.sql);
+                        iQIncorrect++;
+                    }
+            
+                }
+            }
+
+            // Выполнить запрос
+            if (builder._method){ // _method только у билдера
+                out = await builder
+            } else {
+                out = (await builder)[0]
+            }
+
+        } catch(e){
+            throw this.errorSys.throwDB(e, 'dbExe - Не удалось выполнить запрос');
+        }
+
+
+        iQCounter++;
+        
+        if (iQCounter % 100 == 0){
+            console.log('>>>',
+                ' iQCounter',
+                iQCounter,
+                ' iQBSlave>',
+                iQBSlave,
+                ' iQBMaster>',
+                iQBMaster,
+                ' iQRSlave>',
+                iQRSlave,
+                ' iQRMaster>',
+                iQRMaster,
+                'iQIncorrect>',
+                iQIncorrect);
+        }
+
+        return out;
+		
+	}
+
+    // /**
+	//  * Выполняем запрос
+	//  */
+	// protected async dbExe<T>(query:Knex.QueryBuilder | Knex.Raw): Promise<T> {
+    //     let out:T = null;
+
+    //     const builder = <any>query;
+    //     let sQuery = query.toString();
+
+    //     try{
+
+    //         if (this.ctx.sys.bMasterDB) {
+    //             iQRMaster++;
+    //             out = <any>(await this.dbMasterOne.raw(sQuery));
+    //         } else {
+
+    //             if (builder._method && builder.sql){
+    //                 // console.log('builder._method>', builder._method, builder.sql);
+    //                 iQIncorrect++;
+    //             }
+            
+    //             if (!builder._method){ // Если метода нет значит raw запрос
+    //                 const sQueryStart = builder.sql.substr(0, 50).toLowerCase();
+    //                 const iSelectPos = sQueryStart.indexOf('select');
+    //                 const iInsertPos = sQueryStart.indexOf('insert');
+    //                 const iDeletePos = sQueryStart.indexOf('delete');
+    //                 const iUpdatePos = sQueryStart.indexOf('update');
+    //                 const bWrite = (iInsertPos >= 0 || iDeletePos >= 0 || iUpdatePos >= 0);
+    //                 if (iSelectPos >= 0 && !bWrite){
+    //                     iQRSlave++;
+    //                     out = (await this.dbSlave.raw(sQuery))[0]
+    //                 } else {
+    //                     iQRMaster++;
+    //                     out = (await this.dbMaster.raw(sQuery))[0]
+    //                 }
+    //             } else if (builder._method === 'select' || builder._method === 'first' || builder._method === 'pluck'){
+                    
+    //                 iQBSlave++;
+    //                 out = (await this.dbSlave.raw(sQuery))[0]
+    //             } else {
+    //                 iQBMaster++;
+    //                 out = (await this.dbMaster.raw(sQuery))[0]
+                    
+            
+    //                 if ((builder._method !== 'insert' && builder._method !== 'update' && builder._method !== 'delete')){
+    //                     // console.log('builder._method>', builder._method, builder.sql);
+    //                     iQIncorrect++;
+    //                 }
+            
+    //             }
+    //         }
+
+    //     } catch(e){
+    //         throw this.errorSys.throwDB(e, 'dbExe - Не удалось выполнить запрос');
+    //     }
+
+    //     iQCounter++;
+        
+    //     if (iQCounter % 100 == 0){
+    //         console.log('>>>',
+    //             ' iQCounter',
+    //             iQCounter,
+    //             ' iQBSlave>',
+    //             iQBSlave,
+    //             ' iQBMaster>',
+    //             iQBMaster,
+    //             ' iQRSlave>',
+    //             iQRSlave,
+    //             ' iQRMaster>',
+    //             iQRMaster,
+    //             'iQIncorrect>',
+    //             iQIncorrect);
+    //     }
+
+    //     return out;
+		
+	// }
 
     /**
 	 * Получаем базу данных для выполнения запроса - insert|update|delete
