@@ -44,7 +44,7 @@ export default class BaseSQL {
     /**
 	 * Получаем инстанс запроса Knex.QueryBuilder учитывая pool соединений
 	 */
-	protected async query<T = any>(vQueryBuilder:Knex.QueryBuilder): Promise<T> {
+	protected async dbQuery<T = any>(vQueryBuilder:Knex.QueryBuilder): Promise<T> {
         const builder = <any>vQueryBuilder;
         let out:T = null;
         if (this.ctx.sys.bMasterDB) {
@@ -94,7 +94,7 @@ export default class BaseSQL {
     /**
 	 * Получаем инстанс запроса Knex.Raw учитывая pool соединений
 	 */
-	protected async queryRaw<T = any>(sql:string, param?:Record<string, any>): Promise<T> {
+	protected async dbQueryRaw<T = any>(sql:string, param?:Record<string, any>): Promise<T> {
         // const q = this.dbOne.raw(sql, param);
         let out:T = null;
 		if (this.ctx.sys.bMasterDB) {
