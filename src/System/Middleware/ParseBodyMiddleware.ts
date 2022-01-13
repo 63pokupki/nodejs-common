@@ -1,19 +1,18 @@
-import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
-import { P63Context } from '../P63Context';
+import {P63Context} from '../P63Context';
 import colors from 'colors';
 
 
 /* LEGO ошибок */
 export default function ParseBodyMiddleware(ctx: P63Context): void {
-	if (ctx.req.method === 'POST' ){
-        const body:Buffer[] = [];
+    if (ctx.req.method === 'POST') {
+        const body: Buffer[] = [];
 
         ctx.req.on('error', (err) => {
             console.error(colors.red('Ошибка парсинга тела запроса - '), ctx.req.url, err);
             ctx.error(400);
         });
 
-        ctx.req.on('data', (chunk:Buffer) => {
+        ctx.req.on('data', (chunk: Buffer) => {
             body.push(chunk);
         });
 
@@ -22,13 +21,13 @@ export default function ParseBodyMiddleware(ctx: P63Context): void {
             let sBody = Buffer.concat(body).toString();
 
             try {
-                if (sBody && sBody[0] === '{'){
+                if (sBody && sBody[0] === '{') {
                     ctx.body = JSON.parse(sBody);
-                    if (ctx.body.data){ // Если встречаем [data] парсим ее как json
+                    if (ctx.body.data) { // Если встречаем [data] парсим ее как json
                         ctx.body.data = JSON.parse(String(ctx.body.data));
                     }
                 } else {
-                    sBody = decodeURI(sBody);
+                    sBody = decodeURI(encodeURI(sBody));
                     const vSearchParams = new URLSearchParams(sBody);
 
                     // Итерируем параметры form параметры поиска.
@@ -36,7 +35,7 @@ export default function ParseBodyMiddleware(ctx: P63Context): void {
                         const kBodyParam = p[0];
                         const vBodyParam = p[1];
 
-                        if (kBodyParam == 'data'){ // Если встречаем [data] парсим ее как json
+                        if (kBodyParam == 'data') { // Если встречаем [data] парсим ее как json
                             ctx.body[kBodyParam] = JSON.parse(vBodyParam);
                         } else {
                             ctx.body[kBodyParam] = vBodyParam;
@@ -46,7 +45,7 @@ export default function ParseBodyMiddleware(ctx: P63Context): void {
                 }
 
                 ctx.next();
-            } catch (e){
+            } catch (e) {
                 console.error(colors.red('Ошибка парсинга тела запроса - '), ctx.req.url);
                 ctx.error(400);
             }
