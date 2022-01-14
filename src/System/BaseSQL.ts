@@ -148,58 +148,54 @@ export default class BaseSQL {
 
         const builder = <any>vQueryBuilder;
 
-        try{
 
-            if (this.ctx.sys.bMasterDB) {
-                iQRMaster++;
-                builder.client = this.dbMasterOne.client;
+        if (this.ctx.sys.bMasterDB) {
+            iQRMaster++;
+            builder.client = this.dbMasterOne.client;
+        } else {
+
+            if (builder._method && builder.sql){
+                // console.log('builder._method>', builder._method, builder.sql);
+                iQIncorrect++;
+            }
+        
+            if (!builder._method){ // Если метода нет значит raw запрос
+                const sQueryStart = builder.sql.substr(0, 50).toLowerCase();
+                const iSelectPos = sQueryStart.indexOf('select');
+                const iInsertPos = sQueryStart.indexOf('insert');
+                const iDeletePos = sQueryStart.indexOf('delete');
+                const iUpdatePos = sQueryStart.indexOf('update');
+                const bWrite = (iInsertPos >= 0 || iDeletePos >= 0 || iUpdatePos >= 0);
+                if (iSelectPos >= 0 && !bWrite){
+                    iQRSlave++;
+                    builder.client = this.dbSlave.client;
+                } else {
+                    iQRMaster++;
+                    builder.client = this.dbMaster.client;
+                }
+            } else if (builder._method === 'select' || builder._method === 'first' || builder._method === 'pluck'){
+                
+                iQBSlave++;
+                builder.client = this.dbSlave.client;
             } else {
-
-                if (builder._method && builder.sql){
+                iQBMaster++;
+                builder.client = this.dbMaster.client;
+        
+                if ((builder._method !== 'insert' && builder._method !== 'update' && builder._method !== 'delete')){
                     // console.log('builder._method>', builder._method, builder.sql);
                     iQIncorrect++;
                 }
-            
-                if (!builder._method){ // Если метода нет значит raw запрос
-                    const sQueryStart = builder.sql.substr(0, 50).toLowerCase();
-                    const iSelectPos = sQueryStart.indexOf('select');
-                    const iInsertPos = sQueryStart.indexOf('insert');
-                    const iDeletePos = sQueryStart.indexOf('delete');
-                    const iUpdatePos = sQueryStart.indexOf('update');
-                    const bWrite = (iInsertPos >= 0 || iDeletePos >= 0 || iUpdatePos >= 0);
-                    if (iSelectPos >= 0 && !bWrite){
-                        iQRSlave++;
-                        builder.client = this.dbSlave.client;
-                    } else {
-                        iQRMaster++;
-                        builder.client = this.dbMaster.client;
-                    }
-                } else if (builder._method === 'select' || builder._method === 'first' || builder._method === 'pluck'){
-                    
-                    iQBSlave++;
-                    builder.client = this.dbSlave.client;
-                } else {
-                    iQBMaster++;
-                    builder.client = this.dbMaster.client;
-            
-                    if ((builder._method !== 'insert' && builder._method !== 'update' && builder._method !== 'delete')){
-                        // console.log('builder._method>', builder._method, builder.sql);
-                        iQIncorrect++;
-                    }
-            
-                }
+        
             }
-
-            // Выполнить запрос
-            if (builder._method){ // _method только у билдера
-                out = await builder
-            } else {
-                out = (await builder)[0]
-            }
-
-        } catch(e){
-            throw this.errorSys.throwDB(e, 'dbExe - Не удалось выполнить запрос');
         }
+
+        // Выполнить запрос
+        if (builder._method){ // _method только у билдера
+            out = await builder
+        } else {
+            out = (await builder)[0]
+        }
+
 
 
         iQCounter++;
