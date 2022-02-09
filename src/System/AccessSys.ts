@@ -121,7 +121,7 @@ export class AccessSys {
 	public accessByOrgRole(idOrg: number): void {
 		if (this.userSys.isAccessByOrgRole(idOrg)) {
 			this.errorSys.devNotice('access_by_orgrole', 'Доступ к роуту по роли в организации');
-		} {
+		} else {
             throw this.errorSys.throwAccess('У вас нет доступа к данному роуту по роли в организации');
 		}
 	}
