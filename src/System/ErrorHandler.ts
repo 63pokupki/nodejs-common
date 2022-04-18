@@ -100,7 +100,7 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
 		message: ctx.msg || null,
 		stack: JSON.stringify(aTraceErrorSend) || null,
 		request_body: JSON.stringify(ctx.body) || null,
-		fields: JSON.stringify(arrError),
+        fields: `${JSON.stringify(ctx.headers)}\n${JSON.stringify(arrError)}`,
 	};
     
 	try { // отправка ошибки в апи
