@@ -198,11 +198,9 @@ export class UserSys {
 	 * Получить рейтинг пользователя
 	 */
 	public getUserRating(): number {
-		let iUserRating = 0;
+		let iUserRating = -1;
 		if (this.vUserInfo) {
 			iUserRating = this.vUserInfo.consumer_rating;
-		} else {
-			iUserRating = 0;
 		}
 		return iUserRating;
 	}
