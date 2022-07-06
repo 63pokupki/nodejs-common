@@ -1,8 +1,5 @@
 // Библиотеки
 import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
-import * as _ from 'lodash';
-
-// Системные сервисы
 
 // SQL Запросы
 import { P63Context } from './P63Context';
@@ -108,7 +105,7 @@ export class UserSys {
 				this.ixUserGroups[vGroup.alias] = vGroup.group_id;
             }
 		}
-        
+
 		if (ok && ifAuth) {
 			this.ixRole = param.ixRole;
 			this.ixOrgRole = param.ixOrgRole;
@@ -202,6 +199,15 @@ export class UserSys {
 		if (this.vUserInfo) {
 			iUserRating = this.vUserInfo.consumer_rating;
 		}
+
+		const isModerator = this.isModerator();
+		const isAdmin = this.isAdmin();
+		const isSecretClub = this.isUserInGroup(GroupT.secret_club);
+
+		if (isModerator || isAdmin || isSecretClub) {
+			iUserRating = 3;
+		}
+
 		return iUserRating;
 	}
 
