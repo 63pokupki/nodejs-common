@@ -2,6 +2,7 @@
 import { ErrorSys } from '@a-a-game-studio/aa-components';
 
 import { fErrorHandler } from './ErrorHandler';
+import { MattermostSys } from './MattermostSys';
 import { P63Context } from './P63Context';
 
 /**
@@ -10,7 +11,20 @@ import { P63Context } from './P63Context';
  */
 export const faSendRouter = (faCallback: (ctx: P63Context) => Promise<void> ) => async (ctx: P63Context): Promise<void> => {
 	try {
+		const vTimeOut =  setTimeout(() => {
+
+			if (ctx.common.env === 'prod') {
+				const gMattermostSys = new MattermostSys(ctx);
+				gMattermostSys.sendMonitoringMsg('Мониторинг скорости запросов', `${ctx.common.nameApp} - ${ctx.url.pathname}`);
+
+				console.log('WARNING - ОЧЕНЬ МЕДЛЕННЫЙ МЕТОД', 'url: ', ctx.url.pathname, 'body: ', ctx.body)
+			}
+
+        }, 5000) // 5 секунд
+
 		await faCallback(ctx);
+
+		clearTimeout(vTimeOut)
 	} catch (e) {
         ctx.sys.errorSys.errorEx(e, ctx.req.url, ctx.msg);
 		fErrorHandler(ctx);
@@ -28,7 +42,6 @@ export class ResponseSys {
 	private ifDevMode: boolean;
 
 	private errorSys: ErrorSys;
-	// private mattermostSys:MattermostSys;
 
 	constructor(ctx: P63Context) {
 		this.ctx = ctx;
@@ -41,8 +54,6 @@ export class ResponseSys {
 
 		this.errorSys = ctx.sys.errorSys;
 
-		/* this.mattermostSys = new MattermostSys(req);
- */
 	}
 
 	/**
@@ -61,11 +72,6 @@ export class ResponseSys {
 			notice: this.errorSys.getNotice(),
 			msg: sMsg,
 		};
-
-		/* 	// Отправка ошибок в матермост
-		if( !this.errorSys.isOk() ){
-			this.mattermostSys.sendMsg();
-		} */
 
 		if (this.ifDevMode) { // Выводит информацию для разработчиков и тестировщиков
 			out.dev_warning = this.errorSys.getDevWarning();
