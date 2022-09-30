@@ -12,9 +12,14 @@ import { P63Context } from './P63Context';
 export const faSendRouter = (faCallback: (ctx: P63Context) => Promise<void> ) => async (ctx: P63Context): Promise<void> => {
 	try {
 		const vTimeOut =  setTimeout(() => {
-            const gResponseSys = new ResponseSys(ctx); 
-			gResponseSys.sendMessage()
-            console.log('WARNING - ОЧЕНЬ МЕДЛЕННЫЙ МЕТОД', 'url: ', ctx.url.pathname, 'body: ', ctx.body)
+
+			if (ctx.common.env === 'prod') {
+				const gMattermostSys = new MattermostSys(ctx);
+				gMattermostSys.sendMonitoringMsg('Мониторинг скорости запросов', `${ctx.common.nameApp} - ${ctx.url.pathname}`);
+
+				console.log('WARNING - ОЧЕНЬ МЕДЛЕННЫЙ МЕТОД', 'url: ', ctx.url.pathname, 'body: ', ctx.body)
+			}
+
         }, 5000) // 5 секунд
 
 		await faCallback(ctx);
@@ -38,8 +43,6 @@ export class ResponseSys {
 
 	private errorSys: ErrorSys;
 
-	private mattermostSys:MattermostSys;
-
 	constructor(ctx: P63Context) {
 		this.ctx = ctx;
 		this.env = ctx.common.env;
@@ -50,8 +53,6 @@ export class ResponseSys {
 		}
 
 		this.errorSys = ctx.sys.errorSys;
-
-		this.mattermostSys = new MattermostSys(ctx);
 
 	}
 
@@ -86,16 +87,5 @@ export class ResponseSys {
 		}
 
 		return out;
-	}
-
-	// Отправка ошибок в матермост
-	public sendMessage() {
-		if (this.env === 'prod' && this.ctx.headers.host === '63pokupki.ru') {
-			try {
-				this.mattermostSys.sendMonitoringMsg('Мониторинг скорости запросов', this.ctx.url.pathname);
-			} catch(e){
-				 console.log('WARNING : не удалось отправил в канал о медленном запросе')
-			}
-		}
 	}
 }
