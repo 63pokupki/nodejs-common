@@ -15,7 +15,8 @@ export const faSendRouter = (faCallback: (ctx: P63Context) => Promise<void> ) =>
 
 			if (ctx.common.env === 'prod') {
 				const gMattermostSys = new MattermostSys(ctx);
-				gMattermostSys.sendMonitoringMsg('Мониторинг скорости запросов', `${ctx.common.nameApp} - ${ctx.url.pathname}`);
+				gMattermostSys.sendMonitoringMsg('Мониторинг скорости запросов', `${ctx.common.nameApp} - ${ctx.url.pathname} 
+				body: - ${JSON.stringify(ctx.body)}`);
 
 				console.log('WARNING - ОЧЕНЬ МЕДЛЕННЫЙ МЕТОД', 'url: ', ctx.url.pathname, 'body: ', ctx.body)
 			}
