@@ -69,47 +69,47 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
         );
     }
 
-    const arrError = ctx.sys.errorSys.getErrors();
+    ixErrors["host"] = ctx.headers["host"];
+    ixErrors["x-forwarded-for"] = <string>ctx.headers["x-forwarded-for"];
+    ixErrors["x-real-ip"] = <string>ctx.headers["x-real-ip"];
+    ixErrors["user-agent"] = ctx.headers["user-agent"];
 
-    arrError["host"] = ctx.headers["host"];
-    arrError["x-forwarded-for"] = <string>ctx.headers["x-forwarded-for"];
-    arrError["x-real-ip"] = <string>ctx.headers["x-real-ip"];
-    arrError["user-agent"] = ctx.headers["user-agent"];
+    if (!ixErrors['stop_execute_no_error']) {
+        const aTraceError = ctx.sys.errorSys.getTraceList();
+        const aTraceErrorSend: {
+            key: string;
+            msg: string;
+            error: string;
+            trace: string;
+        }[] = []
+        for (let i = 0; i < aTraceError.length; i++) {
+            const vTraceError = aTraceError[i];
+            aTraceErrorSend.push({
+                key: vTraceError.key,
+                msg: vTraceError.msg,
+                error: vTraceError?.e?.message,
+                trace: vTraceError?.e?.stack
+            })
+        }
 
-    const aTraceError = ctx.sys.errorSys.getTraceList();
-    const aTraceErrorSend: {
-        key: string;
-        msg: string;
-        error: string;
-        trace: string;
-    }[] = []
-    for (let i = 0; i < aTraceError.length; i++) {
-        const vTraceError = aTraceError[i];
-        aTraceErrorSend.push({
-            key: vTraceError.key,
-            msg: vTraceError.msg,
-            error: vTraceError?.e?.message,
-            trace: vTraceError?.e?.stack
-        })
-    }
+        const vErrorForAPI = { // собираем ошибку
+            api_key: ctx.sys.apikey || null,
+            type: 'backend',
+            category: tCategoryError,
+            env: ifDevMode ? 'dev' : 'prod',
+            user_id: ctx.sys.userSys.idUser || null,
+            url: ctx.req.url || null,
+            message: ctx.msg || null,
+            stack: JSON.stringify(aTraceErrorSend) || null,
+            request_body: JSON.stringify(ctx.body) || null,
+            fields: JSON.stringify(ixErrors),
+        };
 
-    const vErrorForAPI = { // собираем ошибку
-        api_key: ctx.sys.apikey || null,
-        type: 'backend',
-        category: tCategoryError,
-        env: ifDevMode ? 'dev' : 'prod',
-        user_id: ctx.sys.userSys.idUser || null,
-        url: ctx.req.url || null,
-        message: ctx.msg || null,
-        stack: JSON.stringify(aTraceErrorSend) || null,
-        request_body: JSON.stringify(ctx.body) || null,
-        fields: JSON.stringify(arrError),
-    };
-
-    try { // отправка ошибки в апи
-        await faApiRequest<any>(ctx, ctx.common.hook_url_errors_api, vErrorForAPI);
-    } catch (e) {
-        console.warn('Не удалось отправить ошибку на api', ctx.common.hook_url_errors_api);
+        try { // отправка ошибки в апи
+            await faApiRequest<any>(ctx, ctx.common.hook_url_errors_api, vErrorForAPI);
+        } catch (e) {
+            console.warn('Не удалось отправить ошибку на api', ctx.common.hook_url_errors_api);
+        }
     }
 
     ctx.send(

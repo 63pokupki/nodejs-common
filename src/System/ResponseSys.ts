@@ -25,9 +25,13 @@ export const faSendRouter = (faCallback: (ctx: P63Context) => Promise<void> ) =>
 
 		await faCallback(ctx);
 
-		clearTimeout(vTimeOut)
+		clearTimeout(vTimeOut);
 	} catch (e) {
-        ctx.sys.errorSys.errorEx(e, ctx.req.url, ctx.msg);
+		if (ctx.sys.errorSys.isOk()) {
+			ctx.sys.errorSys.error('stop_execute_no_error', e.message);
+		} else {
+			ctx.sys.errorSys.errorEx(e, ctx.req.url, ctx.msg);
+		}
 		fErrorHandler(ctx);
 	}
 };
