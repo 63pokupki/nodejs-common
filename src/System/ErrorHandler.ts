@@ -74,7 +74,6 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
     ixErrors["x-real-ip"] = <string>ctx.headers["x-real-ip"];
     ixErrors["user-agent"] = ctx.headers["user-agent"];
 
-    console.log(ixErrors['stop_execute_no_error']);
     if (!ixErrors['stop_execute_no_error']) {
         const aTraceError = ctx.sys.errorSys.getTraceList();
         const aTraceErrorSend: {
