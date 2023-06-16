@@ -106,4 +106,13 @@ export class LogicSys {
 
 		return out;
 	}
+
+	/**
+	 * Блок для генерации ошибки без индексирования в API
+	 * @param error
+	 */
+	fThrowNoIndex(error: Error): Error {
+		this.ctx.sys.errorSys.error('stop_execute_no_error', error.message);
+		return error;
+	}
 }
