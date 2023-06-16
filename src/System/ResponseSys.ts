@@ -23,7 +23,7 @@ const iInterval = setInterval(() =>{
 	for(let i = 0; i < aidKeys.length; i++) {
 		const idKeys = Number(aidKeys[i]);
 		const vCurrentSend = ixSendRouter[idKeys];
-		if (vCurrentSend && new Date().getTime() - vCurrentSend.time > 5000) {
+		if (vCurrentSend && new Date().getTime() - vCurrentSend.time > 60000) {
 			delete ixSendRouter[idKeys];
 		}
 	}
@@ -34,6 +34,7 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
 	if(ixSendRouter[idx] && new Date().getTime() - ixSendRouter[idx].time > 5000 && ctx.common.env === 'prod'){
 		const gMattermostSys = new MattermostSys(ctx);
 		gMattermostSys.sendMonitoringMsg('Мониторинг скорости запросов', `${ctx.common.nameApp} - ${ctx.url.pathname} 
+		time: - начало запроса ${new Date(ixSendRouter[idx].time).toString()} - окончание запроса ${new Date().toString()}
 		body: - ${JSON.stringify(ctx.body)}`);
 
 		console.log('WARNING - ОЧЕНЬ МЕДЛЕННЫЙ МЕТОД', 'url: ', ctx.url.pathname, 'body: ', ctx.body)
@@ -46,8 +47,8 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
  */
 export const faSendRouter = (faCallback: (ctx: P63Context) => Promise<void> ) => async (ctx: P63Context): Promise<void> => {
 	i++;
-
-    ixSendRouter[i] = {
+    const currentIdx = i
+    ixSendRouter[currentIdx] = {
         nameApp:ctx.common.nameApp,
         pathname:ctx.url.pathname,
         body:JSON.stringify(ctx.body),
@@ -58,14 +59,14 @@ export const faSendRouter = (faCallback: (ctx: P63Context) => Promise<void> ) =>
 
 		await faCallback(ctx);
 
-		fSendMonitoringMsg(i, ctx);
+		fSendMonitoringMsg(currentIdx, ctx);
 
-        delete ixSendRouter[i];
+        delete ixSendRouter[currentIdx];
 
 	} catch (e) {
-		fSendMonitoringMsg(i, ctx);
+		fSendMonitoringMsg(currentIdx, ctx);
 
-        delete ixSendRouter[i];
+        delete ixSendRouter[currentIdx];
 
         ctx.sys.errorSys.errorEx(e, ctx.req.url, ctx.msg);
 		fErrorHandler(ctx);
