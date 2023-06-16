@@ -24,6 +24,7 @@ const iInterval = setInterval(() =>{
 		const idKeys = Number(aidKeys[i]);
 		const vCurrentSend = ixSendRouter[idKeys];
 		if (vCurrentSend && new Date().getTime() - vCurrentSend.time > 60000) {
+			console.log('WARNING - У НАС ЕСТЬ ЗАВИСШИЙ ЗАПРОС', 'url: ', ixSendRouter[idKeys].pathname, 'body: ', ixSendRouter[idKeys].body)
 			delete ixSendRouter[idKeys];
 		}
 	}
@@ -67,8 +68,11 @@ export const faSendRouter = (faCallback: (ctx: P63Context) => Promise<void> ) =>
 		fSendMonitoringMsg(currentIdx, ctx);
 
         delete ixSendRouter[currentIdx];
-
-        ctx.sys.errorSys.errorEx(e, ctx.req.url, ctx.msg);
+		if (ctx.sys.errorSys.isOk()) {
+			ctx.sys.errorSys.error('stop_execute_no_error', e.message);
+		} else {
+			ctx.sys.errorSys.errorEx(e, ctx.req.url, ctx.msg);
+		}
 		fErrorHandler(ctx);
 	}
 };
