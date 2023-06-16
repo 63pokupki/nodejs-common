@@ -5,28 +5,68 @@ import { fErrorHandler } from './ErrorHandler';
 import { MattermostSys } from './MattermostSys';
 import { P63Context } from './P63Context';
 
+let i = 0;
+
+/** Индексированный список полезных нагрузок для функций рендера страниц */
+const ixSendRouter:Record<number, {
+    nameApp:string;
+    pathname:string;
+    body:string;
+    time:number;
+}> = {};
+
+/** Интервал для очистки индексированного списка если остались не удаленные полезные нагрузки по истечения 5 секунд
+ * Интервал вызывается раз в час
+ */
+const iInterval = setInterval(() =>{
+    const aidKeys = Object.keys(ixSendRouter);
+	for(let i = 0; i < aidKeys.length; i++) {
+		const idKeys = Number(aidKeys[i]);
+		const vCurrentSend = ixSendRouter[idKeys];
+		if (vCurrentSend && new Date().getTime() - vCurrentSend.time > 5000) {
+			delete ixSendRouter[idKeys];
+		}
+	}
+}, 3600000);
+
+/** Функция отправки сообщения в маттермост */
+const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
+	if(ixSendRouter[idx] && new Date().getTime() - ixSendRouter[idx].time > 5000 && ctx.common.env === 'prod'){
+		const gMattermostSys = new MattermostSys(ctx);
+		gMattermostSys.sendMonitoringMsg('Мониторинг скорости запросов', `${ctx.common.nameApp} - ${ctx.url.pathname} 
+		body: - ${JSON.stringify(ctx.body)}`);
+
+		console.log('WARNING - ОЧЕНЬ МЕДЛЕННЫЙ МЕТОД', 'url: ', ctx.url.pathname, 'body: ', ctx.body)
+	}
+}
+
 /**
  * Функция рендера страницы
  * @param faCallback - функция контролера
  */
 export const faSendRouter = (faCallback: (ctx: P63Context) => Promise<void> ) => async (ctx: P63Context): Promise<void> => {
+	i++;
+
+    ixSendRouter[i] = {
+        nameApp:ctx.common.nameApp,
+        pathname:ctx.url.pathname,
+        body:JSON.stringify(ctx.body),
+        time:new Date().getTime()
+    }
+
 	try {
-		const vTimeOut =  setTimeout(() => {
-
-			if (ctx.common.env === 'prod') {
-				const gMattermostSys = new MattermostSys(ctx);
-				gMattermostSys.sendMonitoringMsg('Мониторинг скорости запросов', `${ctx.common.nameApp} - ${ctx.url.pathname} 
-				body: - ${JSON.stringify(ctx.body)}`);
-
-				console.log('WARNING - ОЧЕНЬ МЕДЛЕННЫЙ МЕТОД', 'url: ', ctx.url.pathname, 'body: ', ctx.body)
-			}
-
-        }, 5000) // 5 секунд
 
 		await faCallback(ctx);
 
-		clearTimeout(vTimeOut)
+		fSendMonitoringMsg(i, ctx);
+
+        delete ixSendRouter[i];
+
 	} catch (e) {
+		fSendMonitoringMsg(i, ctx);
+
+        delete ixSendRouter[i];
+
         ctx.sys.errorSys.errorEx(e, ctx.req.url, ctx.msg);
 		fErrorHandler(ctx);
 	}
