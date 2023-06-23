@@ -35,7 +35,8 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
 	if(ixSendRouter[idx] && new Date().getTime() - ixSendRouter[idx].time > 5000 && ctx.common.env === 'prod'){
 		const gMattermostSys = new MattermostSys(ctx);
 		gMattermostSys.sendMonitoringMsg('Мониторинг скорости запросов', `${ctx.common.nameApp} - ${ctx.url.pathname} 
-		time: - начало запроса ${new Date(ixSendRouter[idx].time).toString()} - окончание запроса ${new Date().toString()}
+		time: - длительность выполнения ${(new Date().valueOf()-new Date(ixSendRouter[idx].time).valueOf())/1000} сек.
+		Дата запроса ${new Date(ixSendRouter[idx].time).toString()}
 		body: - ${JSON.stringify(ctx.body)}`);
 
 		console.log('WARNING - ОЧЕНЬ МЕДЛЕННЫЙ МЕТОД', 'url: ', ctx.url.pathname, 'body: ', ctx.body)
