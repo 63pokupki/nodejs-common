@@ -2,11 +2,19 @@ import redis from 'ioredis';
 import { knex, Knex } from 'knex';
 import _ from 'lodash';
 import { v4 as uuid4 } from 'uuid';
+import ip from 'ip';
 
 interface ConnectI{
-	// Конфигруация редиса
-	urlDbMaster: string;
-	urlDbScan: string;
+	urlDbMaster?: string;
+	urlDbScan?: string;
+
+	connect?: {
+		[key : string]: {
+			// Конфигруация редиса
+			urlDbMaster: string;
+			urlDbScan: string;
+		}
+	},
 
 	// Если сканирование ключей настроено через sphinx
 	sphinxDb?: Knex.Config;
@@ -15,20 +23,75 @@ interface ConnectI{
 
 /** Обертка над редисом которая понимает async/await */
 export class RedisSys {
+
+	public ixRedisDb: {
+		[key: string]: {
+			redisMaster: redis.Redis,
+			redisScan: redis.Redis
+		}
+	};
+
+	public aRedisDb: {
+		redisMaster: redis.Redis,
+		redisScan: redis.Redis
+	}[];
+
+	public sphinxDb?: Knex;
+
+	public sphinxIndex?: string;
+
+	public ipSrv: string;
+
+	public aipRedis: string[];
+
 	public redisMaster: redis.Redis;
 
 	public redisScan: redis.Redis;
 
-	public sphinxDb: Knex;
-
-	public sphinxIndex: string;
-
 	constructor(param: ConnectI) {
-		// Базы данных для чтения
-		this.redisMaster = new redis(param.urlDbMaster);
-		this.redisScan = new redis(param.urlDbScan);
 
-		// Насрройки sphinx
+		this.ipSrv = ip.address();
+		this.aRedisDb = [];
+
+		if (param.connect) {
+			this.aipRedis = Object.keys(param.connect);
+			for (let i = 0; i < this.aipRedis.length; i++) {
+				const sConnectKey = this.aipRedis[i];
+				const vConnect = param.connect[sConnectKey];
+	
+				// Базы данных для чтения
+				// this.ixRedisDb[sConnectKey] = {
+				// 	redisMaster: new redis(vConnect.urlDbMaster),
+				// 	redisScan: new redis(vConnect.urlDbScan)
+				// }
+
+				this.aRedisDb.push({
+					redisMaster: new redis(vConnect.urlDbMaster),
+					redisScan: new redis(vConnect.urlDbScan)
+				})
+
+				if (this.aipRedis[i] === this.ipSrv) {
+					this.redisMaster = new redis(vConnect.urlDbMaster);
+					this.redisScan = new redis(vConnect.urlDbScan)
+				}
+
+			}
+		} else if (param.urlDbMaster && param.urlDbScan) {
+				this.redisMaster = new redis(param.urlDbMaster),
+				this.redisScan = new redis(param.urlDbScan)
+
+				this.aRedisDb.push({
+					redisMaster: this.redisMaster,
+					redisScan: this.redisScan
+				})
+		} else {
+			console.log('Неверно указаны параметры для кеша:');
+			console.log(`connect >> ${param.connect}`);
+			console.log(`urlDbMaster >> ${param.urlDbMaster}`);
+			console.log(`urlDbScan >> ${param.urlDbScan}`)
+		}
+
+		// Настройки sphinx
 		if (param.sphinxDb && param.sphinxIndex) {
 			this.sphinxDb = knex(param.sphinxDb);
 			this.sphinxIndex = param.sphinxIndex;
@@ -44,6 +107,7 @@ export class RedisSys {
      * @param key
      */
 	public async get(key: string): Promise<string> {
+
 		// Пробуем получить ключ из кеша
 		let kCaсheKey = await this.redisScan.get(key);
 
@@ -52,7 +116,15 @@ export class RedisSys {
 			kCaсheKey = await this.getFromSphinx(key);
 
 			if (kCaсheKey) { // Если ключ в sphinx все таки есть записываем его в редис scan
-				await this.redisScan.set(key, kCaсheKey, 'EX', 30 * 24 * 3600);
+				const aPromiseSet = [];
+				
+				for (let i = 0; i < this.aRedisDb.length; i++) {
+					aPromiseSet.push(
+						this.aRedisDb[i].redisScan.set(key, kCaсheKey, 'EX', 30 * 24 * 3600)
+					)
+				}
+
+				await Promise.all(aPromiseSet);
 			}
 		}
 		// console.log('get-sphinx',kCaсheKey);
@@ -70,6 +142,7 @@ export class RedisSys {
      * @param sKeyPattern
      */
 	public async keys(sKeyPattern: string): Promise<string[]> {
+
 		let aKeys: string[] = [];
 		if (this.sphinxDb) {
 			aKeys = await this.scanFromSphinx(sKeyPattern);
@@ -109,6 +182,7 @@ export class RedisSys {
      * @param time
      */
 	public async set(key: string, val: string|number, time = 3600): Promise<string> {
+
 		let kCaсheKey = await this.redisScan.get(key);
 
 		// Записываем ключ если его нет при настройках sphinx
@@ -116,7 +190,13 @@ export class RedisSys {
 			kCaсheKey = await this.setInSphinx(key);
 
 			if (kCaсheKey) { // Записываем только если смогли сделать ключ
-				await this.redisScan.set(key, kCaсheKey);
+				const aPromiseSet = [];
+
+				for (let i = 0; i < this.aRedisDb.length; i++) {
+					aPromiseSet.push(this.aRedisDb[i].redisScan.set(key, kCaсheKey));
+				}
+
+				await Promise.all(aPromiseSet);
 			}
 		}
 
@@ -124,11 +204,23 @@ export class RedisSys {
 		if (!kCaсheKey && !this.sphinxDb) {
 			kCaсheKey = uuid4();
 			// Кешируем на 1 день
-			await this.redisScan.set(key, kCaсheKey, 'EX', 30 * 24 * 3600);
+			const aPromiseSet = [];
+
+			for (let i = 0; i < this.aRedisDb.length; i++) {
+				aPromiseSet.push(this.aRedisDb[i].redisScan.set(key, kCaсheKey, 'EX', 30 * 24 * 3600));
+			}
+
+			await Promise.all(aPromiseSet);
 		}
 
 		if (kCaсheKey) {
-			await this.redisMaster.set(kCaсheKey, String(val), 'EX', time);
+			const aPromiseSet = [];
+
+			for (let i = 0; i < this.aRedisDb.length; i++) {
+				aPromiseSet.push(this.aRedisDb[i].redisMaster.set(kCaсheKey, String(val), 'EX', time))
+			}
+			
+			await Promise.all(aPromiseSet);
 		}
 
 		return kCaсheKey;
@@ -155,11 +247,17 @@ export class RedisSys {
      */
 	public async del(keys: any[]): Promise<any> {
 		if (keys.length > 0) {
+			const aPromiseDel = [];
 			const aaKeys = _.chunk(keys, 1000);
 			for (let i = 0; i < aaKeys.length; i++) {
 				const aKeys = aaKeys[i];
-				await this.redisMaster.del(aKeys);
+
+				for (let j = 0; j < this.aRedisDb.length; j++) {
+					aPromiseDel.push(this.aRedisDb[j].redisMaster.del(aKeys));
+				}
 			}
+
+			await Promise.all(aPromiseDel);
 		}
 	}
 
@@ -324,7 +422,10 @@ export class RedisSys {
 
 	/** Ждет выполнения запросов и закрывает соединение */
 	public quit() {
-		this.redisMaster.quit();
-		this.redisScan.quit();
+
+		for (let i = 0; i < this.aRedisDb.length; i++) {
+			this.aRedisDb[i].redisMaster.quit();
+			this.aRedisDb[i].redisScan.quit();
+		}
 	}
 }
