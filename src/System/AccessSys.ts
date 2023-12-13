@@ -156,18 +156,16 @@ export class AccessSys {
 		}
 	}
 
-    /**
+     /**
      * Проверка доступа к роуту по правам
      */
-    public accessByRouteGroup(ixAccessType: Record<string, Record<string, boolean>>): void {
-        const sRoute = this.ctx.req.url;
+    public accessByRouteGroup(...avGroup: {sRouteGroup: string, ixRoute: Record<string, boolean>}[]): void {
         const ixRoleRoute = this.userSys.getIxRoleRoute();
+        const sRoute = this.ctx.req.url;
  
         let bOk = false;
-        const asAccessType = Object.keys(ixAccessType);
-        for (let i = 0; i < asAccessType.length; i++) {
-            const sAccessType = asAccessType[i];
-            if (ixRoleRoute[sAccessType] && ixAccessType[sAccessType][sRoute]) {
+        for (const vGroup of avGroup) {
+            if (ixRoleRoute[vGroup.sRouteGroup] && vGroup.ixRoute[sRoute]) {
                 bOk = true;
                 break;
             }
