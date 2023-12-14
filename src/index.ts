@@ -55,6 +55,7 @@ import { AvgCacheSys } from './System/AvgCacheSys';
 import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware';
 import { JwtDecodeI, mJwtDecode, mJwtEncode } from './Helpers/JwtH';
 import { mDecrypt, mEncrypt } from './Helpers/CryptoH';
+import { AccessBuilderSys } from './System/AccessBuilderSys';
 
 const Middleware = {
     AuthSysMiddleware,
@@ -71,6 +72,7 @@ export {
 	BaseSQL,
 	BaseM,
 	UserSys,
+	AccessBuilderSys,
 	LogicSys,
 	CacheSys,
 	ResponseSys,

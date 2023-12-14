@@ -156,6 +156,26 @@ export class AccessSys {
 		}
 	}
 
+     /**
+     * Проверка доступа к роуту по правам
+     */
+    public accessByRouteGroup(...avGroup: {sRouteGroup: string, ixRoute: Record<string, boolean>}[]): void {
+        const ixRoleRoute = this.userSys.getIxRoleRoute();
+        const sRoute = this.ctx.req.url;
+ 
+        let bOk = false;
+        for (const vGroup of avGroup) {
+            if (ixRoleRoute[vGroup.sRouteGroup] && vGroup.ixRoute[sRoute]) {
+                bOk = true;
+                break;
+            }
+        }
+
+        if (!bOk) {
+            throw this.errorSys.throwAccessEx('access_failed', 'Доступ запрещен');
+        }
+    }
+
     /**
 	 * Проверка межсерверного запроса
 	 */
