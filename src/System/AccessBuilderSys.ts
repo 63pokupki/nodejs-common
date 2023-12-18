@@ -1,11 +1,11 @@
 /** Построитель прав доступа */
 export class AccessBuilderSys {
  
-    private vGroup: {sRouteGroup: string, ixRoute: Record<string, boolean>};
+    private vGroup: {sRouteGroup: string, ixMetadata: Record<string, string | number | boolean>, ixRoute: Record<string, boolean>};
 
-	/**  */
+    /**  */
     constructor() {
-        this.vGroup = { sRouteGroup: '', ixRoute: {} };
+        this.vGroup = { sRouteGroup: '', ixMetadata: {}, ixRoute: {} };
     }
 
     /**
@@ -17,6 +17,13 @@ export class AccessBuilderSys {
     }
 
     /**
+     * Установить метаданные
+     */
+    setMetadata(ixMetadata: Record<string, string | number | boolean>) {
+        this.vGroup.ixMetadata = ixMetadata;
+        return this;
+    }
+    /**
      * Установить роуты
      */
     setRoutes(asRoutes: string[]) {
@@ -24,14 +31,13 @@ export class AccessBuilderSys {
             const sRoutes = asRoutes[i];
             this.vGroup.ixRoute[sRoutes] = true;
         }
-      return this;
+        return this;
     }
     
     /**
      * Создать группу и роуты
      */
-    build(): {sRouteGroup: string, ixRoute: Record<string, boolean>} {
+    build() {
         return this.vGroup;
     }
 }
-
