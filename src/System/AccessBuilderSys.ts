@@ -1,16 +1,29 @@
+// Интерфейс метаданных группы маршрутов
+export interface MetadataI{
+    action_name: string;    // Тип действия
+    page_name: string;      // Название страницы
+    section_name: string;   // Название раздела
+    description: string;    // Описание
+}
+
 /** Построитель прав доступа */
 export class AccessBuilderSys {
     // Группа маршрутов
-    private sRouteGroup: string = '';
+    private sRouteGroup: string;
     // Метаданные
-    private ixMetadata: Record<string, string | number | boolean> = {};
+    private vMetadata: MetadataI;
     // Роуты
-    private ixRoute: Record<string, boolean> = {};
+    private ixRoute: Record<string, boolean>;
 
     /** Конструктор */
     constructor() {
         this.sRouteGroup = '';
-        this.ixMetadata = {};
+        this.vMetadata = {
+            action_name: '',
+            page_name: '',
+            section_name: '',
+            description: ''
+        };
         this.ixRoute = {};
     }
 
@@ -25,8 +38,8 @@ export class AccessBuilderSys {
     /**
      * Установить метаданные
      */
-    setMetadata(ixMetadata: Record<string, string | number | boolean>) {
-        this.ixMetadata = ixMetadata;
+    setMetadata(vMetadata: MetadataI) {
+        this.vMetadata = { ...vMetadata };
         return this;
     }
     /**
@@ -43,10 +56,10 @@ export class AccessBuilderSys {
     /**
      * Создать группу и роуты
      */
-    build(): { sRouteGroup: string, ixMetadata: Record<string, string | number | boolean>, ixRoute: Record<string, boolean> } {
+    build(): { sRouteGroup: string, vMetadata: MetadataI, ixRoute: Record<string, boolean> } {
         return { 
             sRouteGroup: this.sRouteGroup, 
-            ixMetadata: this.ixMetadata, 
+            vMetadata: this.vMetadata, 
             ixRoute: this.ixRoute 
         };
     }
