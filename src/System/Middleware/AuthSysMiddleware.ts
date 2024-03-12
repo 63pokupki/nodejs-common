@@ -11,7 +11,6 @@
  */
 
 import { OrgRoleT } from "../../Interfaces/OrgRoleI";
-import { RoleT } from "../../Interfaces/RoleI";
 import { AccessSys } from "../AccessSys";
 import { faApiRequest } from "../ApiRequest";
 import { P63Context } from "../P63Context";
@@ -33,7 +32,7 @@ interface UserRespI{
     }[];
 
     /** Роли пользователя */
-    ix_role: Record<RoleT, boolean>;
+    ix_role: Record<string, boolean>;
     /** Доступные по ролям роуты */
     ix_role_route: Record<string, boolean>;
 
