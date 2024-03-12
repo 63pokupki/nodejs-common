@@ -49,11 +49,10 @@ import ParseBodyMiddleware from './System/Middleware/ParseBodyMiddleware';
 
 import { CacheSys } from './System/CacheSys';
 import { GroupT } from './Interfaces/GroupI';
-import { RoleT } from './Interfaces/RoleI';
 import { OrgRoleT } from './Interfaces/OrgRoleI';
 import { AvgCacheSys } from './System/AvgCacheSys';
 import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware';
-import { JwtDecodeI, mJwtDecode, mJwtEncode } from './Helpers/JwtH';
+import { mJwtDecode, mJwtEncode } from './Helpers/JwtH';
 import { mDecrypt, mEncrypt } from './Helpers/CryptoH';
 import { AccessBuilderSys } from './System/AccessBuilderSys';
 
@@ -93,7 +92,6 @@ export {
 	Mattermost,
 	S3DO,
 	GroupT,				// Группы пользователей
-    RoleT,              // Глобальные роли пользователей
     OrgRoleT,           // Роли пользователей в организациях
     mJwtEncode, // Jwt кодировка - хелпер
     mJwtDecode, // Jwt раскодировка - хелпер
