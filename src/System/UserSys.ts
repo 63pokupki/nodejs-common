@@ -3,7 +3,6 @@ import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
 
 // SQL Запросы
 import { P63Context } from './P63Context';
-import { RoleT } from '../Interfaces/RoleI';
 import { OrgRoleT } from '../Interfaces/OrgRoleI';
 import { GroupT } from '../Interfaces/GroupI';
 
@@ -37,7 +36,7 @@ export class UserSys {
 	private errorSys: ErrorSys;
 
     /** Глобальные роли */
-    private ixRole: Record<RoleT, boolean>;
+    private ixRole: Record<string, boolean>;
 
     /** роуты, доступные по глобальным ролям */
     private ixRoleRoute: Record<string, boolean>;
@@ -74,7 +73,7 @@ export class UserSys {
 	public init(param?: {
         vUser:UserInfoI; // Информация пользователя
         aGroup:GroupUserI[]; // Группы пользователя
-        ixRole: Record<RoleT, boolean>;
+        ixRole: Record<string, boolean>;
         ixRoleRoute: Record<string, boolean>;
         ixOrgRole: Record<string | number, Record<OrgRoleT, boolean>>;
         ixOrgRoleRoute: Record<string | number, Record<string, boolean>>;
@@ -238,7 +237,7 @@ export class UserSys {
      * Получить глобальные роли пользователя
      * @todo вырезать из абстрактного класса UserSys
      */
-     public getIxRole(): Record<RoleT, boolean> {
+     public getIxRole(): Record<string, boolean> {
         return this.ixRole;
     }
 
@@ -271,7 +270,7 @@ export class UserSys {
     /**
 	 * Проверить, есть ли у пользователя конкретная роль
 	 */
-	public isRole(role: RoleT): boolean {
+	public isRole(role: string): boolean {
         return Boolean(this.ixRole?.[role]);
 	}
 
