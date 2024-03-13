@@ -272,7 +272,7 @@ export class UserSys {
 	 * Проверить, есть ли у пользователя конкретная роль
 	 */
 	public isRole(role: RoleT): boolean {
-        return this.ixRole?.[role];
+        return Boolean(this.ixRole?.[role]);
 	}
 
 	/**
