@@ -4,17 +4,19 @@ import _ from 'lodash';
 import { v4 as uuid4 } from 'uuid';
 import ip from 'ip';
 
+interface OneConnectI {
+    urlDbMaster: string;
+    urlDbScan: string;
+}
+interface OneDbConnectI {
+    redisMaster: redis.Redis;
+    redisScan: redis.Redis;
+}
 interface ConnectI{
 	urlDbMaster?: string;
 	urlDbScan?: string;
 
-	connect?: {
-		[key : string]: {
-			// Конфигруация редиса
-			urlDbMaster: string;
-			urlDbScan: string;
-		}
-	},
+	connect?: Record<string, OneConnectI[]>;
 
 	// Если сканирование ключей настроено через sphinx
 	sphinxDb?: Knex.Config;
@@ -24,66 +26,90 @@ interface ConnectI{
 /** Обертка над редисом которая понимает async/await */
 export class RedisSys {
 
-	public ixRedisDb: {
-		[key: string]: {
-			redisMaster: redis.Redis,
-			redisScan: redis.Redis
-		}
-	};
+	public ixRedisDb: Record<number, OneDbConnectI> = {};
+    public ixRedisDbError: Record<number, OneDbConnectI> = {};
 
-	public aRedisDb: {
-		redisMaster: redis.Redis,
-		redisScan: redis.Redis
-	}[];
+    public ixRedisDbCommon: Record<number, OneDbConnectI> = {};
+    public ixRedisDbCommonError: Record<number, OneDbConnectI> = {};
 
 	public sphinxDb?: Knex;
 
 	public sphinxIndex?: string;
 
-	public ipSrv: string;
+	public ipSrv: string = ip.address();
+    public ipConnectUse:string = ip.address();
 
-	public aipRedis: string[];
+	public asIpRedis: string[];
 
 	public redisMaster: redis.Redis;
 
 	public redisScan: redis.Redis;
 
+    /** Интервал записи данных в бд */
+    private intervalRedis = setInterval(async () => {
+        
+        let okConnect = true;
+        try {
+            const pong = await this.redisMaster.ping();
+            okConnect = pong == 'PONG' ? true : false
+        } catch(e){
+            console.log('>>>ERROR ошибка проверки связи с редисом')
+        }
+        if(parseInt(String(Date.now() / 1000)) % 5 == 0){ // Каждые 30 секунд
+            console.log('>>>INTERVAL REDIS CONNECT', Date.now(), okConnect)
+        }
+    },1000)
+
 	constructor(param: ConnectI) {
 
-		this.ipSrv = ip.address();
-		this.aRedisDb = [];
+		this.ixRedisDb = {};
 
 		if (param.connect) {
-			this.aipRedis = Object.keys(param.connect);
-			for (let i = 0; i < this.aipRedis.length; i++) {
-				const sConnectKey = this.aipRedis[i];
-				const vConnect = param.connect[sConnectKey];
-	
-				// Базы данных для чтения
-				// this.ixRedisDb[sConnectKey] = {
-				// 	redisMaster: new redis(vConnect.urlDbMaster),
-				// 	redisScan: new redis(vConnect.urlDbScan)
-				// }
 
-				this.aRedisDb.push({
+            // Общий пул соединений для записи и резервного чтения
+            const aConnectCommon = param.connect['*'];
+            for (let i = 0; i < aConnectCommon.length; i++) {
+                const vConnect = aConnectCommon[i];
+                this.ixRedisDbCommon[i] = {
 					redisMaster: new redis(vConnect.urlDbMaster),
 					redisScan: new redis(vConnect.urlDbScan)
-				})
-
-				if (this.aipRedis[i] === this.ipSrv) {
-					this.redisMaster = new redis(vConnect.urlDbMaster);
-					this.redisScan = new redis(vConnect.urlDbScan)
 				}
+            }
 
-			}
+            // выделенный пул соединений для ip
+            const aConnectIP = param.connect[this.ipSrv];
+            if(aConnectIP){
+                for (let i = 0; i < aConnectIP.length; i++) {
+                    const vConnect = aConnectIP[i];
+                    this.ixRedisDb[i] = {
+                        redisMaster: new redis(vConnect.urlDbMaster),
+                        redisScan: new redis(vConnect.urlDbScan)
+                    }
+                }
+            } else {
+                this.ixRedisDb = this.ixRedisDbCommon;
+                this.ipConnectUse = '*'
+            }
+
+            if(this.ixRedisDb[0]){
+                this.redisMaster = this.ixRedisDb[0].redisMaster,
+			    this.redisScan = this.ixRedisDb[0].redisMaster
+            }
+            
 		} else if (param.urlDbMaster && param.urlDbScan) {
 				this.redisMaster = new redis(param.urlDbMaster),
 				this.redisScan = new redis(param.urlDbScan)
 
-				this.aRedisDb.push({
+                this.ixRedisDb[0] = {
 					redisMaster: this.redisMaster,
 					redisScan: this.redisScan
-				})
+				}
+
+                // пул для записи
+                this.ixRedisDbCommon[0] = {
+					redisMaster: this.redisMaster,
+					redisScan: this.redisScan
+				}
 		} else {
 			console.log('Неверно указаны параметры для кеша:');
 			console.log(`connect >> ${param.connect}`);
@@ -118,16 +144,22 @@ export class RedisSys {
 			if (kCaсheKey) { // Если ключ в sphinx все таки есть записываем его в редис scan
 				const aPromiseSet = [];
 				
-				for (let i = 0; i < this.aRedisDb.length; i++) {
-					aPromiseSet.push(
-						this.aRedisDb[i].redisScan.set(key, kCaсheKey, 'EX', 30 * 24 * 3600)
-					)
+                for (const k in this.ixRedisDbCommon) {
+                    const vRedisDb = this.ixRedisDbCommon[k];
+					aPromiseSet.push(async () => {
+                        try {
+						    await vRedisDb.redisScan.set(key, kCaсheKey, 'EX', 30 * 24 * 3600)
+                        } catch(e){
+                            this.ixRedisDbCommonError[k] = this.ixRedisDbCommon[k];
+                            delete this.ixRedisDbCommon[k];
+                            console.log('>>>ERROR REDIS GET>>>', e)
+                        }
+                    })
 				}
 
 				await Promise.all(aPromiseSet);
 			}
 		}
-		// console.log('get-sphinx',kCaсheKey);
 
 		let vData = null;
 		if (kCaсheKey) { // Если ключ есть - можем запросить данные
@@ -185,16 +217,34 @@ export class RedisSys {
 
 		let kCaсheKey = await this.redisScan.get(key);
 
+        
+
 		// Записываем ключ если его нет при настройках sphinx
 		if (!kCaсheKey && this.sphinxDb) {
 			kCaсheKey = await this.setInSphinx(key);
 
+            
+
 			if (kCaсheKey) { // Записываем только если смогли сделать ключ
 				const aPromiseSet = [];
 
-				for (let i = 0; i < this.aRedisDb.length; i++) {
-					aPromiseSet.push(this.aRedisDb[i].redisScan.set(key, kCaсheKey));
-				}
+                
+                for (const k in this.ixRedisDbCommon) {
+                    const vRedisDb = this.ixRedisDbCommon[k];
+
+                    // console.log('vRedisDb',  vRedisDb)
+					aPromiseSet.push((async () => {
+                        try {
+                            console.log('Я ПОЛОЖИЛ')
+                            await vRedisDb.redisScan.set(key, kCaсheKey, 'EX', 30 * 24 * 3600)
+                        } catch(e){
+                            console.log('Я НЕ ПОЛОЖИЛ')
+                            this.ixRedisDbCommonError[k] = this.ixRedisDbCommon[k];
+                            delete this.ixRedisDbCommon[k];
+                            console.log('>>>ERROR REDIS SET>>>', e)
+                        }
+                    })())
+                }
 
 				await Promise.all(aPromiseSet);
 			}
@@ -206,9 +256,18 @@ export class RedisSys {
 			// Кешируем на 1 день
 			const aPromiseSet = [];
 
-			for (let i = 0; i < this.aRedisDb.length; i++) {
-				aPromiseSet.push(this.aRedisDb[i].redisScan.set(key, kCaсheKey, 'EX', 30 * 24 * 3600));
-			}
+            for (const k in this.ixRedisDbCommon) {
+                const vRedisDb = this.ixRedisDbCommon[k];
+                aPromiseSet.push((async () => {
+                    try {
+                        await vRedisDb.redisScan.set(key, kCaсheKey, 'EX', 30 * 24 * 3600)
+                    } catch(e){
+                        this.ixRedisDbCommonError[k] = this.ixRedisDbCommon[k];
+                        delete this.ixRedisDbCommon[k];
+                        console.log('>>>ERROR REDIS SET>>>', e)
+                    }
+                })())
+            }
 
 			await Promise.all(aPromiseSet);
 		}
@@ -216,9 +275,20 @@ export class RedisSys {
 		if (kCaсheKey) {
 			const aPromiseSet = [];
 
-			for (let i = 0; i < this.aRedisDb.length; i++) {
-				aPromiseSet.push(this.aRedisDb[i].redisMaster.set(kCaсheKey, String(val), 'EX', time))
-			}
+            for (const k in this.ixRedisDbCommon) {
+                const vRedisDb = this.ixRedisDbCommon[k];
+                aPromiseSet.push((async () => {
+                    try {
+                        
+                        await vRedisDb.redisMaster.set(kCaсheKey, String(val), 'EX', time);
+                       
+                    } catch(e){
+                        this.ixRedisDbCommonError[k] = this.ixRedisDbCommon[k];
+                        delete this.ixRedisDbCommon[k];
+                        console.log('>>>ERROR REDIS SET>>>', e)
+                    }
+                }))
+            }
 			
 			await Promise.all(aPromiseSet);
 		}
@@ -252,9 +322,18 @@ export class RedisSys {
 			for (let i = 0; i < aaKeys.length; i++) {
 				const aKeys = aaKeys[i];
 
-				for (let j = 0; j < this.aRedisDb.length; j++) {
-					aPromiseDel.push(this.aRedisDb[j].redisMaster.del(aKeys));
-				}
+                for (const k in this.ixRedisDbCommon) {
+                    const vRedisDb = this.ixRedisDbCommon[k];
+                    aPromiseDel.push(async () => {
+                        try {
+                            await vRedisDb.redisMaster.del(aKeys);
+                        } catch(e){
+                            this.ixRedisDbCommonError[k] = this.ixRedisDbCommon[k];
+                            delete this.ixRedisDbCommon[k];
+                            console.log('>>>ERROR REDIS DEL>>>', e)
+                        }
+                    })
+                }
 			}
 
 			await Promise.all(aPromiseDel);
@@ -264,37 +343,6 @@ export class RedisSys {
 	// ============================================
 	// SPHINX операции с ключами
 	// ============================================
-
-	/**
-	* Генерация случайного числа в между двумя числами включительно
-	* @param min
-	* @param max
-	*/
-	private randomInteger(): bigint {
-		const sUuid = uuid4();
-
-		const aSymbol: number[] = [];
-		for (let c = 0; c < sUuid.length; c++) {
-			if (sUuid[c] !== '-') {
-				let iSymbol = sUuid.charCodeAt(c);
-				if (iSymbol >= 200) {
-					iSymbol %= 200;
-				}
-				if (iSymbol >= 100) {
-					iSymbol %= 100;
-				}
-				aSymbol.push(iSymbol);
-			}
-		}
-
-		let sSymbol2 = aSymbol.join('');
-		// console.log(sUuid, sSymbol2);
-		sSymbol2 = sSymbol2.slice(0, 16);
-
-		const iSymbol2 = BigInt(sSymbol2);
-		// console.log(sUuid, iSymbol2);
-		return iSymbol2;
-	}
 
 	/**
      * Получить значение из редиса
@@ -323,7 +371,7 @@ export class RedisSys {
 		try {
 			v = (await this.sphinxDb.raw(sql, param))[0][0];
 		} catch (e) {
-			console.log('>>>ERROR>>>', e);
+			console.log('>>>ERROR MYSQL.REDISKEY>>>', e);
 		}
 		if (v) {
 			v = v.id;
@@ -373,9 +421,9 @@ export class RedisSys {
 		try {
 			a = (await this.sphinxDb.raw(sql, param))[0];
 		} catch (e) {
-			console.log('>>>ERROR>>>', e);
+			console.log('>>>ERROR MYSQL.REDISKEY>>>', e);
 		}
-		// console.log('>>>scanFromSphinx-VAL>>>', a);
+
 		if (a) {
 			a = a.map((v) => String(v.id));
 		}
@@ -407,7 +455,7 @@ export class RedisSys {
 			}
 		} catch (e) {
 			out = ''; // Если произошла ошибка возвращаем пустую строку
-			console.log('>>>ERROR>>>', e);
+			console.log('>>>ERROR MYSQL.REDISKEY>>>', e);
 		}
 
 		return out;
@@ -423,9 +471,20 @@ export class RedisSys {
 	/** Ждет выполнения запросов и закрывает соединение */
 	public quit() {
 
-		for (let i = 0; i < this.aRedisDb.length; i++) {
-			this.aRedisDb[i].redisMaster.quit();
-			this.aRedisDb[i].redisScan.quit();
-		}
+        for (const k in this.ixRedisDbCommon) {
+            const vRedisDb = this.ixRedisDbCommon[k];
+            vRedisDb.redisMaster.quit();
+            vRedisDb.redisScan.quit();
+        }
+        if(this.ipConnectUse != '*'){
+            for (const k in this.ixRedisDb) {
+                const vRedisDb = this.ixRedisDb[k];
+                vRedisDb.redisMaster.quit();
+                vRedisDb.redisScan.quit();
+            }
+        }
+
+        this.redisMaster.quit()
+        this.redisScan.quit();
 	}
 }
