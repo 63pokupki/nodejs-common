@@ -13,7 +13,6 @@ import { CacheSys } from './CacheSys';
 import { AccessSys } from './AccessSys';
 import { SeoBase } from '../Components/Seo';
 import { RedisSys } from './RedisSys';
-import { RabbitSenderSys } from './RabbitSenderSys';
 import { CryptAlgT } from '../Helpers/CryptoH';
 import { JwtAlgT } from '../Helpers/JwtH';
 
@@ -74,12 +73,9 @@ export class P63Context extends AAContext {
         mysqlSlavePool?: Knex[]; // Пулл для балансировки запросов
 		sphinx?: Knex;
 		redis: RedisSys;
-		rabbit: RabbitSenderSys;
 		sphinxErrors?: Knex;
 	} = <any>{};
 }
-
-
 
 const Req: any = {
 	headers: {},
