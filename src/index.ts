@@ -29,9 +29,6 @@ import { RedisSys } from './System/RedisSys';
 /* Класс для работы с S3 */
 import { S3objectParamsI, S3 } from './System/S3';
 
-/* Отправлятор сообщений в Rabbit */
-import { rabbitSenderSys, RabbitSenderSys } from './System/RabbitSenderSys';
-
 /* Конструктор Консольной команды */
 import BaseCommand from './System/BaseCommand';
 
@@ -81,8 +78,6 @@ export {
 	devReq, 			// Пример MainRequest
 	S3,
 	S3objectParamsI,
-	RabbitSenderSys, 	// Класс системы для работы с ребитом
-	rabbitSenderSys, 	// Объект система работы с ребитом
 	initMainRequest, 	// Инициализация Main Request для тестов
     faSendRouter,
 	BaseCommand, 		// Конструктор консольных команд
