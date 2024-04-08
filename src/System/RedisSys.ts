@@ -159,6 +159,7 @@ export class RedisSys {
             'common:', Object.keys(this.ixRedisDbCommon).length, 'commonError:', Object.keys(this.ixRedisDbCommonError).length);
     }
 
+    /** init */
 	constructor(param: ConnectI) {
 
 		this.ixRedisDb = {};
