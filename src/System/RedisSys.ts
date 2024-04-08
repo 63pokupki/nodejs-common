@@ -48,6 +48,7 @@ export class RedisSys {
 
 	public redisScan: redis.Redis;
 
+    /** Проверка БД редиса */
     private async checkRedisDb(dbRedis:redis.Redis){
         let okConnect = true;
         try {
@@ -90,11 +91,6 @@ export class RedisSys {
                 delete this.ixRedisDbCommonError[k];
             }
         }
-
-        // if(parseInt(String(Date.now() / 1000)) % 5 == 0){ // Каждые 30 секунд
-            
-            
-        // }
 
         if(this.env == 'dev'){
             console.log('>>>INTERVAL REDIS CONNECT', Date.now(), okMainConnect)
@@ -163,6 +159,7 @@ export class RedisSys {
             'common:', Object.keys(this.ixRedisDbCommon).length, 'commonError:', Object.keys(this.ixRedisDbCommonError).length);
     }
 
+    /** init */
 	constructor(param: ConnectI) {
 
 		this.ixRedisDb = {};
