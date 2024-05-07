@@ -50,12 +50,13 @@ export class RedisSys {
 
     /** Проверка БД редиса */
     private async checkRedisDb(dbRedis:redis.Redis){
-        let okConnect = true;
+        let okConnect = false;
+        const sWorkConnect = dbRedis.options.host+':'+dbRedis.options.port;
         try {
             const pong = await dbRedis.ping();
             okConnect = pong == 'PONG' ? true : false
         } catch(e){
-            console.log('>>>ERROR ошибка проверки связи с редисом')
+            console.log('>>>ERROR ошибка проверки связи с редисом - ', sWorkConnect)
         }
 
         return okConnect;
@@ -75,7 +76,7 @@ export class RedisSys {
             const dbRedis = this.ixRedisDbError[k];
             const okDbRedis = await this.checkRedisDb(dbRedis.redisMaster);
 
-            if(okDbRedis){
+            if(okDbRedis && this.ixRedisDbError[k]){
                 this.ixRedisDb[k] = this.ixRedisDbError[k];
                 delete this.ixRedisDbError[k];
             }
@@ -86,7 +87,7 @@ export class RedisSys {
             const dbRedis = this.ixRedisDbCommonError[k];
             const okDbRedis = await this.checkRedisDb(dbRedis.redisMaster);
 
-            if(okDbRedis){
+            if(okDbRedis && this.ixRedisDbCommonError[k]){
                 this.ixRedisDbCommon[k] = this.ixRedisDbCommonError[k];
                 delete this.ixRedisDbCommonError[k];
             }
@@ -111,10 +112,16 @@ export class RedisSys {
         // ============================================
         /** Убрать проблемную БД из пула по IP */
         for (const k in this.ixRedisDb) {
-            const sIpConnect = dbRedis.options.host+':'+dbRedis.options.port;
+            
+            if(!this.ixRedisDb[k]) {
+                console.log('ERROR удаление пустой БД');
+                continue;
+            }
+            const vDBMaster = this.ixRedisDb[k].redisMaster;
+            const sIpConnect = vDBMaster.options.host+':'+vDBMaster.options.port;
 
-            if(sWorkConnect == sIpConnect && this.ixRedisDb[k]){
-                console.log('>>>Убрать проблемную БД из пула по IP')
+            if(sWorkConnect == sIpConnect){
+                console.log('>>>Убрать проблемную БД из пула по IP - ', sIpConnect);
                 this.ixRedisDbError[k] = this.ixRedisDb[k];
                 delete this.ixRedisDb[k];
             }
@@ -122,10 +129,16 @@ export class RedisSys {
 
         /** Убрать проблемную БД из пула Общего */
         for (const k in this.ixRedisDbCommon) {
-            const sCommonConnect = dbRedis.options.host+':'+dbRedis.options.port;
 
-            if(sWorkConnect == sCommonConnect && this.ixRedisDbCommon[k]){
-                console.log('>>>Убрать проблемную БД из пула Общего')
+            if(!this.ixRedisDbCommon[k]) {
+                console.log('ERROR удаление пустой БД');
+                continue;
+            }
+            const vDBMaster = this.ixRedisDbCommon[k].redisMaster;
+            const sCommonConnect = vDBMaster.options.host+':'+vDBMaster.options.port;
+
+            if(sWorkConnect == sCommonConnect){
+                console.log('>>>Убрать проблемную БД из пула Общего - ', sCommonConnect);
                 this.ixRedisDbCommonError[k] = this.ixRedisDbCommon[k];
                 delete this.ixRedisDbCommon[k];
             }
@@ -251,13 +264,12 @@ export class RedisSys {
 				const aPromiseSet = [];
 				
                 for (const k in this.ixRedisDbCommon) {
-                    const vRedisDb = this.ixRedisDbCommon[k];
 					aPromiseSet.push((async () => {
+                        const vRedisDb = this.ixRedisDbCommon[k];
                         try {
 						    await vRedisDb.redisScan.set(key, kCaсheKey, 'EX', 30 * 24 * 3600)
                         } catch(e){
-                            this.ixRedisDbCommonError[k] = this.ixRedisDbCommon[k];
-                            delete this.ixRedisDbCommon[k];
+                            this.workErrorDb(vRedisDb.redisScan);
                             console.log('>>>ERROR REDIS GET>>>', e)
                         }
                     })())
@@ -333,17 +345,16 @@ export class RedisSys {
 
 			if (kCaсheKey) { // Записываем только если смогли сделать ключ
 				const aPromiseSet = [];
-                const ixError:Record<number, string> = {};
                 
                 for (const k in this.ixRedisDbCommon) {
-                    const vRedisDb = this.ixRedisDbCommon[k];
-
+                    
                     // console.log('vRedisDb',  vRedisDb)
 					aPromiseSet.push((async () => {
+                        const vRedisDb = this.ixRedisDbCommon[k];
                         try {
                             await vRedisDb.redisScan.set(key, kCaсheKey, 'EX', 30 * 24 * 3600)
                         } catch(e){
-                            ixError[k] = vRedisDb.redisMaster.options.host+':'+vRedisDb.redisMaster.options.port;
+                            this.workErrorDb(vRedisDb.redisScan);
                             
                             console.log('>>>ERROR REDIS SET>>>', e)
                         }
@@ -351,13 +362,6 @@ export class RedisSys {
                 }
 
 				await Promise.all(aPromiseSet);
-
-                for(const k in ixError){
-                    console.log('>>> отключение проблемной БД - ', ixError[k])
-                    this.ixRedisDbCommonError[k] = this.ixRedisDbCommon[k];
-                    delete this.ixRedisDbCommon[k];
-                    
-                }
 			}
 		}
 
@@ -366,16 +370,15 @@ export class RedisSys {
 			kCaсheKey = uuid4();
 			// Кешируем на 1 день
 			const aPromiseSet = [];
-            const ixError:Record<number, string> = {};
 
             for (const k in this.ixRedisDbCommon) {
-                const vRedisDb = this.ixRedisDbCommon[k];
                 aPromiseSet.push((async () => {
+                    const vRedisDb = this.ixRedisDbCommon[k];
                     try {
                         await vRedisDb.redisScan.set(key, kCaсheKey, 'EX', 30 * 24 * 3600)
                     } catch(e){
 
-                        ixError[k] = vRedisDb.redisMaster.options.host+':'+vRedisDb.redisMaster.options.port;
+                        this.workErrorDb(vRedisDb.redisScan);
                         console.log('>>>ERROR REDIS SET>>>', e)
                     }
                 })())
@@ -383,27 +386,20 @@ export class RedisSys {
 
 			await Promise.all(aPromiseSet);
 
-            for(const k in ixError){
-                console.log('>>> отключение проблемной БД - ', ixError[k])
-                this.ixRedisDbCommonError[k] = this.ixRedisDbCommon[k];
-                delete this.ixRedisDbCommon[k];
-                
-            }
 		}
 
 		if (kCaсheKey) {
 			const aPromiseSet = [];
-            const ixError:Record<number, string> = {};
 
             for (const k in this.ixRedisDbCommon) {
-                const vRedisDb = this.ixRedisDbCommon[k];
                 aPromiseSet.push((async () => {
+                    const vRedisDb = this.ixRedisDbCommon[k];
                     try {
                         
                         await vRedisDb.redisMaster.set(kCaсheKey, String(val), 'EX', time);
                        
                     } catch(e){
-                        ixError[k] = vRedisDb.redisMaster.options.host+':'+vRedisDb.redisMaster.options.port;
+                        this.workErrorDb(vRedisDb.redisMaster);
                         console.log('>>>ERROR REDIS SET>>>', e)
                     }
                 })())
@@ -411,12 +407,6 @@ export class RedisSys {
 			
 			await Promise.all(aPromiseSet);
 
-            for(const k in ixError){
-                console.log('>>> отключение проблемной БД - ', ixError[k])
-                this.ixRedisDbCommonError[k] = this.ixRedisDbCommon[k];
-                delete this.ixRedisDbCommon[k];
-                
-            }
 		}
 
 		return kCaсheKey;
@@ -449,13 +439,13 @@ export class RedisSys {
 				const aKeys = aaKeys[i];
 
                 for (const k in this.ixRedisDbCommon) {
-                    const vRedisDb = this.ixRedisDbCommon[k];
+                    
                     aPromiseDel.push((async () => {
+                        const vRedisDb = this.ixRedisDbCommon[k];
                         try {
                             await vRedisDb.redisMaster.del(aKeys);
                         } catch(e){
-                            this.ixRedisDbCommonError[k] = this.ixRedisDbCommon[k];
-                            delete this.ixRedisDbCommon[k];
+                            this.workErrorDb(vRedisDb.redisMaster);
                             console.log('>>>ERROR REDIS DEL>>>', e)
                         }
                     })())
