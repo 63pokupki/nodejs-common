@@ -79,6 +79,125 @@ export default class BaseSQL {
 		}
 	}
 
+    /**
+     * TODO устаревший балансировщик запросов
+	 * Выполняем запрос
+	 */
+	protected async dbExe<T = any>(vQueryBuilder:Knex.QueryBuilder | Knex.Raw): Promise<T> {
+        let out:T = null;
+
+        const builder = <any>vQueryBuilder;
+
+
+
+
+        if (builder._method && builder.sql){
+            iQIncorrect++;
+        }
+    
+        if (!builder._method){ // Если метода нет значит raw запрос
+            const sQueryStart = builder.sql.substr(0, 50).toLowerCase();
+            const iSelectPos = sQueryStart.indexOf('select');
+            const iInsertPos = sQueryStart.indexOf('insert');
+            const iDeletePos = sQueryStart.indexOf('delete');
+            const iUpdatePos = sQueryStart.indexOf('update');
+            const bWrite = (iInsertPos >= 0 || iDeletePos >= 0 || iUpdatePos >= 0);
+            if (iSelectPos >= 0 && !bWrite){
+                iQRSlave++;
+                builder.client = this.db.client;
+            } else {
+                iQRMaster++;
+                builder.client = this.db.client;
+            }
+        } else if (builder._method === 'select' || builder._method === 'first' || builder._method === 'pluck'){
+            
+            iQBSlave++;
+            builder.client = this.db.client;
+        } else {
+            iQBMaster++;
+            builder.client = this.db.client;
+    
+            if ((builder._method !== 'insert' && builder._method !== 'update' && builder._method !== 'delete')){
+                // console.log('builder._method>', builder._method, builder.sql);
+                iQIncorrect++;
+            }
+    
+        }
+
+        // Выполнить запрос
+        if (builder._method){ // _method только у билдера
+            out = await builder
+        } else {
+            out = (await builder)[0]
+        }
+
+
+
+        iQCounter++;
+        
+        if (iQCounter % 100 == 0){
+            console.log('>>>',
+                ' iQCounter',
+                iQCounter,
+                ' iQBSlave>',
+                iQBSlave,
+                ' iQBMaster>',
+                iQBMaster,
+                ' iQRSlave>',
+                iQRSlave,
+                ' iQRMaster>',
+                iQRMaster,
+                'iQIncorrect>',
+                iQIncorrect);
+        }
+
+        return out;
+		
+	}
+
+    /**
+     * TODO устаревший балансировщик запросов
+	 * Получаем инстанс запроса Knex.Raw учитывая pool соединений
+	 */
+	protected async dbRaw<T = any>(sql:string, param?:Record<string, any>): Promise<T> {
+        // const q = this.dbOne.raw(sql, param);
+        let out:T = null;
+		
+
+        const sQueryStart = sql.substr(0, 50).toLowerCase();
+        const iSelectPos = sQueryStart.indexOf('select');
+        const iInsertPos = sQueryStart.indexOf('insert');
+        const iDeletePos = sQueryStart.indexOf('delete');
+        const iUpdatePos = sQueryStart.indexOf('update');
+        const bWrite = (iInsertPos >= 0 || iDeletePos >= 0 || iUpdatePos >= 0);
+        if(iSelectPos >= 0 && !bWrite){
+            iQRSlave++;
+            out = <any>(await this.db.raw(sql, param))
+        } else {
+            iQRMaster++;
+            out = <any>(await this.db.raw(sql, param))
+        }
+            
+        iQCounter++;
+        
+        if (iQCounter % 100 == 0){
+            console.log('>>>',
+                ' iQCounter',
+                iQCounter,
+                ' iQBSlave>',
+                iQBSlave,
+                ' iQBMaster>',
+                iQBMaster,
+                ' iQRSlave>',
+                iQRSlave,
+                ' iQRMaster>',
+                iQRMaster,
+                'iQIncorrect>',
+                iQIncorrect);
+        }
+		return out;
+	}
+
     protected async exe<T>(key:string, cb:() => Promise<T>){
         const vMsgMonitoring = {
             time_start: Date.now(),
@@ -146,7 +265,7 @@ export default class BaseSQL {
             }
             
         } catch(e){
-            
+
             if(this.monitoringSys){
                 this.monitoringSys.sendErrorSql('sqlerror:'+this.ctx.common.nameApp+':'+this.ctx.req.url+':'+key, {
                     ...vMsgMonitoring,
