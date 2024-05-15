@@ -24,7 +24,7 @@ const iInterval = setInterval(() =>{
 	for(let i = 0; i < aidKeys.length; i++) {
 		const idKeys = Number(aidKeys[i]);
 		const vCurrentSend = ixSendRouter[idKeys];
-		if (vCurrentSend && new Date().getTime() - vCurrentSend.time > 60000) {
+		if (vCurrentSend && Date.now() - vCurrentSend.time > 60000) {
 			console.log('WARNING - У НАС ЕСТЬ ЗАВИСШИЙ ЗАПРОС', 'url: ', ixSendRouter[idKeys].pathname, 'body: ', ixSendRouter[idKeys].body)
 			delete ixSendRouter[idKeys];
 		}
@@ -33,8 +33,9 @@ const iInterval = setInterval(() =>{
 
 /** Функция отправки сообщения в маттермост */
 const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
-	if(ixSendRouter[idx] && new Date().getTime() - ixSendRouter[idx].time > 5000 && ctx.common.env === 'prod'){
-		const gMattermostSys = new MattermostSys(ctx);
+
+	if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time > 5000 && ctx.common.env === 'prod'){
+		console.log('response timecrit>>>',ctx.url.pathname)
 
         if(ctx.sys.monitoringSys){
             ctx.sys.monitoringSys.sendInfoApiTimecrit('slowcrit:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
@@ -53,11 +54,12 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
 
 		console.log('WARNING - ОЧЕНЬ МЕДЛЕННЫЙ МЕТОД', 'url: ', ctx.url.pathname, 'body: ', ctx.body)
 	} else if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time > 2000 && ctx.common.env === 'prod'){
-		const gMattermostSys = new MattermostSys(ctx);
+		
 
+        console.log('response timelong>>>',ctx.url.pathname)
         if(ctx.sys.monitoringSys){
             ctx.sys.monitoringSys.sendInfoApiTimelong('slow:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
-                time_start: new Date(ixSendRouter[idx].time).valueOf(),
+                time_start: ixSendRouter[idx].time,
                 time_end: Date.now(),
                 info: {
                     title:'Мониторинг скорости запросов', 
@@ -70,11 +72,11 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
             });
         }
 	} else if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time < 2000 && ctx.common.env === 'prod'){
-		const gMattermostSys = new MattermostSys(ctx);
 
+        console.log('response ok>>>',ctx.url.pathname)
         if(ctx.sys.monitoringSys){
             ctx.sys.monitoringSys.sendInfoApiSuccsess('ok:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
-                time_start: new Date(ixSendRouter[idx].time).valueOf(),
+                time_start: ixSendRouter[idx].time,
                 time_end: Date.now(),
                 info: {
                     title:'Мониторинг скорости запросов', 
@@ -86,7 +88,9 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
                 data: JSON.stringify(ctx.body)
             });
         }
-	}
+	} else {
+
+    }
 }
 
 /**
