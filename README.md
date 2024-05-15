@@ -25,6 +25,8 @@ git commit
 
 npm version patch
 
+npm run build
+
 git push
 
 жмешь Enter до конца...
