@@ -88,9 +88,9 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
                 data: JSON.stringify(ctx.body)
             });
         }
-	} else {
+	}
 
-    }
+    console.log('response else>>>',ctx.url.pathname, new Date().getTime(), Date.now(), ixSendRouter[idx].time,  Date.now() - ixSendRouter[idx].time)
 }
 
 /**
