@@ -34,7 +34,7 @@ const iInterval = setInterval(() =>{
 /** Функция отправки сообщения в маттермост */
 const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
 
-	if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time > 5000 && ctx.common.env === 'prod'){
+	if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time > 5000){
 
         if(ctx.sys.monitoringSys){
             ctx.sys.monitoringSys.sendInfoApiTimecrit('slowcrit:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
@@ -52,7 +52,7 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
         }
 
 		console.log('WARNING - ОЧЕНЬ МЕДЛЕННЫЙ МЕТОД', 'url: ', ctx.url.pathname, 'body: ', ctx.body)
-	} else if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time > 2000 && ctx.common.env === 'prod'){
+	} else if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time > 2000){
 		
         if(ctx.sys.monitoringSys){
             ctx.sys.monitoringSys.sendInfoApiTimelong('slow:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
@@ -68,7 +68,7 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
                 data: JSON.stringify(ctx.body)
             });
         }
-	} else if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time < 2000 && ctx.common.env === 'prod'){
+	} else if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time < 2000){
 
         if(ctx.sys.monitoringSys){
             ctx.sys.monitoringSys.sendInfoApiSuccsess('ok:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
