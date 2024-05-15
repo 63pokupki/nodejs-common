@@ -11,11 +11,11 @@ export default function ErrorSysMiddleware(ctx: P63Context): void {
 		userSys: null,
 		responseSys: null,
 		logicSys: null,
+        monitoringSys: null,
 		cacheSys: null,
 		accessSys: null,
 		bAuth: false,
         bSrv: false,
-		bMasterDB: false,
 		bCache: true,
 	};
 	if (ctx) {

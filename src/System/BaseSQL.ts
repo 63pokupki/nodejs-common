@@ -9,6 +9,7 @@ import { CacheSys } from './CacheSys';
 import { LogicSys } from './LogicSys';
 import { P63Context } from './P63Context';
 import { mRandomInteger } from '../Helpers/NumberH';
+import { MonitoringSys } from '@63pokupki/monitoring.lib';
 
 let iQCounter = 0;
 let iQBSlave = 0;
@@ -21,276 +22,16 @@ let iQIncorrect = 0;
  * SQL Запросы
  */
 export default class BaseSQL {
-
-    // =====================================
-    // GET
-    // =====================================
-
-	/**
-	 * Получаем базу данных для выполнения запроса
-	 * В зависимости от bMasterDB
-	 * может быть мастер БД или балансировщик
-	 */
-	protected get db(): Knex {
-		let db = null;
-		if (this.ctx.sys.bMasterDB) {
-			db = this.dbMasterOne;
-		} else {
-			db = this.dbOne;
-		};
-		return db;
-	}
-
-    // /**
-	//  * Получаем инстанс запроса Knex.QueryBuilder учитывая pool соединений
-	//  */
-	// protected async dbQuery<T = any>(vQueryBuilder:Knex.QueryBuilder): Promise<T> {
-    //     const builder = <any>vQueryBuilder;
-    //     let out:T = null;
-    //     if (this.ctx.sys.bMasterDB) {
-    //         iQBMaster++;
-    //         vQueryBuilder.client = this.dbMasterOne.client;
-			
-    //     } else {
-    //         if (builder._method === 'select' || builder._method === 'first' || builder._method === 'pluck'){
-    //             iQBSlave++;
-    //             vQueryBuilder.client = this.dbSlave.client;
-    //         } else {
-    //             iQBMaster++;
-    //             vQueryBuilder.client = this.dbMaster.client;
-        
-    //             if (builder._method !== 'insert' && builder._method !== 'update' && builder._method !== 'delete'){
-    //                 // console.log('builder._method>', builder._method, builder.sql);
-    //                 iQIncorrect++;
-    //             }
-    //         }
-            
-    //     }
-
-    //     // Выполнить запрос
-    //     out = (await vQueryBuilder);
-
-    //     iQCounter++;
-        
-    //     if (iQCounter % 100 == 0){
-    //         console.log('>>>',
-    //             ' iQCounter',
-    //             iQCounter,
-    //             ' iQBSlave>',
-    //             iQBSlave,
-    //             ' iQBMaster>',
-    //             iQBMaster,
-    //             ' iQRSlave>',
-    //             iQRSlave,
-    //             ' iQRMaster>',
-    //             iQRMaster,
-    //             'iQIncorrect>',
-    //             iQIncorrect);
-    //     }
-
-	// 	return out;
-	// }
-
-    /**
-	 * Получаем инстанс запроса Knex.Raw учитывая pool соединений
-	 */
-	protected async dbRaw<T = any>(sql:string, param?:Record<string, any>): Promise<T> {
-        // const q = this.dbOne.raw(sql, param);
-        let out:T = null;
-		if (this.ctx.sys.bMasterDB) {
-            iQRMaster++;
-			out = <any>(await this.dbMasterOne.raw(sql, param));
-        } else {
-
-            const sQueryStart = sql.substr(0, 50).toLowerCase();
-            const iSelectPos = sQueryStart.indexOf('select');
-            const iInsertPos = sQueryStart.indexOf('insert');
-            const iDeletePos = sQueryStart.indexOf('delete');
-            const iUpdatePos = sQueryStart.indexOf('update');
-            const bWrite = (iInsertPos >= 0 || iDeletePos >= 0 || iUpdatePos >= 0);
-            if(iSelectPos >= 0 && !bWrite){
-                iQRSlave++;
-                out = <any>(await this.dbSlave.raw(sql, param))
-            } else {
-                iQRMaster++;
-                out = <any>(await this.dbMaster.raw(sql, param))
-            }
-            
-        }
-
-        iQCounter++;
-        
-        if (iQCounter % 100 == 0){
-            console.log('>>>',
-                ' iQCounter',
-                iQCounter,
-                ' iQBSlave>',
-                iQBSlave,
-                ' iQBMaster>',
-                iQBMaster,
-                ' iQRSlave>',
-                iQRSlave,
-                ' iQRMaster>',
-                iQRMaster,
-                'iQIncorrect>',
-                iQIncorrect);
-        }
-		return out;
-	}
-
-    
-
-    /**
-	 * Выполняем запрос
-	 */
-	protected async dbExe<T = any>(vQueryBuilder:Knex.QueryBuilder | Knex.Raw): Promise<T> {
-        let out:T = null;
-
-        const builder = <any>vQueryBuilder;
-
-
-        if (this.ctx.sys.bMasterDB) {
-            iQRMaster++;
-            builder.client = this.dbMasterOne.client;
-        } else {
-
-            if (builder._method && builder.sql){
-                // console.log('builder._method>', builder._method, builder.sql);
-                iQIncorrect++;
-            }
-        
-            if (!builder._method){ // Если метода нет значит raw запрос
-                const sQueryStart = builder.sql.substr(0, 50).toLowerCase();
-                const iSelectPos = sQueryStart.indexOf('select');
-                const iInsertPos = sQueryStart.indexOf('insert');
-                const iDeletePos = sQueryStart.indexOf('delete');
-                const iUpdatePos = sQueryStart.indexOf('update');
-                const bWrite = (iInsertPos >= 0 || iDeletePos >= 0 || iUpdatePos >= 0);
-                if (iSelectPos >= 0 && !bWrite){
-                    iQRSlave++;
-                    builder.client = this.dbSlave.client;
-                } else {
-                    iQRMaster++;
-                    builder.client = this.dbMaster.client;
-                }
-            } else if (builder._method === 'select' || builder._method === 'first' || builder._method === 'pluck'){
-                
-                iQBSlave++;
-                builder.client = this.dbSlave.client;
-            } else {
-                iQBMaster++;
-                builder.client = this.dbMaster.client;
-        
-                if ((builder._method !== 'insert' && builder._method !== 'update' && builder._method !== 'delete')){
-                    // console.log('builder._method>', builder._method, builder.sql);
-                    iQIncorrect++;
-                }
-        
-            }
-        }
-
-        // Выполнить запрос
-        if (builder._method){ // _method только у билдера
-            out = await builder
-        } else {
-            out = (await builder)[0]
-        }
-
-
-
-        iQCounter++;
-        
-        if (iQCounter % 100 == 0){
-            console.log('>>>',
-                ' iQCounter',
-                iQCounter,
-                ' iQBSlave>',
-                iQBSlave,
-                ' iQBMaster>',
-                iQBMaster,
-                ' iQRSlave>',
-                iQRSlave,
-                ' iQRMaster>',
-                iQRMaster,
-                'iQIncorrect>',
-                iQIncorrect);
-        }
-
-        return out;
-		
-	}
-
-
-    /**
-	 * Получаем базу данных для выполнения запроса - insert|update|delete
-     * По умолчанию выибрается из пула мастер баз данных
-	 * Если их нет отдает мастер БД
-     * Если мастер соединений не найденно отдает балансировщик или одиночную БД
-	 */
-	protected get dbMaster(): Knex {
-		let db = null;
-		if (this.dbMasterPool?.length) {
-            // Случайно отдаем одну базу данных из пула
-            const iRand = mRandomInteger(0, this.dbMasterPool.length - 1)
-            db = this.dbMasterPool[iRand]
-		} else if(this.dbMasterOne) { // Если есть одиночный мастер отдаем его
-			db = this.dbMasterOne;
-		} else { // Если ничего не нашли отдаем одиночную базу данных
-			db = this.dbOne;
-		}
-		return db;
-	}
-
-    /**
-	 * Получаем базу данных для выполнения запроса - select
-     * По умолчанию выибрается из пула ведомых баз данных
-	 * Если их нет отдает ведомую БД
-	 */
-	protected get dbSlave(): Knex {
-		let db = null;
-        if (this.ctx.sys.bMasterDB) { // Если указан флаг брать с мастера берем с мастера
-			db = this.dbMasterOne;
-		} else if (this.dbSlavePool?.length) {
-            // Случайно отдаем одну базу данных из пула
-            const iRand = mRandomInteger(0, this.dbSlavePool.length - 1)
-            db = this.dbSlavePool[iRand]
-		} else { // Если пулл не нашли отдаем одиночную базу данных
-			db = this.dbOne;
-		}
-		return db;
-	}
-
-
-    // =====================================
-    // SET
-    // =====================================
-
-    /** Соединение для записи */
-	protected set dbMaster(db:Knex) {
-        this.dbMasterOne = db;
-    }
-
-    /** Балансировщик для запросов */
-	protected set dbBalancer(db:Knex){
-        this.dbOne = db;
-    }
+   
 
     // =====================================
     // PARAM
     // =====================================
 
-    /** Единичная мастер база данных */
-    protected dbMasterOne: Knex;
 
     /** Единичный ведомая база данных */
-    protected dbOne: Knex;
+    protected db: Knex;
 
-    /** Пул мастер баз данных - конфигурации мультимастер */
-    protected dbMasterPool: Knex[];
-
-    /** Пул ведомых баз данных - конфигурации кластера */
-    protected dbSlavePool: Knex[];
-    
     /** Редис запросы - база данных для кеширования */
 	protected redisSys: RedisSys;
 
@@ -309,6 +50,9 @@ export default class BaseSQL {
     /** система кеширования */
 	protected cacheSys: CacheSys;
 
+    /** система мониторинга */
+	protected monitoringSys: MonitoringSys;
+
 	protected logicSys: LogicSys;
     
     /** init */
@@ -320,32 +64,12 @@ export default class BaseSQL {
 		this.userSys = ctx.sys.userSys;
 		this.logicSys = ctx.sys.logicSys;
 		this.cacheSys = ctx.sys.cacheSys;
+        this.monitoringSys = ctx.sys.monitoringSys;
 
 		if (ctx.infrastructure.mysql) {
-			this.dbBalancer = ctx.infrastructure.mysql;
+			this.db = ctx.infrastructure.mysql;
 		} else {
 			this.errorSys.error('db_no_connection', 'Отсутствует подключение к mysql');
-		}
-
-		// Если мастер есть ставим его
-		if (ctx.infrastructure.mysqlMaster) {
-			this.dbMaster = ctx.infrastructure.mysqlMaster;
-		} else { // если мастера нет ставим MaxScale
-			this.dbMaster = ctx.infrastructure.mysql;
-		}
-
-        // Если мастер пулл есть ставим его
-		if (ctx.infrastructure.mysqlMasterPool?.length) {
-			this.dbMasterPool = ctx.infrastructure.mysqlMasterPool;
-		}
-
-        // Если ведомый пулл есть ставим его
-		if (ctx.infrastructure.mysqlSlavePool?.length) {
-			this.dbSlavePool = ctx.infrastructure.mysqlSlavePool;
-		}
-
-		if (!this.dbMasterOne) { // Если мастера все еще нет ОШИБКА
-			this.errorSys.error('db_master_no_connection', 'Отсутствует подключение к mysql мастеру');
 		}
 
 		if (ctx.infrastructure.redis) {
@@ -355,16 +79,89 @@ export default class BaseSQL {
 		}
 	}
 
-	/**
-     * Выполнить запросы в транзакции
-     *
-     * Для того чтобы вызываемые в func методы работали через транзакцию
-     * нужно в SQL файлах вместо this.db использовать this.dbProvider.current
-     */
-	async transaction<T>(func: () => Promise<T>): Promise<T> {
-		const result = await this.db.transaction(func);
-		return result;
-	}
+    protected async exe<T>(key:string, cb:() => Promise<T>){
+        const vMsgMonitoring = {
+            time_start: Date.now(),
+            info:{
+                user_id:String(this.ctx.sys?.userSys?.idUser),
+            }
+        };
+        try {
+            await cb();
+
+            if(Date.now() - vMsgMonitoring.time_start > 5000){
+                this.monitoringSys.sendInfoSqlTimelong('sqltimelong:'+this.ctx.common.nameApp+':'+this.ctx.req.url+':'+key, {
+                    ...vMsgMonitoring,
+                    data: {
+                        body:this.ctx.body,
+                        param:this.ctx.param,
+                    },
+                    time_end:Date.now(),
+                });
+            } else {
+                this.monitoringSys.sendInfoSqlSuccsess('sql:'+this.ctx.common.nameApp+':'+this.ctx.req.url+':'+key, {
+                    ...vMsgMonitoring,
+                    time_end:Date.now(),
+                });
+            }
+            
+        } catch(e){
+            this.errorSys.errorEx(e, key, 'SQLError>>>'+key);
+            this.monitoringSys.sendErrorSql('sqlerror:'+this.ctx.common.nameApp+':'+this.ctx.req.url+':'+key, {
+                ...vMsgMonitoring,
+                data: {
+                    trace:e,
+                    body:this.ctx.body,
+                    param:this.ctx.param,
+                },
+                time_end:Date.now(),
+            });
+        }
+    }
+
+    protected async throwExe<T>(key:string, cb:() => Promise<T>){
+        const vMsgMonitoring = {
+            time_start: Date.now(),
+            info:{
+                user_id:String(this.ctx.sys?.userSys?.idUser),
+            }
+        };
+        try {
+            await cb();
+
+            if(this.monitoringSys && Date.now() - vMsgMonitoring.time_start > 5000){
+                this.monitoringSys.sendInfoSqlTimelong('sqltimelong:'+this.ctx.common.nameApp+':'+this.ctx.req.url+':'+key, {
+                    ...vMsgMonitoring,
+                    data: {
+                        body:this.ctx.body,
+                        param:this.ctx.param,
+                    },
+                    time_end:Date.now(),
+                });
+            } else if(this.monitoringSys){
+                this.monitoringSys.sendInfoSqlSuccsess('sql:'+this.ctx.common.nameApp+':'+this.ctx.req.url+':'+key, {
+                    ...vMsgMonitoring,
+                    time_end:Date.now(),
+                });
+            }
+            
+        } catch(e){
+            
+            if(this.monitoringSys){
+                this.monitoringSys.sendErrorSql('sqlerror:'+this.ctx.common.nameApp+':'+this.ctx.req.url+':'+key, {
+                    ...vMsgMonitoring,
+                    data: {
+                        trace:e,
+                        body:this.ctx.body,
+                        param:this.ctx.param,
+                    },
+                    time_end:Date.now(),
+                });
+            }
+
+            throw this.errorSys.throwEx(e, key, 'SQLError>>>'+key);
+        }
+    }
 
 	/**
      * Авто кеширование для встраивания в функцию

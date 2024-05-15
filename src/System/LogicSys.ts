@@ -20,19 +20,21 @@ export class LogicSys {
 		this.userSys = ctx.sys.userSys;
 	}
 
-	/**
-	 * Включить запросы на базу данных
-	 */
-	fMasterDBOn(): void {
-		this.ctx.sys.bMasterDB = true;
-	}
+	// /**
+    //  * TODO
+	//  * Включить запросы на базу данных
+	//  */
+	// fMasterDBOn(): void {
+	// 	this.ctx.sys.bMasterDB = true;
+	// }
 
-	/**
-	 * Отключить запросы на мастер базу данных
-	 */
-	fMasterDBOff(): void {
-		this.ctx.sys.bMasterDB = false;
-	}
+	// /**
+    //  * TODO
+	//  * Отключить запросы на мастер базу данных
+	//  */
+	// fMasterDBOff(): void {
+	// 	this.ctx.sys.bMasterDB = false;
+	// }
 
 	/**
 	 * Включить кеш редиса
@@ -86,26 +88,27 @@ export class LogicSys {
 		return validData;
 	}
 
-	/**
-     * Блок для выполнения запросов на мастер базу данных
-     * @param callback - функция содержащая логическую операцию
-     */
-	async faQueryMasterDB(sError: string, callback: Function): Promise<any> {
-		this.ctx.sys.bMasterDB = true;
+	// /**
+    //  * TODO устаревший код удалить
+    //  * Блок для выполнения запросов на мастер базу данных
+    //  * @param callback - функция содержащая логическую операцию
+    //  */
+	// async faQueryMasterDB(sError: string, callback: Function): Promise<any> {
+	// 	this.ctx.sys.bMasterDB = true;
 
-		let out = null;
-		try {
-			out = await callback();
-			this.errorSys.devNotice('query_master_db', sError);
-		} catch (e) {
-			this.errorSys.error('query_master_db', sError);
-			throw e;
-		}
+	// 	let out = null;
+	// 	try {
+	// 		out = await callback();
+	// 		this.errorSys.devNotice('query_master_db', sError);
+	// 	} catch (e) {
+	// 		this.errorSys.error('query_master_db', sError);
+	// 		throw e;
+	// 	}
 
-		this.ctx.sys.bMasterDB = false;
+	// 	this.ctx.sys.bMasterDB = false;
 
-		return out;
-	}
+	// 	return out;
+	// }
 
 	/**
 	 * Блок для генерации ошибки без индексирования в API

@@ -29,108 +29,21 @@ export class MattermostSys {
 		this.errorSys = ctx.sys.errorSys;
 	}
 
-	/**
-     * Отправить сообщение об ошибке в чат errors
-     * @param errorSys
-     * @param err
-     * @param addMessage
+    /**
+     * общий метод для отправки сообщения
+     * @param msg
+     * @param hook_url
      */
-	public sendErrorMsg(errorSys: ErrorSys, err: Error, addMessage: string): void {
-		const arrError = errorSys.getErrors();
-
-		const msg: MattermostMsg = {
-			attachments: [
-				{
-					fallback: 'test',
-					color: 'danger',
-					text: `:boom: :trollface: Apikey: ${this.ctx.sys.apikey}`,
-					title: `Ошибка на ${this.ctx.common.env}`,
-					fields: [
-						{
-							short: true,
-							title: 'URL',
-							value: `:link: ${this.ctx.req.url}`,
-						},
-						{
-							short: true,
-							title: 'Сообщение',
-							value: `:zap: ${addMessage}`,
-						},
-						{
-							short: false,
-							title: 'stack',
-							value: `:bangbang: ${err.stack}`,
-						},
-						{
-							short: false,
-							title: 'request body',
-							value: JSON.stringify(this.ctx.body),
-						},
-					],
-				},
-			],
-		};
-
-		for (const k in arrError) {
-			const v = arrError[k];
-
-			msg.attachments[0].fields.push({
-				short: true,
-				title: k,
-				value: v,
-			});
-		}
-
-		this.send(msg, this.ctx.common.hook_url_errors);
+	public send(sUrl: string, msg: MattermostMsg): void {
+		axios.post(sUrl, msg);
 	}
 
-	/**
-     * Отправить сообщение об ошибке в чат errors
-     * @param errorSys
-     * @param err
-     * @param addMessage
-     */
-	public sendFrontErrorMsg(aError: {title: string; value: string}[], sMessage: string): void {
-		const msg: MattermostMsg = {
-			attachments: [
-				{
-					fallback: 'test',
-					color: 'danger',
-					text: `:boom: :trollface: ApiKey:${this.ctx.sys.apikey} - ID:${this.ctx.sys.userSys.idUser}`,
-					title: `Ошибка на ${this.ctx.common.env}`,
-					fields: [
-					],
-				},
-			],
-		};
-
-		try {
-			for (let i = 0; i < aError.length; i++) {
-				const v = aError[i];
-
-				if (i < 20) { // Максимум 20 ошибок
-					msg.attachments[0].fields.push({
-						short: true,
-						title: v.title,
-						value: v.value,
-					});
-				}
-			}
-		} catch (e) {
-			this.errorSys.errorEx(e, 'error_format', 'Некоректный формат ошибок с фронта');
-		}
-
-		if (this.errorSys.isOk()) {
-			this.send(msg, this.ctx.common.hook_url_front_errors);
-		}
-	}
-
-	/**
+    /**
      * Отправить сообщение по мониторингу RabbitMQ
      * @param sTitle - Заголово сообщения
 	 * @param sMsg - Сообщение
      */
-	public sendMonitoringMsg(sTitle: string, sMsg: string): void {
+	public sendMsg(sUrl:string, sTitle: string, sMsg: string): void {
 		const msg: MattermostMsg = {
 			attachments: [
 				{
@@ -149,15 +62,47 @@ export class MattermostSys {
 			],
 		};
 
-		this.send(msg, this.ctx.common.hook_url_monitoring);
+		this.send(sUrl, msg);
 	}
 
 	/**
-     * общий метод для отправки сообщения
-     * @param msg
-     * @param hook_url
+     * Отправить сообщение об ошибке в чат errors
+     * @param errorSys
+     * @param err
+     * @param addMessage
      */
-	public send(msg: MattermostMsg, hook_url: string): void {
-		axios.post(hook_url, msg);
+	public sendMsgList(sUrl:string, aMsgList: {title: string; value: string}[]): void {
+		const msg: MattermostMsg = {
+			attachments: [
+				{
+					fallback: 'test',
+					color: 'danger',
+					text: `:boom: :trollface: ApiKey:${this.ctx.sys.apikey} - ID:${this.ctx.sys.userSys.idUser}`,
+					title: `Ошибка на ${this.ctx.common.env}`,
+					fields: [
+					],
+				},
+			],
+		};
+
+		try {
+			for (let i = 0; i < aMsgList.length; i++) {
+				const v = aMsgList[i];
+
+				if (i < 20) { // Максимум 20 ошибок
+					msg.attachments[0].fields.push({
+						short: true,
+						title: v.title,
+						value: v.value,
+					});
+				}
+			}
+		} catch (e) {
+			this.errorSys.errorEx(e, 'error_format', 'Некоректный формат ошибок с фронта');
+		}
+
+		if (this.errorSys.isOk()) {
+			this.send(sUrl, msg);
+		}
 	}
 }

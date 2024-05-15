@@ -5,16 +5,17 @@ import { ErrorSys } from '@a-a-game-studio/aa-components';
 import { Knex } from 'knex';
 import { AAContext } from '@a-a-game-studio/aa-server';
 
-import axios, { AxiosInstance } from 'axios';
 import { UserSys } from './UserSys';
 import { ResponseSys } from './ResponseSys';
 import { LogicSys } from './LogicSys';
 import { CacheSys } from './CacheSys';
 import { AccessSys } from './AccessSys';
-import { SeoBase } from '../Components/Seo';
 import { RedisSys } from './RedisSys';
 import { CryptAlgT } from '../Helpers/CryptoH';
 import { JwtAlgT } from '../Helpers/JwtH';
+
+import { MqClientSys } from '@a-a-game-studio/aa-mq';
+import { MonitoringSys } from '@63pokupki/monitoring.lib';
 
 export class P63Context extends AAContext {
 
@@ -26,10 +27,6 @@ export class P63Context extends AAContext {
 		oldCoreURL: string;
 		nameApp: string;
 		errorMute: boolean;
-		hook_url_errors: string;
-		hook_url_monitoring: string;
-		hook_url_front_errors: string;
-        hook_url_errors_api: string;
         hook_url_auth: string;
 		port: number;
 	} = <any>{};
@@ -51,11 +48,10 @@ export class P63Context extends AAContext {
         }
     };
 	sys: {
-		apikey: string;
-        srvkey: string;
-		bAuth: boolean;
-        bSrv: boolean;
-		bMasterDB: boolean;
+		apikey: string; // авторизационный ключ
+        srvkey: string; // Межсерверный ключ
+		bAuth: boolean; // Авторизация успешна/нет
+        bSrv: boolean; // Межсерверный запрос авторизации
 		bCache?: boolean;
 		errorSys: ErrorSys;
 		userSys: UserSys;
@@ -63,17 +59,13 @@ export class P63Context extends AAContext {
 		logicSys: LogicSys;
 		cacheSys: CacheSys;
 		accessSys: AccessSys;
-		seo?: SeoBase;
+        monitoringSys: MonitoringSys;
 	} = <any>{};
 
 	infrastructure: {
 		mysql: Knex;
-		mysqlMaster: Knex;
-        mysqlMasterPool?: Knex[]; // Пулл для мультимастера
-        mysqlSlavePool?: Knex[]; // Пулл для балансировки запросов
-		sphinx?: Knex;
 		redis: RedisSys;
-		sphinxErrors?: Knex;
+        mqError?: MqClientSys;
 	} = <any>{};
 }
 
@@ -85,10 +77,6 @@ const Req: any = {
 		oldCoreURL: null, 					// URL адрес основного сайта
 		nameApp: 'default',
 		errorMute: true,
-		hook_url_errors: 'https://', 		// Сообщения об ошибках mattermost
-		hook_url_monitoring: 'https://', 	// Сообщения мониторинга в mattermost
-		hook_url_front_errors: 'https://', 	// Сообщения мониторинга ошибок в mattermost
-        hook_url_errors_api: 'https://',    // Система ошибок
         hook_url_auth: 'https://',          // Авторизация
 		port: 3005, 						// порт на котором будет работать нода
 	},
@@ -110,7 +98,6 @@ const Req: any = {
         srvkey: '',
 		bAuth: false, 			// флаг авторизации
         bSrv: false, 			// флаг серверного запроса
-		bMasterDB: false, 		// По умолчанию используется maxScale
 		bCache: true, 			// По умолчанию кеш используется
 
 		errorSys: null, 		// Система ошибок
@@ -119,14 +106,12 @@ const Req: any = {
 		logicSys: null, 		// Система логики управления приложением
 		cacheSys: null, 		// Система кеширования\
 		accessSys: null,
+        monitoringSys: null,    // Система мониторинга
 	},
 	infrastructure: {
-		mysql: null, 			// коннект к балансеру БД
-		mysqlMaster: null, 		// конект к мастеру
-		sphinx: null,
-		redis: null,
-		rabbit: null,
-		sphinxErrors: null,
+		mysql: null, 			// коннект к БД по умолчанию
+		redis: null,            // Система кеширования по умолчанию
+        mqError: null           // Система очередей - ошибок
 	},
 };
 

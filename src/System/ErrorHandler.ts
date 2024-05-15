@@ -106,9 +106,18 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
         };
 
         try { // отправка ошибки в апи
-            await faApiRequest<any>(ctx, ctx.common.hook_url_errors_api, vErrorForAPI);
+            ctx.sys.monitoringSys.sendErrorApi('api_error:' + ctx.common.nameApp+':'+ ctx.req.url, {
+                time_start: Date.now(),
+                time_end: Date.now(),
+                info: {
+                    api:ctx.apikey,
+                    user_id:String(ctx.sys.userSys.idUser)
+                },
+                data: vErrorForAPI
+            });
+            // await faApiRequest<any>(ctx, ctx.common.hook_url_errors_api, vErrorForAPI);
         } catch (e) {
-            console.warn('Не удалось отправить ошибку на api', ctx.common.hook_url_errors_api);
+            console.warn('Не удалось отправить ошибку на api');
         }
     }
 

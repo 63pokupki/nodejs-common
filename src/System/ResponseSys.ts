@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { ErrorSys } from '@a-a-game-studio/aa-components';
+import { MonitoringSys } from '@63pokupki/monitoring.lib';
 
 import { fErrorHandler } from './ErrorHandler';
 import { MattermostSys } from './MattermostSys';
@@ -34,12 +35,57 @@ const iInterval = setInterval(() =>{
 const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
 	if(ixSendRouter[idx] && new Date().getTime() - ixSendRouter[idx].time > 5000 && ctx.common.env === 'prod'){
 		const gMattermostSys = new MattermostSys(ctx);
-		gMattermostSys.sendMonitoringMsg('Мониторинг скорости запросов', `${ctx.common.nameApp} - ${ctx.url.pathname} 
-		time: - длительность выполнения ${(new Date().valueOf()-new Date(ixSendRouter[idx].time).valueOf())/1000} сек.
-		Дата запроса ${new Date(ixSendRouter[idx].time).toString()}
-		body: - ${JSON.stringify(ctx.body)}`);
+
+        if(ctx.sys.monitoringSys){
+            ctx.sys.monitoringSys.sendInfoApiTimecrit('slowcrit:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
+                time_start: ixSendRouter[idx].time,
+                time_end: Date.now(),
+                info: {
+                    title:'Мониторинг скорости запросов', 
+                    url:`${ctx.common.nameApp} - ${ctx.url.pathname}`,
+                    time: `- длительность выполнения ${(new Date().valueOf()-new Date(ixSendRouter[idx].time).valueOf())/1000} сек.`,
+                    date: `${new Date(ixSendRouter[idx].time).toString()}`,
+                
+                },
+                data: JSON.stringify(ctx.body)
+            });
+        }
 
 		console.log('WARNING - ОЧЕНЬ МЕДЛЕННЫЙ МЕТОД', 'url: ', ctx.url.pathname, 'body: ', ctx.body)
+	} else if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time > 2000 && ctx.common.env === 'prod'){
+		const gMattermostSys = new MattermostSys(ctx);
+
+        if(ctx.sys.monitoringSys){
+            ctx.sys.monitoringSys.sendInfoApiTimelong('slow:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
+                time_start: new Date(ixSendRouter[idx].time).valueOf(),
+                time_end: Date.now(),
+                info: {
+                    title:'Мониторинг скорости запросов', 
+                    url:`${ctx.common.nameApp} - ${ctx.url.pathname}`,
+                    time: `- длительность выполнения ${(new Date().valueOf()-new Date(ixSendRouter[idx].time).valueOf())/1000} сек.`,
+                    date: `${new Date(ixSendRouter[idx].time).toString()}`,
+                
+                },
+                data: JSON.stringify(ctx.body)
+            });
+        }
+	} else if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time < 2000 && ctx.common.env === 'prod'){
+		const gMattermostSys = new MattermostSys(ctx);
+
+        if(ctx.sys.monitoringSys){
+            ctx.sys.monitoringSys.sendInfoApiSuccsess('ok:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
+                time_start: new Date(ixSendRouter[idx].time).valueOf(),
+                time_end: Date.now(),
+                info: {
+                    title:'Мониторинг скорости запросов', 
+                    url:`${ctx.common.nameApp} - ${ctx.url.pathname}`,
+                    time: `- длительность выполнения ${(new Date().valueOf()-new Date(ixSendRouter[idx].time).valueOf())/1000} сек.`,
+                    date: `${new Date(ixSendRouter[idx].time).toString()}`,
+                
+                },
+                data: JSON.stringify(ctx.body)
+            });
+        }
 	}
 }
 
