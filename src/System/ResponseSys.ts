@@ -35,7 +35,6 @@ const iInterval = setInterval(() =>{
 const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
 
 	if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time > 5000 && ctx.common.env === 'prod'){
-		console.log('response timecrit>>>',ctx.url.pathname)
 
         if(ctx.sys.monitoringSys){
             ctx.sys.monitoringSys.sendInfoApiTimecrit('slowcrit:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
@@ -44,7 +43,7 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
                 info: {
                     title:'Мониторинг скорости запросов', 
                     url:`${ctx.common.nameApp} - ${ctx.url.pathname}`,
-                    time: `- длительность выполнения ${(new Date().valueOf()-new Date(ixSendRouter[idx].time).valueOf())/1000} сек.`,
+                    time: `- длительность выполнения ${(Date.now()-ixSendRouter[idx].time)/1000} сек.`,
                     date: `${new Date(ixSendRouter[idx].time).toString()}`,
                 
                 },
@@ -55,8 +54,6 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
 		console.log('WARNING - ОЧЕНЬ МЕДЛЕННЫЙ МЕТОД', 'url: ', ctx.url.pathname, 'body: ', ctx.body)
 	} else if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time > 2000 && ctx.common.env === 'prod'){
 		
-
-        console.log('response timelong>>>',ctx.url.pathname)
         if(ctx.sys.monitoringSys){
             ctx.sys.monitoringSys.sendInfoApiTimelong('slow:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
                 time_start: ixSendRouter[idx].time,
@@ -64,7 +61,7 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
                 info: {
                     title:'Мониторинг скорости запросов', 
                     url:`${ctx.common.nameApp} - ${ctx.url.pathname}`,
-                    time: `- длительность выполнения ${(new Date().valueOf()-new Date(ixSendRouter[idx].time).valueOf())/1000} сек.`,
+                    time: `- длительность выполнения ${(Date.now()-ixSendRouter[idx].time)/1000} сек.`,
                     date: `${new Date(ixSendRouter[idx].time).toString()}`,
                 
                 },
@@ -73,7 +70,6 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
         }
 	} else if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time < 2000 && ctx.common.env === 'prod'){
 
-        console.log('response ok>>>',ctx.url.pathname)
         if(ctx.sys.monitoringSys){
             ctx.sys.monitoringSys.sendInfoApiSuccsess('ok:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
                 time_start: ixSendRouter[idx].time,
@@ -81,7 +77,7 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
                 info: {
                     title:'Мониторинг скорости запросов', 
                     url:`${ctx.common.nameApp} - ${ctx.url.pathname}`,
-                    time: `- длительность выполнения ${(new Date().valueOf()-new Date(ixSendRouter[idx].time).valueOf())/1000} сек.`,
+                    time: `- длительность выполнения ${(Date.now()-ixSendRouter[idx].time)/1000 } сек.`,
                     date: `${new Date(ixSendRouter[idx].time).toString()}`,
                 
                 },
@@ -90,7 +86,6 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
         }
 	}
 
-    console.log('response else>>>',ctx.url.pathname, new Date().getTime(), Date.now(), ixSendRouter[idx].time,  Date.now() - ixSendRouter[idx].time)
 }
 
 /**
@@ -104,7 +99,7 @@ export const faSendRouter = (faCallback: (ctx: P63Context) => Promise<void> ) =>
         nameApp:ctx.common.nameApp,
         pathname:ctx.url.pathname,
         body:JSON.stringify(ctx.body),
-        time:new Date().getTime()
+        time:Date.now()
     }
 
 	try {
