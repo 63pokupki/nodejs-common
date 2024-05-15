@@ -12,7 +12,7 @@ export default function SubSysMiddleware(ctx: P63Context): void {
 	ctx.sys.cacheSys = new CacheSys(ctx); // Система кеширования
 
     if(ctx.infrastructure.mqError){
-        ctx.sys.monitoringSys = new MonitoringSys(ctx.common.nameApp, ctx.infrastructure.mqError); // Система мониторинга
+        ctx.sys.monitoringSys = new MonitoringSys(ctx.common.host_public, ctx.common.nameApp, ctx.infrastructure.mqError); // Система мониторинга
     } else {
         console.log('WARNING>>> - ctx.infrastructure.mqError не установлен');
     }

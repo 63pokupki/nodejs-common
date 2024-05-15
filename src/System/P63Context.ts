@@ -28,6 +28,7 @@ export class P63Context extends AAContext {
 		nameApp: string;
 		errorMute: boolean;
         hook_url_auth: string;
+        host_public:string;
 		port: number;
 	} = <any>{};
     auth: {
@@ -78,6 +79,7 @@ const Req: any = {
 		nameApp: 'default',
 		errorMute: true,
         hook_url_auth: 'https://',          // Авторизация
+        host_public: 'https://',          // Публичный host
 		port: 3005, 						// порт на котором будет работать нода
 	},
     srv: { // маршрутизация сервера
