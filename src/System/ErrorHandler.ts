@@ -93,11 +93,11 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
         }
 
         const vErrorForAPI = { // собираем ошибку
-            api_key: ctx.sys.apikey || null,
+            apikey: ctx.sys.apikey || null,
             type: 'backend',
             category: tCategoryError,
-            env: ifDevMode ? 'dev' : 'prod',
-            user_id: ctx.sys.userSys.idUser || null,
+            env: ctx.common.host_public,
+            user_id: ctx.sys.userSys.idUser || 0,
             url: ctx.req.url || null,
             message: ctx.msg || null,
             stack: JSON.stringify(aTraceErrorSend) || null,
@@ -110,7 +110,7 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
                 time_start: Date.now(),
                 time_end: Date.now(),
                 info: {
-                    api:ctx.apikey,
+                    apikey:ctx.apikey,
                     user_id:String(ctx.sys.userSys.idUser)
                 },
                 data: vErrorForAPI
