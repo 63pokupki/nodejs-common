@@ -82,8 +82,8 @@ export default class BaseProxySQLts {
         if (iQCounter % 100 == 0){
             console.log('>>>iQCounterProxy>>>', iQCounter);
         }
-
-        return await this.dbProxy.exe(vQueryBuilder) as T;
+        
+        return await (<any>this.dbProxy.exe(vQueryBuilder)) as T;
 		
 	}
 
