@@ -37,7 +37,7 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
 	if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time > 5000){
 
         if(ctx.sys.monitoringSys){
-            ctx.sys.monitoringSys.sendInfoApiTimecrit('slowcrit:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
+            ctx.sys.monitoringSys.sendInfoApiTimecrit('api_slowcrit:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
                 time_start: ixSendRouter[idx].time,
                 time_end: Date.now(),
                 info: {
@@ -55,7 +55,7 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
 	} else if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time > 2000){
 		
         if(ctx.sys.monitoringSys){
-            ctx.sys.monitoringSys.sendInfoApiTimelong('slow:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
+            ctx.sys.monitoringSys.sendInfoApiTimelong('api_slow:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
                 time_start: ixSendRouter[idx].time,
                 time_end: Date.now(),
                 info: {
@@ -70,20 +70,20 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
         }
 	} else if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time < 2000){
 
-        if(ctx.sys.monitoringSys){
-            ctx.sys.monitoringSys.sendInfoApiSuccsess('ok:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
-                time_start: ixSendRouter[idx].time,
-                time_end: Date.now(),
-                info: {
-                    title:'Мониторинг скорости запросов', 
-                    url:`${ctx.common.nameApp} - ${ctx.url.pathname}`,
-                    time: `- длительность выполнения ${(Date.now()-ixSendRouter[idx].time)/1000 } сек.`,
-                    date: `${new Date(ixSendRouter[idx].time).toString()}`,
+        // if(ctx.sys.monitoringSys){
+        //     ctx.sys.monitoringSys.sendInfoApiSuccsess('ok:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
+        //         time_start: ixSendRouter[idx].time,
+        //         time_end: Date.now(),
+        //         info: {
+        //             title:'Мониторинг скорости запросов', 
+        //             url:`${ctx.common.nameApp} - ${ctx.url.pathname}`,
+        //             time: `- длительность выполнения ${(Date.now()-ixSendRouter[idx].time)/1000 } сек.`,
+        //             date: `${new Date(ixSendRouter[idx].time).toString()}`,
                 
-                },
-                data: JSON.stringify(ctx.body)
-            });
-        }
+        //         },
+        //         data: JSON.stringify(ctx.body)
+        //     });
+        // }
 	}
 
 }
