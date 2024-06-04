@@ -83,7 +83,7 @@ export default class BaseProxySQLts {
             console.log('>>>iQCounterProxy>>>', iQCounter);
         }
         
-        return await (<any>this.dbProxy.exe(vQueryBuilder)) as T;
+        return await this.dbProxy.exe(vQueryBuilder);
 		
 	}
 
