@@ -1,8 +1,8 @@
 import BaseCtrl from './System/BaseCtrl';
-// export { BaseCtrl as BaseCtrl };
 
 import BaseSQL from './System/BaseSQL';
-// export { BaseSQL as BaseSQL };
+
+import BaseProxySQL from './System/BaseProxySQL';
 
 import BaseM from './System/BaseM';
 // export { BaseM as BaseM };
@@ -66,6 +66,7 @@ const Middleware = {
 export {
 	BaseCtrl,
 	BaseSQL,
+    BaseProxySQL,
 	BaseM,
 	UserSys,
 	AccessBuilderSys,
