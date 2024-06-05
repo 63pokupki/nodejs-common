@@ -19,17 +19,17 @@ const ixSendRouter:Record<number, {
 /** Интервал для очистки индексированного списка если остались не удаленные полезные нагрузки по истечения 5 секунд
  * Интервал вызывается раз в час
  */
-const iInterval = setInterval(() =>{
-    const aidKeys = Object.keys(ixSendRouter);
-	for(let i = 0; i < aidKeys.length; i++) {
-		const idKeys = Number(aidKeys[i]);
-		const vCurrentSend = ixSendRouter[idKeys];
-		if (vCurrentSend && Date.now() - vCurrentSend.time > 60000) {
-			console.log('WARNING - У НАС ЕСТЬ ЗАВИСШИЙ ЗАПРОС', 'url: ', ixSendRouter[idKeys].pathname, 'body: ', ixSendRouter[idKeys].body)
-			delete ixSendRouter[idKeys];
-		}
-	}
-}, 3600000);
+// const iInterval = setInterval(() =>{
+//     const aidKeys = Object.keys(ixSendRouter);
+// 	for(let i = 0; i < aidKeys.length; i++) {
+// 		const idKeys = Number(aidKeys[i]);
+// 		const vCurrentSend = ixSendRouter[idKeys];
+// 		if (vCurrentSend && Date.now() - vCurrentSend.time > 60000) {
+// 			console.log('WARNING - У НАС ЕСТЬ ЗАВИСШИЙ ЗАПРОС', 'url: ', ixSendRouter[idKeys].pathname, 'body: ', ixSendRouter[idKeys].body)
+// 			delete ixSendRouter[idKeys];
+// 		}
+// 	}
+// }, 3600000);
 
 /** Функция отправки сообщения в маттермост */
 const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
@@ -93,27 +93,27 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
  * @param faCallback - функция контролера
  */
 export const faSendRouter = (faCallback: (ctx: P63Context) => Promise<void> ) => async (ctx: P63Context): Promise<void> => {
-	i++;
-    const currentIdx = i
-    ixSendRouter[currentIdx] = {
-        nameApp:ctx.common.nameApp,
-        pathname:ctx.url.pathname,
-        body:JSON.stringify(ctx.body),
-        time:Date.now()
-    }
+	// i++;
+    // const currentIdx = i
+    // ixSendRouter[currentIdx] = {
+    //     nameApp:ctx.common.nameApp,
+    //     pathname:ctx.url.pathname,
+    //     body:JSON.stringify(ctx.body),
+    //     time:Date.now()
+    // }
 
 	try {
 
 		await faCallback(ctx);
 
-		fSendMonitoringMsg(currentIdx, ctx);
+		// fSendMonitoringMsg(currentIdx, ctx);
 
-        delete ixSendRouter[currentIdx];
+        // delete ixSendRouter[currentIdx];
 
 	} catch (e) {
-		fSendMonitoringMsg(currentIdx, ctx);
+		// fSendMonitoringMsg(currentIdx, ctx);
 
-        delete ixSendRouter[currentIdx];
+        // delete ixSendRouter[currentIdx];
 		if (ctx.sys.errorSys.isOk()) {
 			ctx.sys.errorSys.error('stop_execute_no_error', e.message);
 		} else {
