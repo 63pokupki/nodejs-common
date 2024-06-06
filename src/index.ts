@@ -52,6 +52,7 @@ import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware';
 import { mJwtDecode, mJwtEncode } from './Helpers/JwtH';
 import { mDecrypt, mEncrypt } from './Helpers/CryptoH';
 import { AccessBuilderSys } from './System/AccessBuilderSys';
+import { MonitoringSys } from '@63pokupki/monitoring.lib';
 
 const Middleware = {
     AuthSysMiddleware,
@@ -86,6 +87,7 @@ export {
 	HelperSys, 			// Вспомогательные функции которые ни к чему не привязаны
     P63Context,
 	Mattermost,
+    MonitoringSys,
 	S3DO,
 	GroupT,				// Группы пользователей
     OrgRoleT,           // Роли пользователей в организациях
