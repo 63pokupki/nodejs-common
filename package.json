@@ -30,7 +30,7 @@
     "@63pokupki/monitoring.lib": "^0.0.7",
     "@a-a-game-studio/aa-server": "^1.0.9",
     "@a-a-game-studio/aa-mq": "^0.0.21",
-    "@a-a-game-studio/aa-proxy-db": "0.4.6",
+    "@a-a-game-studio/aa-proxy-db": "0.4.7",
     "aws-sdk": "^2.1016.0",
     "axios": "^0.24.0",
     "colors": "^1.4.0",
