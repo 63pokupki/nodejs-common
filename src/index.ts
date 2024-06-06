@@ -53,6 +53,7 @@ import { mJwtDecode, mJwtEncode } from './Helpers/JwtH';
 import { mDecrypt, mEncrypt } from './Helpers/CryptoH';
 import { AccessBuilderSys } from './System/AccessBuilderSys';
 import { MonitoringSys } from '@63pokupki/monitoring.lib';
+import { DbClientSys } from '@a-a-game-studio/aa-proxy-db';
 
 const Middleware = {
     AuthSysMiddleware,
@@ -88,6 +89,7 @@ export {
     P63Context,
 	Mattermost,
     MonitoringSys,
+    DbClientSys,
 	S3DO,
 	GroupT,				// Группы пользователей
     OrgRoleT,           // Роли пользователей в организациях
