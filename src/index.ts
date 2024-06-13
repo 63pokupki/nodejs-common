@@ -10,6 +10,8 @@ import BaseM from './System/BaseM';
 import { UserSys } from './System/UserSys';
 import { faSendRouter, ResponseSys } from './System/ResponseSys';
 
+import { MqClientSys } from '@a-a-game-studio/aa-mq';
+
 import {
 	P63Context, initMainRequest, devReq,
 } from './System/P63Context';
@@ -90,6 +92,7 @@ export {
 	Mattermost,
     MonitoringSys,
     DbClientSys,
+    MqClientSys,
 	S3DO,
 	GroupT,				// Группы пользователей
     OrgRoleT,           // Роли пользователей в организациях
