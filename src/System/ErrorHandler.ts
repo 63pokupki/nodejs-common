@@ -91,29 +91,29 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
                 trace: vTraceError?.e?.stack
             })
         }
-
-        const vErrorForAPI = { // собираем ошибку
-            apikey: ctx.sys.apikey || null,
-            type: 'backend',
-            category: tCategoryError,
-            env: ctx.common.host_public,
-            user_id: ctx.sys.userSys.idUser || 0,
-            url: ctx.req.url || null,
-            message: ctx.msg || null,
-            stack: JSON.stringify(aTraceErrorSend) || null,
-            request_body: JSON.stringify(ctx.body) || null,
-            fields: JSON.stringify(ixErrors),
-        };
+        
 
         try { // отправка ошибки в апи
+
+            const vErrorForAPI = { // собираем ошибку
+                apikey: ctx.sys.apikey || null,
+                type: 'backend',
+                category: tCategoryError,
+                env: ctx.common.host_public,
+                user_id: ctx.sys.userSys.idUser || 0,
+                url: ctx.req.url || null,
+                message: ctx.msg || null,
+                stack: JSON.stringify(aTraceErrorSend) || null,
+                request_body: JSON.stringify(ctx.body) || null,
+                fields: JSON.stringify(ixErrors),
+            };
+
+
             ctx.sys.monitoringSys.sendErrorApi('api_error:' + ctx.common.nameApp+':'+ ctx.req.url, {
                 time_start: Date.now(),
                 time_end: Date.now(),
-                info: {
-                    apikey:ctx.apikey,
-                    user_id:String(ctx.sys.userSys.idUser)
-                },
-                data: vErrorForAPI
+                val:ctx.sys.userSys.idUser,
+                msg: JSON.stringify(vErrorForAPI)
             });
             // await faApiRequest<any>(ctx, ctx.common.hook_url_errors_api, vErrorForAPI);
         } catch (e) {
