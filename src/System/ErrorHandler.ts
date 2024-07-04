@@ -1,6 +1,7 @@
 import { P63Context } from './P63Context';
 import { ErrorSys, ErrorT } from '@a-a-game-studio/aa-components/lib';
 import { faApiRequest } from './ApiRequest';
+import { tryJsonToString } from '../Helpers/Json';
 
 
 enum CategoryErrorT {
@@ -91,8 +92,8 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
                 trace: vTraceError?.e?.stack
             })
         }
-        
 
+        
         try { // отправка ошибки в апи
 
             const vErrorForAPI = { // собираем ошибку
@@ -108,12 +109,11 @@ export const fErrorHandler = async (ctx: P63Context): Promise<void> => {
                 fields: JSON.stringify(ixErrors),
             };
 
-
             ctx.sys.monitoringSys.sendErrorApi('api_error:' + ctx.common.nameApp+':'+ ctx.req.url, {
                 time_start: Date.now(),
                 time_end: Date.now(),
                 val:ctx.sys.userSys.idUser,
-                msg: JSON.stringify(vErrorForAPI)
+                msg:tryJsonToString(vErrorForAPI)
             });
             // await faApiRequest<any>(ctx, ctx.common.hook_url_errors_api, vErrorForAPI);
         } catch (e) {

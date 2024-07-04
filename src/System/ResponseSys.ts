@@ -5,6 +5,7 @@ import { MonitoringSys } from '@63pokupki/monitoring.lib';
 import { fErrorHandler } from './ErrorHandler';
 import { MattermostSys } from './MattermostSys';
 import { P63Context } from './P63Context';
+import { tryJsonToString } from '../Helpers/Json';
 
 let i = 0;
 
@@ -40,14 +41,17 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
             ctx.sys.monitoringSys.sendInfoApiTimecrit('api_slowcrit:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
                 time_start: ixSendRouter[idx].time,
                 time_end: Date.now(),
-                info: {
-                    title:'Мониторинг скорости запросов', 
-                    url:`${ctx.common.nameApp} - ${ctx.url.pathname}`,
-                    time: `- длительность выполнения ${(Date.now()-ixSendRouter[idx].time)/1000} сек.`,
-                    date: `${new Date(ixSendRouter[idx].time).toString()}`,
-                
-                },
-                data: JSON.stringify(ctx.body)
+                val:Date.now()-ixSendRouter[idx].time,
+                msg:tryJsonToString({
+                    info: {
+                        title:'Мониторинг скорости запросов', 
+                        url:`${ctx.common.nameApp} - ${ctx.url.pathname}`,
+                        time: `- длительность выполнения ${(Date.now()-ixSendRouter[idx].time)/1000} сек.`,
+                        date: `${new Date(ixSendRouter[idx].time).toString()}`,
+                    
+                    },
+                    data: ctx.body
+                })
             });
         }
 
@@ -58,14 +62,17 @@ const fSendMonitoringMsg = (idx: number, ctx: P63Context): void => {
             ctx.sys.monitoringSys.sendInfoApiTimelong('api_slow:'+ctx.common.nameApp +':'+ ctx.url.pathname, {
                 time_start: ixSendRouter[idx].time,
                 time_end: Date.now(),
-                info: {
-                    title:'Мониторинг скорости запросов', 
-                    url:`${ctx.common.nameApp} - ${ctx.url.pathname}`,
-                    time: `- длительность выполнения ${(Date.now()-ixSendRouter[idx].time)/1000} сек.`,
-                    date: `${new Date(ixSendRouter[idx].time).toString()}`,
+                val:Date.now()-ixSendRouter[idx].time,
+                msg:tryJsonToString({
+                    info: {
+                        title:'Мониторинг скорости запросов', 
+                        url:`${ctx.common.nameApp} - ${ctx.url.pathname}`,
+                        time: `- длительность выполнения ${(Date.now()-ixSendRouter[idx].time)/1000} сек.`,
+                        date: `${new Date(ixSendRouter[idx].time).toString()}`,
+                    },
+                    data: ctx.body
+                })
                 
-                },
-                data: JSON.stringify(ctx.body)
             });
         }
 	} else if(ixSendRouter[idx] && Date.now() - ixSendRouter[idx].time < 2000){

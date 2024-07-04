@@ -10,6 +10,7 @@ import { LogicSys } from './LogicSys';
 import { P63Context } from './P63Context';
 import { mRandomInteger } from '../Helpers/NumberH';
 import { MonitoringSys } from '@63pokupki/monitoring.lib';
+import { tryJsonToString } from '../Helpers/Json';
 
 let iQCounter = 0;
 let iQBSlave = 0;
@@ -211,10 +212,10 @@ export default class BaseSQL {
             if(Date.now() - vMsgMonitoring.time_start > 5000){
                 this.monitoringSys.sendInfoSqlTimelong('sqltimelong:'+this.ctx.common.nameApp+':'+this.ctx.req.url+':'+key, {
                     ...vMsgMonitoring,
-                    data: {
+                    msg: tryJsonToString({
                         body:this.ctx.body,
                         param:this.ctx.param,
-                    },
+                    }),
                     time_end:Date.now(),
                 });
             } else {
@@ -228,11 +229,11 @@ export default class BaseSQL {
             this.errorSys.errorEx(e, key, 'SQLError>>>'+key);
             this.monitoringSys.sendErrorSql('sqlerror:'+this.ctx.common.nameApp+':'+this.ctx.req.url+':'+key, {
                 ...vMsgMonitoring,
-                data: {
+                msg: tryJsonToString({
                     trace:e,
                     body:this.ctx.body,
                     param:this.ctx.param,
-                },
+                }),
                 time_end:Date.now(),
             });
         }
@@ -241,9 +242,7 @@ export default class BaseSQL {
     protected async throwExe<T>(key:string, cb:() => Promise<T>){
         const vMsgMonitoring = {
             time_start: Date.now(),
-            info:{
-                user_id:String(this.ctx.sys?.userSys?.idUser),
-            }
+            val:this.ctx.sys?.userSys?.idUser
         };
         try {
             await cb();
@@ -251,10 +250,10 @@ export default class BaseSQL {
             if(this.monitoringSys && Date.now() - vMsgMonitoring.time_start > 5000){
                 this.monitoringSys.sendInfoSqlTimelong('sqltimelong:'+this.ctx.common.nameApp+':'+this.ctx.req.url+':'+key, {
                     ...vMsgMonitoring,
-                    data: {
+                    msg: tryJsonToString({
                         body:this.ctx.body,
                         param:this.ctx.param,
-                    },
+                    }),
                     time_end:Date.now(),
                 });
             } else if(this.monitoringSys){
@@ -269,11 +268,11 @@ export default class BaseSQL {
             if(this.monitoringSys){
                 this.monitoringSys.sendErrorSql('sqlerror:'+this.ctx.common.nameApp+':'+this.ctx.req.url+':'+key, {
                     ...vMsgMonitoring,
-                    data: {
+                    msg: tryJsonToString({
                         trace:e,
                         body:this.ctx.body,
                         param:this.ctx.param,
-                    },
+                    }),
                     time_end:Date.now(),
                 });
             }
