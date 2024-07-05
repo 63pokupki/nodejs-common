@@ -44,7 +44,7 @@ export default function StatMiddleware(ctx: P63Context): void {
 
             for (let i = 0; i < aMsg.length; i++) {
                 const vMsg = aMsg[i];
-                ctx.sys.monitoringSys.sendInfoApiSuccsess('cnt_request_core:'+process.pid+':'+vMsg[0], {
+                ctx.sys.monitoringSys.sendInfoApiSuccsess('cnt_request_'+ctx.common.nameApp+':'+process.pid+':'+vMsg[0], {
                     time_start: Date.now(),
                     time_end: Date.now(),
                     val:vMsg[1],
@@ -52,7 +52,7 @@ export default function StatMiddleware(ctx: P63Context): void {
                 });
             }
 
-            ctx.sys.monitoringSys.sendInfoApiSuccsess('cntall_request_core:'+process.pid, {
+            ctx.sys.monitoringSys.sendInfoApiSuccsess('cntall_request_'+ctx.common.nameApp+''+process.pid, {
                 time_start: Date.now(),
                 time_end: Date.now(),
                 val:coreRequestGeneralCnt,
