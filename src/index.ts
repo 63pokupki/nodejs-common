@@ -56,6 +56,7 @@ import { mDecrypt, mEncrypt } from './Helpers/CryptoH';
 import { AccessBuilderSys } from './System/AccessBuilderSys';
 import { MonitoringSys } from '@63pokupki/monitoring.lib';
 import { DbClientSys } from '@a-a-game-studio/aa-proxy-db';
+import StatMiddleware from './System/Middleware/StatMiddleware';
 
 const Middleware = {
     AuthSysMiddleware,
@@ -64,6 +65,7 @@ const Middleware = {
 	ResponseSysMiddleware,
 	SubSysMiddleware,
     ParseBodyMiddleware,
+    StatMiddleware
 };
 
 
