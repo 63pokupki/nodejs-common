@@ -52,7 +52,7 @@ export default function StatMiddleware(ctx: P63Context): void {
                 });
             }
 
-            ctx.sys.monitoringSys.sendInfoApiSuccsess('cntall_request_'+ctx.common.nameApp+''+process.pid, {
+            ctx.sys.monitoringSys.sendInfoApiSuccsess('cntall_request_'+ctx.common.nameApp+':'+process.pid, {
                 time_start: Date.now(),
                 time_end: Date.now(),
                 val:coreRequestGeneralCnt,
