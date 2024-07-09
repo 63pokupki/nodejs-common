@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
+import { ErrorSys } from '@63pokupki/components/lib';
 import { P63Context } from './P63Context';
 
 interface MattermostField {

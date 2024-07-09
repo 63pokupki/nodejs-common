@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { ErrorSys } from '@a-a-game-studio/aa-components';
+import { ErrorSys } from '@63pokupki/components';
 import { MonitoringSys } from '@63pokupki/monitoring.lib';
 
 import { fErrorHandler } from './ErrorHandler';

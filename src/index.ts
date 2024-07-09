@@ -10,7 +10,7 @@ import BaseM from './System/BaseM';
 import { UserSys } from './System/UserSys';
 import { faSendRouter, ResponseSys } from './System/ResponseSys';
 
-import { MqClientSys } from '@a-a-game-studio/aa-mq';
+import { MqClientSys } from '@63pokupki/mq';
 
 import {
 	P63Context, initMainRequest, devReq,
@@ -55,7 +55,7 @@ import { mJwtDecode, mJwtEncode } from './Helpers/JwtH';
 import { mDecrypt, mEncrypt } from './Helpers/CryptoH';
 import { AccessBuilderSys } from './System/AccessBuilderSys';
 import { MonitoringSys } from '@63pokupki/monitoring.lib';
-import { DbClientSys } from '@a-a-game-studio/aa-proxy-db';
+import { DbClientSys } from '@63pokupki/proxy-db';
 import StatMiddleware from './System/Middleware/StatMiddleware';
 
 const Middleware = {

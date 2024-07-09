@@ -1,7 +1,7 @@
 import { RedisSys } from './RedisSys';
 
 import { UserSys } from './UserSys';
-import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
+import { ErrorSys } from '@63pokupki/components/lib';
 import { isObject } from 'util';
 import { P63Context } from './P63Context';
 

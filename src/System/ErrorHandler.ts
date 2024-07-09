@@ -1,5 +1,5 @@
 import { P63Context } from './P63Context';
-import { ErrorSys, ErrorT } from '@a-a-game-studio/aa-components/lib';
+import { ErrorSys, ErrorT } from '@63pokupki/components/lib';
 import { faApiRequest } from './ApiRequest';
 import { tryJsonToString } from '../Helpers/Json';
 

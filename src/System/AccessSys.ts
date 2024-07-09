@@ -1,6 +1,6 @@
 
 import _ from 'lodash';
-import { ErrorSys } from '@a-a-game-studio/aa-components';
+import { ErrorSys } from '@63pokupki/components';
 import { P63Context } from './P63Context';
 import { mJwtDecode } from '../Helpers/JwtH';
 import { mDecrypt } from '../Helpers/CryptoH';

@@ -1,4 +1,4 @@
-import { ModelValidatorSys, ErrorSys } from '@a-a-game-studio/aa-components/lib';
+import { ModelValidatorSys, ErrorSys } from '@63pokupki/components/lib';
 import  knex, { Knex } from 'knex';
 
 // Системные сервисы
@@ -9,7 +9,7 @@ import { CacheSys } from './CacheSys';
 import { LogicSys } from './LogicSys';
 import { P63Context } from './P63Context';
 import { MonitoringSys } from '@63pokupki/monitoring.lib';
-import { DbClientSys } from '@a-a-game-studio/aa-proxy-db';
+import { DbClientSys } from '@63pokupki/proxy-db';
 import { tryJsonToString } from '../Helpers/Json';
 
 let iQCounter = 0;
