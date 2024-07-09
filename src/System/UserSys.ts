@@ -1,5 +1,5 @@
 // Библиотеки
-import { ErrorSys } from '@a-a-game-studio/aa-components/lib';
+import { ErrorSys } from '@63pokupki/components/lib';
 
 // SQL Запросы
 import { P63Context } from './P63Context';

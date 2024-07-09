@@ -1,4 +1,4 @@
-// import { ModelValidatorSys, ErrorSys } from '@a-a-game-studio/aa-components/lib';
+// import { ModelValidatorSys, ErrorSys } from '@63pokupki/components/lib';
 // import  knex, { Knex } from 'knex';
 
 // // Системные сервисы

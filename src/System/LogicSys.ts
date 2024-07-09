@@ -1,4 +1,4 @@
-import { ErrorSys, ModelRulesC, ModelValidatorSys } from '@a-a-game-studio/aa-components/lib';
+import { ErrorSys, ModelRulesC, ModelValidatorSys } from '@63pokupki/components/lib';
 import { P63Context } from './P63Context';
 
 import { UserSys } from './UserSys';

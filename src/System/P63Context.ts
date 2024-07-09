@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 
-import { ErrorSys } from '@a-a-game-studio/aa-components';
+import { ErrorSys } from '@63pokupki/components';
 import { Knex } from 'knex';
-import { AAContext } from '@a-a-game-studio/aa-server';
+import { AAContext } from '@63pokupki/server';
 
 import { UserSys } from './UserSys';
 import { ResponseSys } from './ResponseSys';
@@ -14,7 +14,7 @@ import { RedisSys } from './RedisSys';
 import { CryptAlgT } from '../Helpers/CryptoH';
 import { JwtAlgT } from '../Helpers/JwtH';
 
-import { MqClientSys } from '@a-a-game-studio/aa-mq';
+import { MqClientSys } from '@63pokupki/mq';
 import { MonitoringSys } from '@63pokupki/monitoring.lib';
 
 export class P63Context extends AAContext {
